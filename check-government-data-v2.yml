@@ -1,0 +1,72 @@
+name: Check government data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "20 20 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: government-data-status
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Test entitlement rules
+        if: ${{ hashFiles('core-rules.test.js') != '' }}
+        run: node core-rules.test.js
+
+      - name: Check official government sources
+        run: python check-government-sources.py
+
+      - name: Commit latest source status
+        shell: bash
+        run: |
+          set -e
+          git config user.name "Finally Entitled Data Bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          # Preserve only the generated files from this run.
+          cp data-status.json /tmp/data-status.json
+          if [ -f source-snapshots.json ]; then
+            cp source-snapshots.json /tmp/source-snapshots.json
+          fi
+
+          # Move onto the latest remote main so a user commit made while the
+          # checker was running cannot cause a rebase conflict.
+          git fetch origin main
+          git reset --hard origin/main
+
+          cp /tmp/data-status.json data-status.json
+          if [ -f /tmp/source-snapshots.json ]; then
+            cp /tmp/source-snapshots.json source-snapshots.json
+          fi
+
+          git add data-status.json
+          if [ -f source-snapshots.json ]; then
+            git add source-snapshots.json
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No source-status changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Update government data status"
+          git push origin HEAD:main
