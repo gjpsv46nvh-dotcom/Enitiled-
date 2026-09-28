@@ -299,36 +299,73 @@ refreshIncome();syncRelationship();syncHousing();showStep(1);syncSupportStateFro
 // Production automation updates data-status.json only after official-source checks complete.
 async function loadGovernmentDataStatus(){
   const btn=$('dataStatus'), date=$('dataStatusDate');
-  try{
-    const res=await fetch('./data-status.json?ts='+Date.now(),{cache:'no-store'});
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const d=await res.json();
-    btn.classList.remove('good','review','checking');
-    const good=d.status==='up_to_date';
-    const pending=d.status==='pending_first_check';
-    btn.classList.add(good?'good':pending?'checking':'review');
-    btn.querySelector('strong').textContent=good?'Government sources checked':pending?'Government source status pending':'Government source review needed';
-    if(d.lastSuccessfulCheck){
-      const checked=new Date(d.lastSuccessfulCheck);
-      date.textContent='Checked '+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-    }else date.textContent=pending?'Run the first live check':'Latest check needs attention';
-    const sources=d.sources||[], ok=sources.filter(s=>s.status==='up_to_date').length;
-    $('statusSummary').textContent=good
-      ? `${ok} monitored official sources checked successfully. Core calculation rules are validated separately and are never silently changed by this monitor.`
-      : pending
-        ? `Monitoring is installed for ${sources.length} official sources. Run the GitHub government-data workflow once to establish the live baseline.`
-        : `At least one monitored source changed or could not be checked. Existing calculation rules remain unchanged until reviewed.`;
-    $('sourceStatusList').innerHTML=sources.map(s=>{
-      const isOk=s.status==='up_to_date', isPending=s.status==='pending';
-      const checked=s.checked?` · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:' · awaiting live check';
-      return `<div class="source-status-item"><span class="status-dot ${isOk?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction}${checked}${isPending?'':` · ${isOk?'up to date':'review required'}`}</small></div></div>`;
-    }).join('');
-  }catch(err){
+
+  // Prefer the newest status available. Vercel deployments can contain an older
+  // copy of data-status.json even after the GitHub Action has committed a newer
+  // status file, so also read the public repository copy as a live fallback.
+  const urls=[
+    './data-status.json?ts='+Date.now(),
+    'https://raw.githubusercontent.com/gipsv46nvh-dotcom/Entitled-/main/data-status.json?ts='+Date.now()
+  ];
+
+  const results=[];
+  for(const url of urls){
+    try{
+      const res=await fetch(url,{cache:'no-store',headers:{'Accept':'application/json'}});
+      if(!res.ok) continue;
+      const d=await res.json();
+      if(d && d.status) results.push(d);
+    }catch(_err){}
+  }
+
+  if(!results.length){
     btn.classList.remove('good','checking'); btn.classList.add('review');
     btn.querySelector('strong').textContent='Government source check unavailable';
-    date.textContent='Site still works — source status could not be loaded';
+    date.textContent='Latest source status could not be loaded';
     $('statusSummary').textContent='The latest automated source status could not be confirmed. Entitlement calculation rules have not been changed.';
+    return;
   }
+
+  // Choose the newest check result, rather than an older deployment copy.
+  const stamp=d=>Date.parse(d.lastCheckAttempt||d.lastSuccessfulCheck||'1970-01-01T00:00:00Z')||0;
+  const d=results.sort((a,b)=>stamp(b)-stamp(a))[0];
+
+  btn.classList.remove('good','review','checking');
+  const good=d.status==='up_to_date';
+  const pending=d.status==='pending_first_check';
+  btn.classList.add(good?'good':pending?'checking':'review');
+  btn.querySelector('strong').textContent=good
+    ? 'Government sources checked'
+    : pending
+      ? 'Government source status pending'
+      : 'Government source review needed';
+
+  if(d.lastCheckAttempt){
+    const checked=new Date(d.lastCheckAttempt);
+    date.textContent='Last checked '+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  }else if(d.lastSuccessfulCheck){
+    const checked=new Date(d.lastSuccessfulCheck);
+    date.textContent='Checked '+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  }else{
+    date.textContent=pending?'Run the first live check':'Latest check needs attention';
+  }
+
+  const sources=d.sources||[];
+  const ok=sources.filter(s=>s.status==='up_to_date').length;
+  const failed=sources.filter(s=>s.status==='check_failed').length;
+  const waiting=sources.filter(s=>s.status==='pending').length;
+
+  $('statusSummary').textContent=good
+    ? `${ok} monitored official sources checked successfully. Core calculation rules are validated separately and are never silently changed by this monitor.`
+    : pending
+      ? `Monitoring is installed for ${sources.length} official sources. Run the GitHub government-data workflow once to establish the live baseline.`
+      : `Review required: ${failed} source${failed===1?'':'s'} could not be checked and ${waiting} source${waiting===1?' is':'s are'} awaiting a complete baseline. Existing calculation rules remain unchanged until reviewed.`;
+
+  $('sourceStatusList').innerHTML=sources.map(s=>{
+    const isOk=s.status==='up_to_date', isPending=s.status==='pending';
+    const checked=s.checked?` · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:' · awaiting live check';
+    return `<div class="source-status-item"><span class="status-dot ${isOk?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction}${checked}${isPending?' · baseline pending':` · ${isOk?'up to date':'review required'}`}</small></div></div>`;
+  }).join('');
 }
 $('dataStatus').onclick=()=>{$('dataStatusPanel').hidden=false;$('dataStatus').setAttribute('aria-expanded','true')};
 $('closeStatusPanel').onclick=()=>{$('dataStatusPanel').hidden=true;$('dataStatus').setAttribute('aria-expanded','false')};
