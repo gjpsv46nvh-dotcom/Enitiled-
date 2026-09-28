@@ -17,7 +17,7 @@
       "id": "energy-gov-au",
       "label": "Energy, solar & battery support",
       "jurisdiction": "Australia + states/territories",
-      "url": "https://www.energy.gov.au/rebates",
+      "url": "https://www.energy.gov.au/rebates-view",
       "status": "check_failed",
       "checked": "2026-09-28",
       "note": "The read operation timed out"
@@ -26,10 +26,10 @@
       "id": "tas-concessions",
       "label": "Tasmanian concessions",
       "jurisdiction": "Tasmania",
-      "url": "https://www.concessions.tas.gov.au/",
+      "url": "https://www.concessions.tas.gov.au/resources/home",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "HTTP Error 403: Forbidden"
+      "note": "HTTP 403: Forbidden"
     },
     {
       "id": "nsw-cost-living",
@@ -37,7 +37,8 @@
       "jurisdiction": "New South Wales",
       "url": "https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub",
       "status": "pending",
-      "checked": "2026-09-28"
+      "checked": "2026-09-28",
+      "note": "Waiting for all monitored sources to complete successfully before creating the first baseline."
     },
     {
       "id": "vic-concessions",
@@ -54,7 +55,8 @@
       "jurisdiction": "Queensland",
       "url": "https://www.qld.gov.au/community/cost-of-living-support/concessions",
       "status": "pending",
-      "checked": "2026-09-28"
+      "checked": "2026-09-28",
+      "note": "Waiting for all monitored sources to complete successfully before creating the first baseline."
     },
     {
       "id": "sa-concessions",
@@ -62,7 +64,8 @@
       "jurisdiction": "South Australia",
       "url": "https://www.sa.gov.au/topics/care-and-support/concessions",
       "status": "pending",
-      "checked": "2026-09-28"
+      "checked": "2026-09-28",
+      "note": "Waiting for all monitored sources to complete successfully before creating the first baseline."
     },
     {
       "id": "wa-concessions",
@@ -71,7 +74,7 @@
       "url": "https://www.wa.gov.au/service/community-services/community-support/concessions",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "HTTP Error 404: Not Found"
+      "note": "HTTP 404: Not Found"
     },
     {
       "id": "act-cost-living",
@@ -80,7 +83,7 @@
       "url": "https://www.act.gov.au/cost-of-living-support",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "HTTP Error 403: Forbidden"
+      "note": "HTTP 403: Forbidden"
     },
     {
       "id": "nt-concessions",
@@ -89,8 +92,8 @@
       "url": "https://nt.gov.au/community/concessions-and-payments",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "HTTP Error 403: Forbidden"
+      "note": "HTTP 403: Forbidden"
     }
   ],
-  "lastCheckAttempt": "2026-09-28T02:23:01+00:00"
+  "lastCheckAttempt": "2026-09-28T02:27:55+00:00"
 }
