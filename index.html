@@ -11,7 +11,7 @@
 <header class="topbar">
   <a class="brand" href="#home" data-go="home"><span class="brandmark">FE</span><span>Finally Entitled</span></a>
   <nav>
-    <button data-go="home">Home</button><button data-go="personal">Personal</button>
+    <button data-go="home">Home</button><button data-go="personal">Personal</button><button data-go="support">Search Support</button>
     <button data-go="income">Pay & Income</button><button data-go="business">Business & Grants</button>
     <button data-go="matches">My Matches</button>
   </nav>
@@ -87,6 +87,44 @@
  </div>
 </section>
 
+<section id="support" class="page">
+ <div class="section-head">
+  <div class="eyebrow">SEARCH SUPPORT</div>
+  <h2>What do you need help with?</h2>
+  <p>Search by payment name or just describe what you need — like “help with rent”, “new baby”, “lost my job” or “power bill”.</p>
+ </div>
+ <div class="support-search panel">
+  <div class="big-search"><span>⌕</span><input id="supportQuery" type="search" placeholder="Search payments, rebates, concessions and support…" autocomplete="off"></div>
+  <div class="quick-searches">
+   <button data-search="children">Children & family</button><button data-search="rent">Rent & housing</button>
+   <button data-search="childcare">Childcare</button><button data-search="job">Work & job loss</button>
+   <button data-search="study">Study</button><button data-search="carer">Caring for someone</button>
+   <button data-search="disability">Disability & health</button><button data-search="older">Older Australians</button>
+   <button data-search="concession">Concessions</button><button data-search="emergency">Emergency help</button>
+  </div>
+ </div>
+ <div class="support-layout">
+  <aside class="support-cats panel">
+   <h3>Browse support</h3>
+   <button class="cat active" data-cat="all">All support</button>
+   <button class="cat" data-cat="Families">Families</button>
+   <button class="cat" data-cat="Work">Work</button>
+   <button class="cat" data-cat="Study">Study</button>
+   <button class="cat" data-cat="Carers">Carers</button>
+   <button class="cat" data-cat="Disability">Disability</button>
+   <button class="cat" data-cat="Older Australians">Older Australians</button>
+   <button class="cat" data-cat="Concessions">Concessions</button>
+   <button class="cat" data-cat="Housing & supplements">Housing & extras</button>
+   <button class="cat" data-cat="Special circumstances">Special circumstances</button>
+  </aside>
+  <div>
+   <div class="support-count" id="supportCount"></div>
+   <div id="supportResults" class="support-results"></div>
+  </div>
+ </div>
+ <div id="supportDetail" class="support-detail-wrap"></div>
+</section>
+
 <section id="income" class="page">
  <div class="section-head"><div class="eyebrow">PAY & INCOME MODELLER</div><h2>How much do you earn?</h2><p>Enter annual income directly, or estimate it from hourly pay. This lets us model how income can affect potential entitlements.</p></div>
  <div class="two-col">
@@ -114,7 +152,7 @@
    <div class="slider-value" id="sliderValue">$119,000</div>
  </div>
  <div class="actions"><button class="primary" id="calculateBtn">Calculate my estimated entitlements →</button></div>
-<div class="notice"><b>V4 rules date:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
+<div class="notice"><b>V5 rules date:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
 </section>
 
 <section id="matches" class="page">
@@ -143,7 +181,7 @@
 </section>
 </main>
 
-<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V4 prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
+<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V5 prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
 <script src="app.js"></script>
 </body>
 </html>

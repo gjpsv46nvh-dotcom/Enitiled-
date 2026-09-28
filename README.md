@@ -39,3 +39,14 @@ Rules basis: September 2026.
 - Tightened CCS child screening for secondary-school status.
 - FTB Part A no longer displays a maximum-rate amount as a calculated entitlement above the maximum-rate income threshold.
 - CCS result wording now makes clear it is an income-based percentage estimate, not a dollar payment.
+
+## V5 Search Support
+- Adds a separate Search Support route without complicating the eligibility questionnaire.
+- Search by official payment name or everyday phrases.
+- Browse Commonwealth support by family, work, study, carers, disability, older Australians, concessions, housing/supplements and special circumstances.
+- Each item opens a simple on-site guide: what it is, who may qualify, amount/rate explanation, what may be needed, and how to apply.
+- Keeps only one official government information/apply link at the bottom of each guide.
+- Catalogue baseline checked against the Services Australia Guide to Australian Government Payments, 20 September 2026.
+- Business & Grants remains a separate pathway because live grant rounds change frequently.
+
+Production note: state/territory and council catalogues should be maintained as a separate jurisdiction data layer so changing rebates and concessions can be updated without changing the simple UI.
