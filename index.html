@@ -136,8 +136,8 @@
   <div class="panel">
    <h3>Your pay</h3>
    <div class="form-grid compact">
-    <label>Hourly rate ($)<input id="rate" type="number" value="40" step=".01"></label>
-    <label>Hours per week<input id="hours" type="number" value="38" step=".5"></label>
+    <label>Hourly rate ($)<input id="rate" type="number" placeholder="e.g. 40" step=".01" min="0"></label>
+    <label>Hours per week<input id="hours" type="number" placeholder="e.g. 38" step=".5" min="0"></label>
     <label>Overtime / allowances per year ($)<input id="extras" type="number" value="0"></label>
     <label>Or override annual income ($)<input id="annualOverride" type="number" placeholder="Optional"></label>
    </div>
@@ -148,16 +148,16 @@
     <label>Partner annual income ($)<input id="partner" type="number" value="0" placeholder="Annual income"></label>
     <label>Other household income ($)<input id="otherIncome" type="number" value="0"></label>
    </div>
-   <div class="income-total"><span>Estimated household income</span><strong id="householdTotal">$119,040</strong></div>
+   <div class="income-total"><span>Estimated household income</span><strong id="householdTotal">$0</strong></div><p class="field-help">Enter your actual income above. $0 is treated as a real income amount, not as “not answered”.</p>
   </div>
  </div>
  <div class="panel slider-panel">
    <div><h3>What if our income changes?</h3><p>Move the slider to preview different household income levels.</p></div>
    <input id="incomeSlider" type="range" min="0" max="600000" step="1000" value="0">
-   <div class="slider-value" id="sliderValue">$119,000</div>
+   <div class="slider-value" id="sliderValue">$0</div>
  </div>
  <div class="actions"><button class="primary" id="calculateBtn">See what I may qualify for →</button></div>
-<div class="notice"><b>V7.1 rules date:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
+<div class="notice"><b>Calculation rules currently validated to:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
 </section>
 
 <section id="matches" class="page">
@@ -186,7 +186,7 @@
 </section>
 </main>
 
-<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V8 auto-update-ready prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
+<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V8.1 user-QA prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
 <script src="app.js"></script>
 <div id="dataStatusPanel" class="status-panel" hidden>
 <div class="status-panel-card">

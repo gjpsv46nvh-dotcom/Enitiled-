@@ -22,7 +22,7 @@ $('relationship').onchange=syncRelationship;
 document.querySelectorAll('[data-children]').forEach(b=>b.onclick=()=>{hasChildren=b.dataset.children==='yes';document.querySelectorAll('[data-children]').forEach(x=>x.classList.toggle('selected',x===b));$('childrenArea').style.display=hasChildren?'block':'none';if(hasChildren&&!document.querySelector('.child-card')) addChild()});
 function addChild(){
  childSeq++; const d=document.createElement('div');d.className='child-card';d.innerHTML=`<div class="child-top"><h4>Child ${childSeq}</h4><button type="button" class="remove-child">Remove</button></div><div class="child-grid">
- <label>Date of birth<input class="childDob" type="date" value="2022-01-01"></label>
+ <label>Date of birth<input class="childDob" type="date"></label>
  <label>In approved childcare?<select class="childCare"><option value="no">No</option><option value="yes">Yes</option></select></label>
  <label>In secondary school?<select class="secondary"><option value="no">No</option><option value="yes">Yes</option></select></label></div>`;
  d.querySelector('.remove-child').onclick=()=>d.remove();$('childrenList').appendChild(d)
@@ -185,8 +185,12 @@ function renderSupport(){
    const place=st==="all"||!x.loc||x.loc==="ALL"||x.loc===st;
    const hay=norm(x.n+" "+x.c+" "+x.k+" "+x.s);
    return cat && place && (!words.length||words.some(w=>hay.includes(w)));
+ }).sort((a,b)=>{
+   if(!words.length) return 0;
+   const score=x=>{const hay=norm(x.n+" "+x.c+" "+x.k+" "+x.s), name=norm(x.n); return (name.includes(q)?20:0)+words.filter(w=>name.includes(w)).length*5+words.filter(w=>hay.includes(w)).length;};
+   return score(b)-score(a);
  });
- $('supportCount').textContent=`${rows.length} support option${rows.length===1?'':'s'} found`;
+ $('supportCount').textContent=`${rows.length} support option${rows.length===1?'':'s'} found`; $('supportDetail').innerHTML='';
  $('supportResults').innerHTML=rows.length?rows.map((x,i)=>`<article class="support-item" data-support="${SUPPORT_CATALOGUE.indexOf(x)}"><span class="type">${x.c}${x.loc&&x.loc!=="ALL"?`<span class="state-pill">${x.loc}</span>`:""}</span><h3>${x.n}</h3><p>${x.s}</p><span class="read">Read simple guide →</span></article>`).join(''):`<div class="no-support"><h3>No exact match</h3><p>Try simpler words such as “rent”, “baby”, “study”, “carer” or “job”. The eligibility checker can also search based on your circumstances.</p></div>`;
  document.querySelectorAll('[data-support]').forEach(el=>el.onclick=()=>openSupport(+el.dataset.support));
 }
@@ -212,11 +216,11 @@ async function loadGovernmentDataStatus(){
     const btn=$('dataStatus'), date=$('dataStatusDate');
     const good=d.status==='up_to_date';
     btn.classList.toggle('good',good); btn.classList.toggle('review',!good);
-    btn.querySelector('strong').textContent=good?'Government data up to date':'Government data review needed';
+    btn.querySelector('strong').textContent=good?'Monitored government sources up to date':'Government source review needed';
     const checked=new Date(d.lastSuccessfulCheck);
     date.textContent='Checked '+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
     $('statusSummary').textContent=good
-      ? `Official sources last checked successfully. Calculation rules last changed ${new Date(d.rulesLastChanged+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}.`
+      ? `The monitored official sources were checked successfully. Calculation rules currently validated to ${new Date(d.rulesLastChanged+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}.`
       : 'One or more official sources changed or could not be validated. Existing calculation rules stay unchanged until reviewed.';
     $('sourceStatusList').innerHTML=(d.sources||[]).map(s=>`<div class="source-status-item"><span class="status-dot ${s.status==='up_to_date'?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction} · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}${s.rulesDate?` · rules/source dated ${new Date(s.rulesDate+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:''}</small></div></div>`).join('');
   }catch(e){

@@ -65,3 +65,5 @@ main{max-width:1180px;margin:auto;padding:0 22px 70px}.page{display:none}.page.a
 .status-key{display:grid;gap:8px;padding:13px;background:#f7f8f7;border-radius:12px;font-size:12px}
 .status-key>div{display:flex;align-items:center;gap:8px}
 @media(max-width:760px){.data-status{margin-top:6px}.status-panel-card{margin:2vh auto;padding:20px}}
+
+.field-help{font-size:11px;color:var(--muted);margin:9px 0 0}

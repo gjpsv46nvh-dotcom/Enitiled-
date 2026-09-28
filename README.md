@@ -94,3 +94,12 @@ Design rule: users choose their state once. Finally Entitled handles jurisdictio
 - Initial monitored sources: Services Australia payment guide, energy.gov.au rebates, Tasmanian Government concessions.
 
 Production next step: expand the monitored-source registry to every state/territory source and add structured rule parsers/tests for major calculations. Only validated structured changes should be promoted into live calculation rules.
+
+## V8.1 user QA fixes
+- Removed the hidden preset 2022 DOB from newly added children.
+- Removed sample $40/hour and 38-hours/week values so a new visitor is not given a fictional household income.
+- Added a clear note that $0 income is treated as an intentional value.
+- Search results are now relevance-ranked while retaining forgiving plain-English matching.
+- Search detail closes when the query/filter changes, preventing stale entitlement information remaining below new results.
+- Green status now says `Monitored government sources up to date`, avoiding the false impression that every Australian government program is already monitored.
+- Changed rules wording to `Calculation rules currently validated to`.
