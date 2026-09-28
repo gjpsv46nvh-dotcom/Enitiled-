@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "lastSuccessfulCheck": "2026-09-28T10:54:00+10:00",
+  "status": "up_to_date",
+  "rulesLastChanged": "2026-09-20",
+  "sources": [
+    {
+      "id": "services-australia-guide",
+      "label": "Australian Government payments",
+      "jurisdiction": "Commonwealth",
+      "status": "up_to_date",
+      "checked": "2026-09-28",
+      "rulesDate": "2026-09-20",
+      "url": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22"
+    },
+    {
+      "id": "energy-gov-au",
+      "label": "Energy, solar & battery support",
+      "jurisdiction": "Australia + states/territories",
+      "status": "up_to_date",
+      "checked": "2026-09-28",
+      "rulesDate": "2026-09-28",
+      "url": "https://www.energy.gov.au/rebates"
+    },
+    {
+      "id": "tas-concessions",
+      "label": "Tasmanian concessions",
+      "jurisdiction": "Tasmania",
+      "status": "up_to_date",
+      "checked": "2026-09-28",
+      "rulesDate": "2026-09-28",
+      "url": "https://www.concessions.tas.gov.au/"
+    }
+  ]
+}

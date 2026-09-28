@@ -201,3 +201,33 @@ document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{supportCategor
 renderSupport();
 
 refreshIncome();syncRelationship();syncHousing();showStep(1);syncSupportStateFromProfile();
+
+// Government data freshness status.
+// Production automation updates data-status.json only after official-source checks complete.
+async function loadGovernmentDataStatus(){
+  try{
+    const res=await fetch('data-status.json',{cache:'no-store'});
+    if(!res.ok) throw new Error('status fetch failed');
+    const d=await res.json();
+    const btn=$('dataStatus'), date=$('dataStatusDate');
+    const good=d.status==='up_to_date';
+    btn.classList.toggle('good',good); btn.classList.toggle('review',!good);
+    btn.querySelector('strong').textContent=good?'Government data up to date':'Government data review needed';
+    const checked=new Date(d.lastSuccessfulCheck);
+    date.textContent='Checked '+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+    $('statusSummary').textContent=good
+      ? `Official sources last checked successfully. Calculation rules last changed ${new Date(d.rulesLastChanged+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}.`
+      : 'One or more official sources changed or could not be validated. Existing calculation rules stay unchanged until reviewed.';
+    $('sourceStatusList').innerHTML=(d.sources||[]).map(s=>`<div class="source-status-item"><span class="status-dot ${s.status==='up_to_date'?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction} · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}${s.rulesDate?` · rules/source dated ${new Date(s.rulesDate+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:''}</small></div></div>`).join('');
+  }catch(e){
+    const btn=$('dataStatus');
+    btn.classList.remove('good'); btn.classList.add('review');
+    btn.querySelector('strong').textContent='Government data check unavailable';
+    $('dataStatusDate').textContent='Tap for details';
+    $('statusSummary').textContent='The latest automated source check could not be confirmed. Existing calculation rules have not been changed.';
+  }
+}
+$('dataStatus').onclick=()=>{$('dataStatusPanel').hidden=false;$('dataStatus').setAttribute('aria-expanded','true')};
+$('closeStatusPanel').onclick=()=>{$('dataStatusPanel').hidden=true;$('dataStatus').setAttribute('aria-expanded','false')};
+$('dataStatusPanel').onclick=e=>{if(e.target===$('dataStatusPanel'))$('closeStatusPanel').click()};
+loadGovernmentDataStatus();

@@ -82,3 +82,15 @@ Design rule: users choose their state once. Finally Entitled handles jurisdictio
 - Made support search more forgiving for everyday multi-word searches.
 - Improved the state-support shortcut.
 - Retained income modelling inside the guided eligibility journey instead of advertising it as a separate product.
+
+## V8 automatic government-data freshness framework
+- Added a green `Government data up to date` indicator with the last successful check date.
+- Tapping it opens source-by-source status and distinguishes `checked` from `rules last changed`.
+- Added `data-status.json`, loaded without browser cache.
+- Added a safe official-source checker under `scripts/check-government-sources.py`.
+- Added a daily GitHub Actions workflow under `.github/workflows/check-government-data.yml`.
+- If an official source changes, the indicator turns amber/review-needed; existing entitlement calculation rules are NOT silently overwritten.
+- If a source check fails, the green status is removed rather than displaying a false assurance.
+- Initial monitored sources: Services Australia payment guide, energy.gov.au rebates, Tasmanian Government concessions.
+
+Production next step: expand the monitored-source registry to every state/territory source and add structured rule parsers/tests for major calculations. Only validated structured changes should be promoted into live calculation rules.

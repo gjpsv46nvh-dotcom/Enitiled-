@@ -13,7 +13,9 @@
   <nav>
     <button data-go="home">Home</button><button data-go="personal">Check eligibility</button>
     <button data-go="support">Search support</button><button data-go="business">Business support</button>
-  </nav>
+  </nav><button id="dataStatus" class="data-status good" type="button" aria-expanded="false">
+<span class="status-dot"></span><span><strong>Government data up to date</strong><small id="dataStatusDate">Checked 28 Sep 2026</small></span>
+</button>
 </header>
 
 <main>
@@ -184,7 +186,19 @@
 </section>
 </main>
 
-<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V7.1 user-tested prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
+<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V8 auto-update-ready prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
 <script src="app.js"></script>
-</body>
+<div id="dataStatusPanel" class="status-panel" hidden>
+<div class="status-panel-card">
+<button id="closeStatusPanel" class="status-close" aria-label="Close">×</button>
+<span class="eyebrow">DATA STATUS</span>
+<h2>Government information status</h2>
+<p id="statusSummary">Finally Entitled checks its official government sources and tracks when rules last changed.</p>
+<div id="sourceStatusList" class="source-status-list"></div>
+<div class="status-key">
+<div><span class="status-dot"></span><b>Up to date</b> — source checked successfully.</div>
+<div><span class="status-dot review"></span><b>Review</b> — a source changed and needs validation before calculation rules change.</div>
+</div>
+<p class="fine">Finally Entitled is a pre-application guide. Government agencies make official eligibility decisions.</p>
+</div></div></body>
 </html>
