@@ -36,7 +36,7 @@ function addChild(){
 $('addChild').onclick=addChild;
 
 function age(d){if(!d)return null;let b=new Date(d+'T00:00:00'),t=new Date(),a=t.getFullYear()-b.getFullYear();if(t<new Date(t.getFullYear(),b.getMonth(),b.getDate()))a--;return a}
-function kids(){return [...document.querySelectorAll('.child-card')].map(c=>({age:age(c.querySelector('.childDob').value),childcare:c.querySelector('.childCare').value==='yes',secondary:c.querySelector('.secondary').value==='yes'}))}
+function kids(){return [...document.querySelectorAll('.child-card')].map(c=>({dob:c.querySelector('.childDob').value,age:age(c.querySelector('.childDob').value),childcare:c.querySelector('.childCare').value==='yes',secondary:c.querySelector('.secondary').value==='yes'}))}
 function ownAnnualIncome(){const o=parseFloat($('annualOverride').value);return Number.isFinite(o)&&o>=0?o:(+$('rate').value||0)*(+$('hours').value||0)*52+(+$('extras').value||0)}
 function baseIncome(){return ownAnnualIncome()+($('relationship').value==='couple'?(+$('partner').value||0):0)+(+$('otherIncome').value||0)}
 function refreshIncome(){const t=baseIncome();$('householdTotal').textContent=money(t);$('incomeSlider').value=Math.min(600000,Math.round(t/100)*100);$('sliderValue').textContent=money(+$('incomeSlider').value)}
@@ -124,12 +124,31 @@ $('calculateBtn').onclick=()=>{
  }
 
  if(sit==='carer'||$('careSomeone').value==='yes'){
-   x.push(card('official','Carer Payment','Official care assessment needed','The pension income/assets tests can be screened, but Services Australia must assess the care receiver and care requirements.','https://www.servicesaustralia.gov.au/carer-payment'));
-   x.push(card('conditional','Carer Allowance',household<250000?'Income test appears met':'Income test appears not met','Carer Allowance has no assets test; combined adjusted taxable income must be under $250,000. Care requirements still need official assessment.','https://www.servicesaustralia.gov.au/who-can-get-carer-allowance?context=21811'));
+   const ca=feCarerAllowanceScreen(household), pa=fePensionAssetScreen(rel,homeowner,assets), cp=fePensionIncomeEstimate(rel,own,partner);
+   x.push(card('conditional','Carer Payment',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(cp)}/fortnight income-test screen`,
+     pa.band==='over'?'Your entered assessable assets appear above the standard pension asset cut-off. Hardship provisions, exemptions and Rent Assistance can affect the official result.':`Financial screen only. The income test suggests up to this amount before the asset test and other interactions. Services Australia must still assess the care receiver and care requirements.`,
+     'https://www.servicesaustralia.gov.au/carer-payment'));
+   x.push(card('conditional','Carer Allowance',ca.incomePass?`${money(ca.fortnight)}/fortnight standard rate`:'Income test appears not met',
+     ca.incomePass?'Your entered household income is below the $250,000 family adjusted-taxable-income limit. There is no assets test, but the care and medical rules still need official assessment.':'Your entered household income is at or above the $250,000 family adjusted-taxable-income limit. Services Australia uses adjusted taxable income and specified deeming rules.',
+     'https://www.servicesaustralia.gov.au/carer-allowance'));
  }
- if(sit==='disability'||$('workDisability').value==='yes') x.push(card('official','Disability Support Pension','Medical and non-medical assessment needed','Income/assets screening alone cannot establish DSP eligibility.','https://www.servicesaustralia.gov.au/disability-support-pension'));
- if(sit==='student') x.push(card('official','Student & apprentice support','More study details needed','Youth Allowance, Austudy and ABSTUDY use age, course, independence, parental/partner income and living-arrangement rules not yet fully collected.','https://www.servicesaustralia.gov.au/students-and-trainees'));
- if(age($('yourDob').value)>=67||sit==='retired') x.push(card('official','Age Pension & seniors support','Full pension assessment needed','The standard income and asset thresholds are monitored, but Work Bonus, deeming, residence and pension-rate details require additional inputs.','https://www.servicesaustralia.gov.au/age-pension'));
+ if(sit==='disability'||$('workDisability').value==='yes'){
+   const pa=fePensionAssetScreen(rel,homeowner,assets), dsp=fePensionIncomeEstimate(rel,own,partner);
+   x.push(card('conditional','Disability Support Pension',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(dsp)}/fortnight financial screen`,
+     pa.band==='over'?'Your entered assets appear above the standard pension asset cut-off.':'Income/assets screening only. DSP also requires medical and non-medical qualification, including impairment and work-capacity assessment.',
+     'https://www.servicesaustralia.gov.au/disability-support-pension'));
+ }
+ if(sit==='student') x.push(card('official','Student & apprentice support','More study details needed','Youth Allowance, Austudy and ABSTUDY use age, course, independence, parental/partner income and living-arrangement rules not collected in this short check. Search Support includes each pathway.','https://www.servicesaustralia.gov.au/students-and-trainees'));
+ const userAge=age($('yourDob').value);
+ if(userAge!==null&&userAge>=67){
+   const pa=fePensionAssetScreen(rel,homeowner,assets), ap=fePensionIncomeEstimate(rel,own,partner), cshc=feCSHCScreen(rel,household,K.length);
+   x.push(card('conditional','Age Pension',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(ap)}/fortnight income-test screen`,
+     pa.band==='over'?'Your entered assets appear above the standard pension asset cut-off.':'Income/assets screen only. Deeming, Work Bonus, residence, asset exemptions and other pension rules can change the official rate.',
+     'https://www.servicesaustralia.gov.au/age-pension'));
+   x.push(card('conditional','Commonwealth Seniors Health Card',cshc.incomePass?`Income screen appears met (limit ${money(cshc.limit)}/year)`:`Income screen appears over ${money(cshc.limit)}/year`,
+     'This card is generally for people of Age Pension age who are not receiving an income-support payment. The test uses adjusted taxable income plus specified deemed income and has no assets test.',
+     'https://www.servicesaustralia.gov.au/commonwealth-seniors-health-card'));
+ }
 
  // Low Income Health Care Card: annual income is not enough for a definitive result because the test uses the prior 8 weeks.
  let weekly=household/52, lihLimit;
@@ -139,7 +158,18 @@ $('calculateBtn').onclick=()=>{
    `Your annualised household income is about ${money(weekly)}/week, but the actual claim test uses gross income from the 8 weeks before claiming and includes specified income types.`,
    'https://www.servicesaustralia.gov.au/income-test-for-low-income-health-care-card?context=21986'));
 
- if(K.some(k=>k.age!==null&&k.age<1)) x.push(card('official','New baby support','Check PPL and newborn-payment interaction','Parental Leave Pay and Newborn Upfront Payment/Newborn Supplement interact, so birth, work-test and PPL details are required.','https://www.servicesaustralia.gov.au/having-baby'));
+ if(['jobseeker'].includes(sit)) x.push(card('discovery','Health Care Card','Usually linked to a qualifying payment','If you qualify for certain Centrelink payments, a Health Care Card may be issued automatically. Exact card entitlement follows the qualifying payment and circumstances.','https://www.servicesaustralia.gov.au/health-care-card'));
+ if((userAge!==null&&userAge>=67)||sit==='carer'||sit==='disability'||(rel==='single'&&ppAgeOK)) x.push(card('discovery','Pensioner Concession Card','May be issued automatically with a qualifying payment','Age Pension, Carer Payment, DSP and Parenting Payment single are among the payments that can automatically qualify a person for this card.','https://www.servicesaustralia.gov.au/pensioner-concession-card'));
+
+ if(K.some(k=>k.age!==null&&k.age<1)){
+   const plp=fePLPIncomeScreen(own,household);
+   x.push(card('conditional','Parental Leave Pay',plp.pass?`${money(FE_EXT_RULES.parentalLeave.daily)}/day before tax · up to 130 family days for births from 1 Jul 2026`:'Income screen appears not met',
+     plp.pass?'Income screen only. The work test, birth/adoption date, residency and day-sharing rules still need to be checked.':'Your entered income is above both the individual and family income screens used for 2026–27 claims; official assessment uses the relevant prior financial year.',
+     'https://www.servicesaustralia.gov.au/parental-leave-pay'));
+   x.push(card('official','Newborn Upfront Payment & Newborn Supplement',`${money(FE_EXT_RULES.newborn.upfront)} upfront; supplement may also apply`,
+     'This can apply with FTB Part A when Parental Leave Pay is not being received for the same child. The supplement depends on whether this is the first eligible child and family circumstances.',
+     'https://www.servicesaustralia.gov.au/newborn-upfront-payment-and-newborn-supplement'));
+ }
  if(cc.length) x.push(card('official','Additional Child Care Subsidy','Circumstance-specific assessment','Higher assistance can apply for child wellbeing, grandparent care, hardship or transition to work.','https://www.servicesaustralia.gov.au/additional-child-care-subsidy'));
 
  const sc=profileStateCode(), stateNames={Tas:'Tasmania',Vic:'Victoria',NSW:'New South Wales',Qld:'Queensland',SA:'South Australia',WA:'Western Australia',ACT:'ACT',NT:'Northern Territory'};

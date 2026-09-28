@@ -161,3 +161,22 @@ Run tests with:
 
 ## V9.2 iPhone/GitHub deployment
 This package deliberately keeps the Python checker and Node rule test at repository root to match simple iPhone GitHub uploads. The only nested file required is the GitHub Actions workflow, which must be manually created at `.github/workflows/check-government-data.yml`. See `IPHONE-GITHUB-STEPS.txt`.
+
+## Consolidated entitlement engine update — 28 Sep 2026
+This build merges the post-v9.2 structured entitlement work back into the complete website.
+
+Added/merged:
+- extended 2026-27 structured rules and automated tests
+- Age Pension financial screening
+- Disability Support Pension financial screening (medical/non-medical assessment remains official)
+- Carer Payment financial screening (care assessment remains official)
+- Carer Allowance rate/income screening
+- Commonwealth Seniors Health Card income screening
+- Low Income Health Care Card screening kept separate because it uses recent 8-week income
+- Pensioner Concession Card / Health Care Card discovery logic
+- Parental Leave Pay income/rate screening
+- Newborn Upfront Payment / Newborn Supplement guidance
+- latest resilient official-source monitor
+- GitHub Actions workflow tests both core and extended rules
+
+Safety: Finally Entitled remains a pre-application guide. Complex qualification rules are deliberately labelled as official-assessment items rather than guessed.

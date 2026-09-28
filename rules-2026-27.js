@@ -1,142 +1,98 @@
-// Finally Entitled — structured entitlement rules, 2026–27
-// Batch 2: FTB A, FTB B, CCS, Parenting Payment, JobSeeker and selected Rent Assistance.
-// Values are source-backed. Unsupported circumstances return null rather than being guessed.
-window.FE_RULES = {
-  schemaVersion: 2,
-  financialYear: "2026-27",
-  verifiedOn: "2026-09-28",
-  disclaimer: "Pre-application estimate only. Services Australia makes the final eligibility and rate decision.",
-
-  ftbA: {
-    maximumRateIncomeThreshold: 69131,
-    secondIncomeThreshold: 123078,
-    firstTaperPerDollar: 0.20,
-    secondTaperPerDollar: 0.30,
-    baseRatePerChildFortnight: 75.60,
-    maxRatePerChildFortnight: { age0to12: 235.48, age13to15: 306.46, age16to19SecondaryStudent: 306.46 },
-    supplementIncomeLimit: 80000,
-    supplementMaxPerChild2026_27: 970.90
-  },
-
-  ftbB: {
-    primaryEarnerAnnualLimit: 124327,
-    secondaryEarnerFreeAreaAnnual: 7154,
-    secondaryEarnerTaperPerDollar: 0.20,
-    secondaryEarnerCutoffYoungestUnder5: 35661,
-    secondaryEarnerCutoffYoungest5to13: 27777,
-    maxRatePerFamilyFortnight: { youngest0to4: 200.34, youngest5to18: 139.86 },
-    supplementMaxPerFamily2026_27: 478.15,
-    partneredYoungestChildMustBeUnder: 13,
-    singleYoungestChildMax: 18,
-    parentalLeavePayExclusion: true
-  },
-
-  ccs: {
-    standard: { incomeAt90PercentOrBelow: 88520, zeroPercentAtOrAbove: 538520, startingPercent: 90, incomeStep: 5000, percentagePointDropPerStep: 1 }
-  },
-
-  parentingPayment: {
-    maxFortnightly: { single: 1037.50, singlePensionSupplement: 30.70, partnered: 755.10, partneredSeparatedDueToIllnessRespiteOrPrison: 883.30 },
-    singleIncome: {
-      freeAreaByChildren: { "1": 232.60, "2": 257.20, "3": 281.80 },
-      extraChildFreeArea: 24.60,
-      taperPerDollar: 0.40,
-      baseCutoffOneChild: 2950.60,
-      cutoffIncreasePerExtraChild: 24.60
+/* Finally Entitled 2026-27 core rules
+   Validated against Services Australia / DSS official material current 20 Sep 2026.
+   Dollar estimates deliberately exclude supplements/interactions not collected by the UI.
+*/
+const FE_RULES={
+  asAt:"2026-09-20",
+  ftbA:{free:69131,higher:123078,maxYoung:235.48,maxOlder:306.46,base:75.60},
+  ftbB:{primaryLimit:124327,secondaryFree:7154,maxYoung:200.34,maxOlder:139.86,secondaryTaper:.20},
+  ccs:{fullIncome:88520,zeroIncome:538520,fullPct:90,stepIncome:5000},
+  rent:{
+    incomeSupport:{
+      single:{threshold:157.80,maxRent:456.20,max:223.80},
+      couple:{threshold:255.80,maxRent:537.14,max:211.00}
     },
-    partneredIncome: {
-      ownFreeArea: 150,
-      ownSecondThreshold: 256,
-      ownFirstTaper: 0.50,
-      ownSecondTaper: 0.60,
-      partnerFreeArea: 1440,
-      partnerTaper: 0.60
-    },
-    assets: {
-      singleHomeowner: 333000, singleNonHomeowner: 600000,
-      coupleHomeownerCombined: 499000, coupleNonHomeownerCombined: 766000
+    ftb:{
+      single12:{threshold:207.34,maxRent:558.09,max:263.06},
+      single3:{threshold:207.34,maxRent:603.82,max:297.36},
+      couple12:{threshold:306.60,maxRent:657.35,max:263.06},
+      couple3:{threshold:306.60,maxRent:703.08,max:297.36}
     }
   },
-
-  jobSeeker: {
-    maxFortnightly: {
-      singleNoChildren: 824.90, singleWithDependentChildren: 883.30,
-      single55PlusAfter9Months: 883.30, partnered: 755.10,
-      singlePrincipalCarerExempt: 1068.20
-    },
-    income: {
-      freeArea: 150, secondThreshold: 256, firstTaper: 0.50, secondTaper: 0.60,
-      principalCarerTaper: 0.40,
-      cutoffs: {
-        singleNoChildren: 1557.17, single55PlusAfter9Months: 1667.34,
-        singlePartialCapacityUnder15Hours: 1667.34, singlePrincipalCarer: 2399.50,
-        singlePrincipalCarerExempt: 2868.00, singleDependentChildNotPrincipalCarer: 1655.67
-      }
-    },
-    assets: {
-      singleHomeowner: 333000, singleNonHomeowner: 600000,
-      coupleHomeownerCombined: 499000, coupleNonHomeownerCombined: 766000
-    }
+  assets:{single:{home:333000,nonhome:600000},couple:{home:499000,nonhome:766000}},
+  parenting:{
+    singleMax:1068.20, // $1,037.50 + $30.70 pension supplement
+    partneredMax:755.10,
+    singleFree1:232.60,extraChild:24.60,singleTaper:.40,
+    partnerFree:1440,ownFree:150,ownSecond:256
   },
-
-  rentAssistance: {
-    incomeSupportSingle: { rentThresholdFortnight: 157.80, rentForMaximumFortnight: 456.20, maxFortnight: 223.80, centsPerDollarAboveThreshold: 0.75 },
-    incomeSupportSingleSharer: { rentThresholdFortnight: 157.80, rentForMaximumFortnight: 356.74, maxFortnight: 149.20, centsPerDollarAboveThreshold: 0.75 }
-  }
+  jobseeker:{
+    singleNoChild:824.90,singleChild:883.30,partnered:755.10,
+    ownFree:150,ownSecond:256,partnerFree:1440
+  },
+  lihcc:{single:826,couple:1410,singleOneChild:1410,coupleOneChild:1444,extraChild:34}
 };
-
-window.FE_CALCULATORS = {
-  ccsStandardPercentage(income) {
-    const r=window.FE_RULES.ccs.standard, x=Number(income);
-    if(!Number.isFinite(x)||x<0) return null;
-    if(x<=r.incomeAt90PercentOrBelow) return 90;
-    if(x>=r.zeroPercentAtOrAbove) return 0;
-    return Math.max(0,90-Math.floor((x-r.incomeAt90PercentOrBelow)/r.incomeStep));
-  },
-
-  ftbAMaximumChildRate(age, secondaryStudent=false) {
-    const r=window.FE_RULES.ftbA.maxRatePerChildFortnight, a=Number(age);
-    if(!Number.isFinite(a)||a<0) return null;
-    if(a<=12) return r.age0to12;
-    if(a<=15) return r.age13to15;
-    if(a<=19&&secondaryStudent) return r.age16to19SecondaryStudent;
-    return 0;
-  },
-
-  ftbAIncomeTestBand(income) {
-    const x=Number(income), r=window.FE_RULES.ftbA;
-    if(!Number.isFinite(x)||x<0) return null;
-    if(x<=r.maximumRateIncomeThreshold) return "maximum-rate-income-band";
-    if(x<=r.secondIncomeThreshold) return "first-taper-band";
-    return "second-taper-band";
-  },
-
-  ftbBEstimate({single=false, primaryIncome=0, secondaryIncome=0, youngestAge, receivingPLP=false}={}) {
-    const r=window.FE_RULES.ftbB, age=Number(youngestAge), p=Number(primaryIncome), s=Number(secondaryIncome);
-    if([age,p,s].some(x=>!Number.isFinite(x)||x<0)) return null;
-    if(receivingPLP) return {eligible:false, fortnightly:0, reason:"Parental Leave Pay period"};
-    if(single) {
-      if(age>18 || p>r.primaryEarnerAnnualLimit) return {eligible:false, fortnightly:0};
-      return {eligible:true, fortnightly: age<=4?r.maxRatePerFamilyFortnight.youngest0to4:r.maxRatePerFamilyFortnight.youngest5to18};
-    }
-    if(age>=r.partneredYoungestChildMustBeUnder || p>r.primaryEarnerAnnualLimit) return {eligible:false, fortnightly:0};
-    const max=age<=4?r.maxRatePerFamilyFortnight.youngest0to4:r.maxRatePerFamilyFortnight.youngest5to18;
-    const annualReduction=Math.max(0,s-r.secondaryEarnerFreeAreaAnnual)*r.secondaryEarnerTaperPerDollar;
-    const fortnightly=Math.max(0,max-annualReduction/26);
-    return {eligible:fortnightly>0, fortnightly:Math.round(fortnightly*100)/100};
-  },
-
-  parentingSingleIncomeFreeArea(children) {
-    const n=Math.floor(Number(children)), r=window.FE_RULES.parentingPayment.singleIncome;
-    if(!Number.isFinite(n)||n<1) return null;
-    if(n<=3) return r.freeAreaByChildren[String(n)];
-    return r.freeAreaByChildren["3"]+(n-3)*r.extraChildFreeArea;
-  },
-
-  rentAssistanceSingle(rentFortnight, sharer=false) {
-    const x=Number(rentFortnight);
-    if(!Number.isFinite(x)||x<0) return null;
-    const r=sharer?window.FE_RULES.rentAssistance.incomeSupportSingleSharer:window.FE_RULES.rentAssistance.incomeSupportSingle;
-    return Math.round(Math.min(r.maxFortnight,Math.max(0,(x-r.rentThresholdFortnight)*r.centsPerDollarAboveThreshold))*100)/100;
+function feRound2(n){return Math.max(0,Math.round((n+Number.EPSILON)*100)/100)}
+function feCCS(income){
+  if(income<=FE_RULES.ccs.fullIncome)return 90;
+  if(income>=FE_RULES.ccs.zeroIncome)return 0;
+  return Math.max(0,90-Math.floor((income-FE_RULES.ccs.fullIncome)/5000));
+}
+function feFTBA(children,income){
+  const eligible=children.filter(k=>k.age!==null&&(k.age<=15||(k.age<=19&&k.secondary)));
+  if(!eligible.length)return null;
+  const maxFn=eligible.reduce((s,k)=>s+(k.age<=12?FE_RULES.ftbA.maxYoung:FE_RULES.ftbA.maxOlder),0);
+  const baseFn=eligible.length*FE_RULES.ftbA.base;
+  const maxAnnual=maxFn*26, baseAnnual=baseFn*26;
+  let annual;
+  if(income<=FE_RULES.ftbA.free) annual=maxAnnual;
+  else if(income<=FE_RULES.ftbA.higher) annual=Math.max(baseAnnual,maxAnnual-.20*(income-FE_RULES.ftbA.free));
+  else {
+    const method1=Math.max(0,maxAnnual-.30*(income-FE_RULES.ftbA.higher));
+    const method2=Math.max(0,baseAnnual-.30*(income-FE_RULES.ftbA.higher));
+    annual=Math.max(method1,method2);
   }
-};
+  return {fortnight:feRound2(annual/26),maxFortnight:feRound2(maxFn),baseFortnight:feRound2(baseFn),children:eligible.length};
+}
+function feFTBB(children,rel,ownAnnual,partnerAnnual){
+  const eligible=children.filter(k=>k.age!==null&&(k.age<=15||(k.age<=18&&k.secondary)));
+  if(!eligible.length)return null;
+  const youngest=Math.min(...eligible.map(k=>k.age));
+  const max=youngest<=4?FE_RULES.ftbB.maxYoung:FE_RULES.ftbB.maxOlder;
+  if(rel==='single') return ownAnnual<=FE_RULES.ftbB.primaryLimit?{fortnight:max,reason:"single"}:{fortnight:0,reason:"income"};
+  if(rel!=='couple'||youngest>=13)return {fortnight:0,reason:"age"};
+  const primary=Math.max(ownAnnual,partnerAnnual), secondary=Math.min(ownAnnual,partnerAnnual);
+  if(primary>FE_RULES.ftbB.primaryLimit)return {fortnight:0,reason:"primary"};
+  return {fortnight:feRound2(max-Math.max(0,secondary-FE_RULES.ftbB.secondaryFree)*FE_RULES.ftbB.secondaryTaper/26),reason:"couple"};
+}
+function feRent(key,weeklyRent){
+  const r=FE_RULES.rent.ftb[key]||FE_RULES.rent.incomeSupport[key];
+  if(!r)return null;
+  const rentFn=weeklyRent*2;
+  return {fortnight:feRound2(Math.min(r.max,Math.max(0,(rentFn-r.threshold)*.75))),threshold:r.threshold,max:r.max};
+}
+function feAssetPass(rel,homeowner,assets){
+  const group=rel==='couple'?'couple':'single', k=homeowner==='yes'?'home':'nonhome';
+  return assets<=FE_RULES.assets[group][k];
+}
+function feJobseeker(rel,hasDepChild,ownAnnual,partnerAnnual){
+  const own=ownAnnual/26, partner=partnerAnnual/26;
+  let max=rel==='couple'?FE_RULES.jobseeker.partnered:(hasDepChild?FE_RULES.jobseeker.singleChild:FE_RULES.jobseeker.singleNoChild);
+  let reduction=0;
+  if(rel==='single'&&hasDepChild) reduction=Math.max(0,own-150)*.40;
+  else {
+    reduction+=Math.max(0,Math.min(own,256)-150)*.50;
+    reduction+=Math.max(0,own-256)*.60;
+    if(rel==='couple') reduction+=Math.max(0,partner-1440)*.60;
+  }
+  return feRound2(max-reduction);
+}
+function feParenting(rel,childCount,ownAnnual,partnerAnnual){
+  const own=ownAnnual/26, partner=partnerAnnual/26;
+  if(rel==='single'){
+    const free=232.60+Math.max(0,childCount-1)*24.60;
+    return feRound2(FE_RULES.parenting.singleMax-Math.max(0,own-free)*.40);
+  }
+  let red=Math.max(0,Math.min(own,256)-150)*.50+Math.max(0,own-256)*.60+Math.max(0,partner-1440)*.60;
+  return feRound2(FE_RULES.parenting.partneredMax-red);
+}
