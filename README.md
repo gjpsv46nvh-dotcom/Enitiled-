@@ -1,4 +1,4 @@
-# Finally Entitled V4
+# Finally Entitled
 
 V4 separates the result experience into two layers.
 
@@ -158,3 +158,6 @@ Run tests with:
 - A failed status fetch cannot show green.
 - Government page changes remain review-required until deliberately accepted.
 - See `DEPLOY.md` for the GitHub/Vercel deployment sequence.
+
+## V9.2 iPhone/GitHub deployment
+This package deliberately keeps the Python checker and Node rule test at repository root to match simple iPhone GitHub uploads. The only nested file required is the GitHub Actions workflow, which must be manually created at `.github/workflows/check-government-data.yml`. See `IPHONE-GITHUB-STEPS.txt`.

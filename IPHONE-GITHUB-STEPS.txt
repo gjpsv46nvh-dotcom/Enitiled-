@@ -1,0 +1,45 @@
+FINALLY ENTITLED — IPHONE GITHUB SETUP
+
+PART 1 — WEBSITE FILES
+Upload/replace the files from this folder at the ROOT of your GitHub repository.
+The operational files intentionally stay at root:
+  check-government-sources.py
+  core-rules.test.js
+
+WORKFLOW-COPY-THIS.yml is only a visible copy/template. It does NOT run from the root.
+
+PART 2 — CREATE THE REAL GITHUB ACTION
+GitHub only runs workflows from:
+  .github/workflows/check-government-data.yml
+
+On GitHub:
+1. Open your repository.
+2. Tap Add file → Create new file.
+3. In the filename box type exactly:
+   .github/workflows/check-government-data.yml
+   GitHub will create the folders automatically.
+4. Open the separately supplied check-government-data.yml file and copy ALL its text.
+5. Paste it into the GitHub editor.
+6. Tap Commit changes.
+
+PART 3 — ALLOW THE BOT TO UPDATE STATUS
+Repository → Settings → Actions → General → Workflow permissions.
+Choose:
+  Read and write permissions
+Save.
+
+PART 4 — FIRST LIVE CHECK
+Repository → Actions → Check government data → Run workflow → Run workflow.
+Wait for the run to finish.
+
+A successful first check creates source-snapshots.json and updates data-status.json.
+Vercel should redeploy automatically after the bot commits those files.
+
+PART 5 — WEBSITE
+Refresh enitiled.vercel.app.
+The top status should change from pending to:
+  Government sources checked
+with the latest checked date.
+
+IMPORTANT
+If a government page later changes, the checker remains non-green until the change is reviewed. It never silently updates entitlement calculation rules.
