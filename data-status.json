@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "sources": [
     {
+      "id": "business-gov-au-grants",
+      "label": "Australian business grants & programs",
+      "jurisdiction": "Commonwealth + states/territories",
+      "url": "https://business.gov.au/grants-and-programs",
+      "status": "up_to_date",
+      "checked": "2026-09-28",
+      "method": "automated"
+    },
+    {
       "id": "services-australia-guide",
       "label": "Australian Government payments",
       "jurisdiction": "Commonwealth",
@@ -10,16 +19,6 @@
       "checked": "2026-09-28",
       "method": "manual_official_verification",
       "note": "Official source manually verified; automated access is currently blocked."
-    },
-    {
-      "id": "business-gov-au-grants",
-      "label": "Australian business grants & programs",
-      "jurisdiction": "Commonwealth + states/territories",
-      "url": "https://business.gov.au/grants-and-support",
-      "status": "up_to_date",
-      "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official Australian Government business grants catalogue verified."
     },
     {
       "id": "energy-gov-au",
@@ -45,11 +44,10 @@
       "id": "nsw-cost-living",
       "label": "NSW rebates & cost-of-living support",
       "jurisdiction": "New South Wales",
-      "url": "https://www.nsw.gov.au/ministerial-releases/nsw-budget-2026-27-cost-of-living-measures",
+      "url": "https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub",
       "status": "up_to_date",
       "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "method": "automated"
     },
     {
       "id": "vic-concessions",
@@ -68,18 +66,16 @@
       "url": "https://www.qld.gov.au/community/cost-of-living-support/concessions",
       "status": "up_to_date",
       "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "method": "automated"
     },
     {
       "id": "sa-concessions",
       "label": "South Australian concessions",
       "jurisdiction": "South Australia",
-      "url": "https://www.sa.gov.au/topics/care-and-support/concessions/concession-finder",
+      "url": "https://www.sa.gov.au/topics/care-and-support/concessions",
       "status": "up_to_date",
       "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "method": "automated"
     },
     {
       "id": "wa-concessions",
@@ -88,8 +84,7 @@
       "url": "https://www.wa.gov.au/organisation/department-of-communities/concessions-available-western-australia",
       "status": "up_to_date",
       "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "method": "automated"
     },
     {
       "id": "act-cost-living",
@@ -112,7 +107,7 @@
       "note": "Official source manually verified; automated access is currently blocked."
     }
   ],
-  "lastCheckAttempt": "2026-09-28T05:36:31+00:00",
-  "lastSuccessfulCheck": "2026-09-28T05:36:31+00:00",
+  "lastCheckAttempt": "2026-09-28T20:28:15+00:00",
+  "lastSuccessfulCheck": "2026-09-28T20:28:15+00:00",
   "status": "up_to_date"
 }
