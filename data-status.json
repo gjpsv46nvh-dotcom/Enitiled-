@@ -11,25 +11,25 @@
       "url": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "The read operation timed out"
+      "note": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22: The read operation timed out | https://www.servicesaustralia.gov.au/historical-versions-guide-to-australian-government-payments?context=22: The read operation timed out"
     },
     {
       "id": "energy-gov-au",
       "label": "Energy, solar & battery support",
       "jurisdiction": "Australia + states/territories",
-      "url": "https://www.energy.gov.au/rebates-view",
+      "url": "https://www.energy.gov.au/rebates",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "The read operation timed out"
+      "note": "https://www.energy.gov.au/rebates: The read operation timed out | https://www.energy.gov.au/households: The read operation timed out"
     },
     {
       "id": "tas-concessions",
       "label": "Tasmanian concessions",
       "jurisdiction": "Tasmania",
-      "url": "https://www.concessions.tas.gov.au/resources/home",
+      "url": "https://www.concessions.tas.gov.au/",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "HTTP 403: Forbidden"
+      "note": "https://www.concessions.tas.gov.au/: HTTP 403 Forbidden | https://www.concessions.tas.gov.au/concessions_cards: HTTP 403 Forbidden"
     },
     {
       "id": "nsw-cost-living",
@@ -44,10 +44,10 @@
       "id": "vic-concessions",
       "label": "Victorian concessions & benefits",
       "jurisdiction": "Victoria",
-      "url": "https://services.dffh.vic.gov.au/concessions-and-benefits",
+      "url": "https://www.housing.vic.gov.au/concessions",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "The read operation timed out"
+      "note": "https://www.housing.vic.gov.au/concessions: The read operation timed out | https://services.dffh.vic.gov.au/concessions-and-benefits: The read operation timed out"
     },
     {
       "id": "qld-concessions",
@@ -71,19 +71,19 @@
       "id": "wa-concessions",
       "label": "Western Australian concessions",
       "jurisdiction": "Western Australia",
-      "url": "https://www.wa.gov.au/service/community-services/community-support/concessions",
-      "status": "check_failed",
+      "url": "https://www.wa.gov.au/organisation/department-of-communities/concessions-available-western-australia",
+      "status": "pending",
       "checked": "2026-09-28",
-      "note": "HTTP 404: Not Found"
+      "note": "Waiting for a complete successful first baseline."
     },
     {
       "id": "act-cost-living",
       "label": "ACT cost-of-living support",
       "jurisdiction": "ACT",
-      "url": "https://www.act.gov.au/cost-of-living-support",
+      "url": "https://www.act.gov.au/money-and-tax/cost-of-living-support",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "HTTP 403: Forbidden"
+      "note": "https://www.act.gov.au/money-and-tax/cost-of-living-support: HTTP 403 Forbidden"
     },
     {
       "id": "nt-concessions",
@@ -92,8 +92,8 @@
       "url": "https://nt.gov.au/community/concessions-and-payments",
       "status": "check_failed",
       "checked": "2026-09-28",
-      "note": "HTTP 403: Forbidden"
+      "note": "https://nt.gov.au/community/concessions-and-payments: HTTP 403 Forbidden | https://nt.gov.au/community/concessions-and-payments/nt-concession-scheme: HTTP 403 Forbidden"
     }
   ],
-  "lastCheckAttempt": "2026-09-28T02:55:27+00:00"
+  "lastCheckAttempt": "2026-09-28T03:01:48+00:00"
 }
