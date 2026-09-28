@@ -1,0 +1,4 @@
+Finally Entitled v11.5
+Added: Stay-at-home parent / caring for children under What best describes you?
+This uses the existing family/children pathway for FTB and Parenting Payment screening.
+data-status.json intentionally excluded so the live GitHub Action status is not overwritten.
