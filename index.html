@@ -9,7 +9,7 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="#home"><span class="brandmark">FE</span><span>Finally Entitled</span></a>
+  <a class="brand" href="#home" data-go="home"><span class="brandmark">FE</span><span>Finally Entitled</span></a>
   <nav>
     <button data-go="home">Home</button><button data-go="personal">Personal</button>
     <button data-go="income">Pay & Income</button><button data-go="business">Business & Grants</button>
@@ -42,7 +42,7 @@
 
 <section id="personal" class="page">
  <div class="section-head"><div class="eyebrow">CHECK MY ENTITLEMENTS</div><h2>Simple questions. Better answers.</h2><p>Tell us about your household. We’ll only ask follow-up questions when they’re relevant.</p></div>
- <div class="progress"><span id="progressFill"></span></div><div class="progress-label" id="progressText">Step 1 of 4</div>
+ <div class="progress"><span id="progressFill"></span></div><div class="progress-label" id="progressText">Step 1 of 3</div>
 
  <div class="wizard-step active-step" data-step="1">
   <div class="panel question-panel">
@@ -110,7 +110,7 @@
  </div>
  <div class="panel slider-panel">
    <div><h3>What if our income changes?</h3><p>Move the slider to preview different household income levels.</p></div>
-   <input id="incomeSlider" type="range" min="0" max="300000" step="1000" value="119000">
+   <input id="incomeSlider" type="range" min="0" max="600000" step="1000" value="119000">
    <div class="slider-value" id="sliderValue">$119,000</div>
  </div>
  <div class="actions"><button class="primary" id="calculateBtn">Calculate my estimated entitlements →</button></div>
