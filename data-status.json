@@ -38,7 +38,7 @@
       "url": "https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub",
       "status": "pending",
       "checked": "2026-09-28",
-      "note": "Waiting for all monitored sources to complete successfully before creating the first baseline."
+      "note": "Waiting for a complete successful first baseline."
     },
     {
       "id": "vic-concessions",
@@ -56,7 +56,7 @@
       "url": "https://www.qld.gov.au/community/cost-of-living-support/concessions",
       "status": "pending",
       "checked": "2026-09-28",
-      "note": "Waiting for all monitored sources to complete successfully before creating the first baseline."
+      "note": "Waiting for a complete successful first baseline."
     },
     {
       "id": "sa-concessions",
@@ -65,7 +65,7 @@
       "url": "https://www.sa.gov.au/topics/care-and-support/concessions",
       "status": "pending",
       "checked": "2026-09-28",
-      "note": "Waiting for all monitored sources to complete successfully before creating the first baseline."
+      "note": "Waiting for a complete successful first baseline."
     },
     {
       "id": "wa-concessions",
@@ -95,5 +95,5 @@
       "note": "HTTP 403: Forbidden"
     }
   ],
-  "lastCheckAttempt": "2026-09-28T02:27:55+00:00"
+  "lastCheckAttempt": "2026-09-28T02:55:27+00:00"
 }
