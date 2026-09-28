@@ -91,3 +91,9 @@ input:required:invalid:not(:focus),select:required:invalid:not(:focus){border-co
 .privacy-link,.footer-link{border:0;background:transparent;padding:0;color:var(--green);font:inherit;font-weight:850;text-align:left;cursor:pointer}
 .privacy-page{max-width:820px}.privacy-page h3{margin:26px 0 7px}.privacy-page h3:first-child{margin-top:0}.privacy-page p{margin:0;color:var(--muted);line-height:1.6}
 footer .footer-link{font-size:12px}
+
+/* v11.6.2 — clearer primary start action */
+.hero-actions .hero-start{flex:1 0 100%;width:100%;min-height:72px;padding:18px 18px 18px 24px;border-radius:18px;font-size:19px;display:flex;align-items:center;justify-content:space-between;gap:18px;text-align:left;box-shadow:0 8px 22px rgba(12,35,27,.10);transition:transform .15s ease,background .15s ease,box-shadow .15s ease}
+.hero-actions .hero-start:hover{transform:translateY(-1px);box-shadow:0 10px 25px rgba(12,35,27,.14)}
+.hero-start-arrow{display:inline-flex;align-items:center;justify-content:center;flex:0 0 42px;width:42px;height:42px;border-radius:999px;background:#fff;color:var(--ink);font-size:25px;line-height:1;font-weight:900}
+@media(max-width:760px){.hero-actions .hero-start{min-height:78px;padding:18px 16px 18px 20px;font-size:18px}.hero-start-arrow{flex-basis:44px;width:44px;height:44px;font-size:26px}}

@@ -1,0 +1,5 @@
+Finally Entitled v11.6.2
+- Enlarged the main eligibility start button.
+- Added a clear circular arrow to show where to begin.
+- Kept Search support and Business support visually secondary.
+- No eligibility, privacy, government-source checker, or daily workflow logic changed.
