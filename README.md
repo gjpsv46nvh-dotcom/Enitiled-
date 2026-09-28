@@ -50,3 +50,15 @@ Rules basis: September 2026.
 - Business & Grants remains a separate pathway because live grant rounds change frequently.
 
 Production note: state/territory and council catalogues should be maintained as a separate jurisdiction data layer so changing rebates and concessions can be updated without changing the simple UI.
+
+## V6 Energy, solar and state-aware support
+- Added state/territory filtering to Search Support.
+- Added a dedicated Energy & solar category.
+- Added national rooftop-solar SRES support, Cheaper Home Batteries, Household Energy Upgrades Fund and SunSPOT.
+- Added current major state/territory solar, battery, electrification and energy-support programs.
+- Added search terms for solar, batteries, power bills, electricity concessions, hot water, insulation, VPPs and related upgrades.
+- Added the official Australian Government energy rebate finder as the broad current-program backstop, because state and council programs open/close frequently.
+- State-specific results are hidden when another state is selected.
+- The main eligibility questionnaire remains unchanged and simple.
+
+Important: program availability and amounts can change. Production should periodically refresh the energy catalogue from official federal/state sources rather than hard-code assumptions indefinitely.
