@@ -305,7 +305,8 @@ async function loadGovernmentDataStatus(){
   // status file, so also read the public repository copy as a live fallback.
   const urls=[
     './data-status.json?ts='+Date.now(),
-    'https://raw.githubusercontent.com/gipsv46nvh-dotcom/Entitled-/main/data-status.json?ts='+Date.now()
+    'https://raw.githubusercontent.com/gjpsv46nvh-dotcom/Enitiled-/main/data-status.json?ts='+Date.now(),
+    'https://raw.githubusercontent.com/gjpsv46nvh-dotcom/Entitled-/main/data-status.json?ts='+Date.now()
   ];
 
   const results=[];
