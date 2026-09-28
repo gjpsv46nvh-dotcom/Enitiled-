@@ -48,9 +48,12 @@ function feFTBA(children,income){
   if(income<=FE_RULES.ftbA.free) annual=maxAnnual;
   else if(income<=FE_RULES.ftbA.higher) annual=Math.max(baseAnnual,maxAnnual-.20*(income-FE_RULES.ftbA.free));
   else {
-    const method1=Math.max(0,maxAnnual-.30*(income-FE_RULES.ftbA.higher));
-    const method2=Math.max(0,baseAnnual-.30*(income-FE_RULES.ftbA.higher));
-    annual=Math.max(method1,method2);
+    // Above the higher threshold, continue from the rate reached at $123,078,
+    // then apply the published 30c-per-$1 taper. For smaller families the
+    // first test has already reached the base rate; for larger families it
+    // can still be above base at the higher threshold.
+    const atHigher=Math.max(baseAnnual,maxAnnual-.20*(FE_RULES.ftbA.higher-FE_RULES.ftbA.free));
+    annual=Math.max(0,atHigher-.30*(income-FE_RULES.ftbA.higher));
   }
   return {fortnight:feRound2(annual/26),maxFortnight:feRound2(maxFn),baseFortnight:feRound2(baseFn),children:eligible.length};
 }

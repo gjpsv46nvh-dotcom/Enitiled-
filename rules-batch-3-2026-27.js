@@ -93,3 +93,28 @@
     return x<=full?"full-rate-assets-band":(x<=cutoff?"part-pension-assets-band":"over-standard-assets-cutoff");
   };
 })();
+/* App compatibility helpers — financial screening only. */
+const FE_EXT_RULES={
+  asAt:'2026-09-20',
+  pension:{singleMax:1237.70,coupleEachMax:933.00,coupleCombinedMax:1866.00,incomeFree:{single:226,coupleCombined:396},assetFull:{single:{home:333000,nonhome:600000},couple:{home:499000,nonhome:766000}},assetCutoff:{single:{home:745750,nonhome:1012750},couple:{home:1121000,nonhome:1388000}}},
+  carerAllowance:{fortnight:162.60,familyAtiLimit:250000,noAssetsTest:true},
+  parentalLeave:{daily:200.94,week5:1004.70,familyDaysFrom20260701:130,individualAti202526:186487,familyAti202526:386525},
+  newborn:{upfront:708,firstSupplementMax:2125.76,subsequentSupplementMax:709.80,weeks:13},
+  stillborn:{from20260701:4482.12},
+  cshc:{singleAnnual:105048,coupleAnnual:168076,coupleIllnessAnnual:210096,perChildAnnual:639.60,noAssetsTest:true}
+};
+function fePensionIncomeEstimate(rel,ownAnnual,partnerAnnual,maxOverride){
+  const p=FE_EXT_RULES.pension, combined=(Number(ownAnnual)+(rel==='couple'?Number(partnerAnnual):0))/26;
+  const max=maxOverride || (rel==='couple'?p.coupleEachMax:p.singleMax), free=rel==='couple'?p.incomeFree.coupleCombined:p.incomeFree.single, taper=rel==='couple'?.25:.50;
+  return feRound2(max-Math.max(0,combined-free)*taper);
+}
+function fePensionAssetScreen(rel,homeowner,assets){
+  const g=rel==='couple'?'couple':'single',k=homeowner==='yes'?'home':'nonhome',p=FE_EXT_RULES.pension,x=Number(assets)||0;
+  if(x<=p.assetFull[g][k]) return {band:'full',limit:p.assetFull[g][k]};
+  if(x<=p.assetCutoff[g][k]) return {band:'part',limit:p.assetCutoff[g][k]};
+  return {band:'over',limit:p.assetCutoff[g][k]};
+}
+function feCarerAllowanceScreen(householdAti){return {incomePass:Number(householdAti)<FE_EXT_RULES.carerAllowance.familyAtiLimit,fortnight:FE_EXT_RULES.carerAllowance.fortnight};}
+function feCSHCScreen(rel,householdAti,children=0){const b=rel==='couple'?FE_EXT_RULES.cshc.coupleAnnual:FE_EXT_RULES.cshc.singleAnnual,limit=b+Math.max(0,Number(children)||0)*FE_EXT_RULES.cshc.perChildAnnual;return {incomePass:Number(householdAti)<limit,limit};}
+function fePLPIncomeScreen(individualAti,familyAti){const r=FE_EXT_RULES.parentalLeave;return {individualPass:Number(individualAti)<=r.individualAti202526,familyPass:Number(familyAti)<=r.familyAti202526,pass:Number(individualAti)<=r.individualAti202526||Number(familyAti)<=r.familyAti202526};}
+function fePLPGross(days){return feRound2(Math.max(0,Math.min(FE_EXT_RULES.parentalLeave.familyDaysFrom20260701,Number(days)||0))*FE_EXT_RULES.parentalLeave.daily);}

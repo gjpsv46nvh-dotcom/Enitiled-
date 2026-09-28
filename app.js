@@ -295,76 +295,7 @@ renderSupport();
 
 refreshIncome();syncRelationship();syncHousing();showStep(1);syncSupportStateFromProfile();
 
-// Government data freshness status.
-// The deployed data-status.json is the source of truth. A cache-busting query
-// prevents browsers/CDNs from leaving the header on the HTML's initial Pending state.
-async function loadGovernmentDataStatus(){
-  const btn=$('dataStatus'), date=$('dataStatusDate');
-  const strong=btn.querySelector('strong');
-
-  // Never leave the UI indefinitely on the HTML placeholder.
-  const setUnavailable=()=>{
-    btn.classList.remove('good','checking'); btn.classList.add('review');
-    strong.textContent='Government source check unavailable';
-    date.textContent='Latest source status could not be loaded';
-    $('statusSummary').textContent='The latest automated source status could not be confirmed. Existing entitlement calculation rules remain unchanged.';
-  };
-
-  try{
-    const controller=new AbortController();
-    const timeout=setTimeout(()=>controller.abort(),10000);
-    const url=new URL('data-status.json',window.location.href);
-    url.searchParams.set('v',Date.now().toString());
-    const res=await fetch(url.toString(),{
-      cache:'no-store',
-      signal:controller.signal,
-      headers:{'Accept':'application/json'}
-    });
-    clearTimeout(timeout);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const d=await res.json();
-    if(!d || !d.status) throw new Error('Invalid status data');
-
-    btn.classList.remove('good','review','checking');
-    const good=d.status==='up_to_date';
-    const pending=d.status==='pending_first_check';
-    btn.classList.add(good?'good':pending?'checking':'review');
-    strong.textContent=good ? 'Government sources checked'
-      : pending ? 'Government source status pending'
-      : 'Government source review needed';
-
-    const stamp=d.lastCheckAttempt||d.lastSuccessfulCheck;
-    if(stamp){
-      const checked=new Date(stamp);
-      date.textContent=(good?'Checked ':'Last checked ')+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-    }else{
-      date.textContent=pending?'First live check not completed':'Latest check needs attention';
-    }
-
-    const sources=d.sources||[];
-    const ok=sources.filter(s=>s.status==='up_to_date').length;
-    const failed=sources.filter(s=>s.status==='check_failed').length;
-    const waiting=sources.filter(s=>s.status==='pending').length;
-    $('statusSummary').textContent=good
-      ? `${ok} monitored official sources checked successfully. Core calculation rules are validated separately and are never silently changed by this monitor.`
-      : pending
-        ? `Monitoring is installed for ${sources.length} official sources. The first complete live baseline has not yet been established.`
-        : `Review required: ${failed} source${failed===1?'':'s'} could not be checked and ${waiting} source${waiting===1?' is':'s are'} awaiting a complete baseline. Existing calculation rules remain unchanged until reviewed.`;
-
-    $('sourceStatusList').innerHTML=sources.map(s=>{
-      const isOk=s.status==='up_to_date', isPending=s.status==='pending';
-      const checked=s.checked?` · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:' · awaiting live check';
-      return `<div class="source-status-item"><span class="status-dot ${isOk?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction}${checked}${isPending?' · baseline pending':` · ${isOk?'up to date':'review required'}`}</small></div></div>`;
-    }).join('');
-  }catch(err){
-    setUnavailable();
-  }
-}
-
-$('dataStatus').onclick=()=>{$('dataStatusPanel').hidden=false;$('dataStatus').setAttribute('aria-expanded','true')};
-$('closeStatusPanel').onclick=()=>{$('dataStatusPanel').hidden=true;$('dataStatus').setAttribute('aria-expanded','false')};
-$('dataStatusPanel').onclick=e=>{if(e.target===$('dataStatusPanel'))$('closeStatusPanel').click()};
-loadGovernmentDataStatus();
+// Government source status is handled independently by status.js.
 
 
 function showFormNotice(msg){

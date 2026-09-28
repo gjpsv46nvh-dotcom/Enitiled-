@@ -1,0 +1,22 @@
+FINALLY ENTITLED v11.3 — PRE-LAUNCH QA
+
+Fixed:
+- Government status remains independent of app.js.
+- Review badge dot is amber, matching review state.
+- Removed duplicate status loader/listeners from app.js.
+- Restored Batch 3 compatibility helpers used by the live app (pension, DSP/carer financial screens, CSHC, PPL, newborn).
+- Corrected FTB Part A calculation above the $123,078 higher-income threshold so the 30c taper continues from the rate reached at that threshold rather than restarting from the maximum rate.
+- Corrected the broken income-page validation-date notice.
+- Added Batch 3 / FTB high-income regression tests.
+
+Verified by automated checks:
+- app.js syntax
+- status.js syntax
+- rules-2026-27.js syntax
+- rules-batch-3-2026-27.js syntax
+- Python checker compile
+- core rules tests
+- Batch 3 tests
+
+Important product limitation:
+Finally Entitled remains a pre-application screening tool. Adjusted taxable income, deeming, residence, shared care, maintenance income, waiting periods, work tests, medical/care qualification and other interactions can change official entitlement outcomes.
