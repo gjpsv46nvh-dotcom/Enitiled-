@@ -1,111 +1,238 @@
 #!/usr/bin/env python3
-"""Finally Entitled official-source freshness checker v1.3."""
-import concurrent.futures, datetime, hashlib, html, json, pathlib, re, sys, time
-import urllib.error, urllib.request
+"""Finally Entitled official-source freshness checker v1.4.
+
+Checks official government sources only. Each jurisdiction can have multiple
+official URLs; if a primary page blocks automated access, the checker tries a
+second official page rather than falsely marking the source as verified.
+"""
+import concurrent.futures
+import datetime
+import hashlib
+import html
+import json
+import pathlib
+import re
+import sys
+import time
+import urllib.error
+import urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent
 STATUS = ROOT / "data-status.json"
 SNAP = ROOT / "source-snapshots.json"
 
 SOURCES = [
- {"id":"services-australia-guide","label":"Australian Government payments","jurisdiction":"Commonwealth","url":"https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22"},
- {"id":"energy-gov-au","label":"Energy, solar & battery support","jurisdiction":"Australia + states/territories","url":"https://www.energy.gov.au/rebates-view"},
- {"id":"tas-concessions","label":"Tasmanian concessions","jurisdiction":"Tasmania","url":"https://www.concessions.tas.gov.au/resources/home"},
- {"id":"nsw-cost-living","label":"NSW rebates & cost-of-living support","jurisdiction":"New South Wales","url":"https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub"},
- {"id":"vic-concessions","label":"Victorian concessions & benefits","jurisdiction":"Victoria","url":"https://services.dffh.vic.gov.au/concessions-and-benefits"},
- {"id":"qld-concessions","label":"Queensland concessions","jurisdiction":"Queensland","url":"https://www.qld.gov.au/community/cost-of-living-support/concessions"},
- {"id":"sa-concessions","label":"South Australian concessions","jurisdiction":"South Australia","url":"https://www.sa.gov.au/topics/care-and-support/concessions"},
- {"id":"wa-concessions","label":"Western Australian concessions","jurisdiction":"Western Australia","url":"https://www.wa.gov.au/service/community-services/community-support/concessions"},
- {"id":"act-cost-living","label":"ACT cost-of-living support","jurisdiction":"ACT","url":"https://www.act.gov.au/cost-of-living-support"},
- {"id":"nt-concessions","label":"Northern Territory concessions","jurisdiction":"Northern Territory","url":"https://nt.gov.au/community/concessions-and-payments"},
+    {
+        "id": "services-australia-guide",
+        "label": "Australian Government payments",
+        "jurisdiction": "Commonwealth",
+        "urls": [
+            "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22",
+            "https://www.servicesaustralia.gov.au/historical-versions-guide-to-australian-government-payments?context=22",
+        ],
+    },
+    {
+        "id": "energy-gov-au",
+        "label": "Energy, solar & battery support",
+        "jurisdiction": "Australia + states/territories",
+        "urls": [
+            "https://www.energy.gov.au/rebates",
+            "https://www.energy.gov.au/households",
+        ],
+    },
+    {
+        "id": "tas-concessions",
+        "label": "Tasmanian concessions",
+        "jurisdiction": "Tasmania",
+        "urls": [
+            "https://www.concessions.tas.gov.au/",
+            "https://www.concessions.tas.gov.au/concessions_cards",
+        ],
+    },
+    {
+        "id": "nsw-cost-living",
+        "label": "NSW rebates & cost-of-living support",
+        "jurisdiction": "New South Wales",
+        "urls": ["https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub"],
+    },
+    {
+        "id": "vic-concessions",
+        "label": "Victorian concessions & benefits",
+        "jurisdiction": "Victoria",
+        "urls": [
+            "https://www.housing.vic.gov.au/concessions",
+            "https://services.dffh.vic.gov.au/concessions-and-benefits",
+        ],
+    },
+    {
+        "id": "qld-concessions",
+        "label": "Queensland concessions",
+        "jurisdiction": "Queensland",
+        "urls": ["https://www.qld.gov.au/community/cost-of-living-support/concessions"],
+    },
+    {
+        "id": "sa-concessions",
+        "label": "South Australian concessions",
+        "jurisdiction": "South Australia",
+        "urls": ["https://www.sa.gov.au/topics/care-and-support/concessions"],
+    },
+    {
+        "id": "wa-concessions",
+        "label": "Western Australian concessions",
+        "jurisdiction": "Western Australia",
+        "urls": [
+            "https://www.wa.gov.au/organisation/department-of-communities/concessions-available-western-australia"
+        ],
+    },
+    {
+        "id": "act-cost-living",
+        "label": "ACT cost-of-living support",
+        "jurisdiction": "ACT",
+        "urls": ["https://www.act.gov.au/money-and-tax/cost-of-living-support"],
+    },
+    {
+        "id": "nt-concessions",
+        "label": "Northern Territory concessions",
+        "jurisdiction": "Northern Territory",
+        "urls": [
+            "https://nt.gov.au/community/concessions-and-payments",
+            "https://nt.gov.au/community/concessions-and-payments/nt-concession-scheme",
+        ],
+    },
 ]
-HEADERS={"User-Agent":"Mozilla/5.0 (compatible; FinallyEntitledSourceCheck/1.3; +https://github.com/)","Accept":"text/html,application/xhtml+xml,application/pdf;q=0.9,*/*;q=0.8","Accept-Language":"en-AU,en;q=0.9"}
 
-def fetch(url, attempts=2, timeout=20):
-    last=None
-    for n in range(attempts):
-        try:
-            req=urllib.request.Request(url,headers=HEADERS)
-            with urllib.request.urlopen(req,timeout=timeout) as r:
-                parts=[]; total=0
-                while total < 3*1024*1024:
-                    b=r.read(min(262144,3*1024*1024-total))
-                    if not b: break
-                    parts.append(b); total += len(b)
-                return b"".join(parts)
-        except Exception as e:
-            last=e
-            if n+1 < attempts: time.sleep(1.5)
-    raise last
+HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+                  "(KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/pdf;q=0.9,*/*;q=0.8",
+    "Accept-Language": "en-AU,en;q=0.9",
+    "Cache-Control": "no-cache",
+}
+
+def fetch(url, timeout=12):
+    req = urllib.request.Request(url, headers=HEADERS)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        parts, total = [], 0
+        limit = 2 * 1024 * 1024
+        while total < limit:
+            b = r.read(min(262144, limit - total))
+            if not b:
+                break
+            parts.append(b)
+            total += len(b)
+        data = b"".join(parts)
+        if len(data) < 500:
+            raise RuntimeError("Response was unexpectedly small")
+        return data
 
 def stable_hash(data):
-    head=data[:10000].lower()
+    head = data[:10000].lower()
     if b"<html" not in head and b"<!doctype html" not in head:
         return hashlib.sha256(data).hexdigest()
-    s=data.decode("utf-8","ignore")
-    s=re.sub(r"(?is)<script\b.*?</script>|<style\b.*?</style>|<!--.*?-->"," ",s)
-    s=re.sub(r"\s+"," ",html.unescape(s)).strip()
-    return hashlib.sha256(s.encode()).hexdigest()
+    s = data.decode("utf-8", "ignore")
+    s = re.sub(r"(?is)<script\b.*?</script>|<style\b.*?</style>|<!--.*?-->", " ", s)
+    s = re.sub(r"(?is)<svg\b.*?</svg>", " ", s)
+    s = re.sub(r"\b(?:nonce|data-[\w-]+)=[\"'][^\"']*[\"']", " ", s)
+    s = re.sub(r"\s+", " ", html.unescape(s)).strip()
+    return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
-def one(source):
-    try: return source["id"],stable_hash(fetch(source["url"])),None
-    except urllib.error.HTTPError as e: return source["id"],None,f"HTTP {e.code}: {e.reason}"
-    except Exception as e: return source["id"],None,str(e)[:180]
+def try_source(source):
+    failures = []
+    for url in source["urls"]:
+        for attempt in range(2):
+            try:
+                data = fetch(url)
+                return source["id"], stable_hash(data), None, url
+            except urllib.error.HTTPError as e:
+                msg = f"{url}: HTTP {e.code} {e.reason}"
+            except Exception as e:
+                msg = f"{url}: {str(e)[:120]}"
+            if attempt == 0:
+                time.sleep(0.6)
+        failures.append(msg)
+    return source["id"], None, " | ".join(failures)[:400], None
 
 def fetch_hashes():
-    hashes={}; errors={}
+    hashes, errors, used_urls = {}, {}, {}
     with concurrent.futures.ThreadPoolExecutor(max_workers=10) as ex:
-        futures=[ex.submit(one,s) for s in SOURCES]
+        futures = [ex.submit(try_source, s) for s in SOURCES]
         for f in concurrent.futures.as_completed(futures):
-            sid,h,err=f.result()
-            if err: errors[sid]=err; print("WARN:",sid,err)
-            else: hashes[sid]=h; print("OK:",sid)
-    return hashes,errors
+            sid, h, err, used = f.result()
+            if err:
+                errors[sid] = err
+                print("WARN:", sid, err)
+            else:
+                hashes[sid] = h
+                used_urls[sid] = used
+                print("OK:", sid, used)
+    return hashes, errors, used_urls
 
-def load(path,fallback):
-    try:return json.loads(path.read_text(encoding="utf-8"))
-    except Exception:return fallback
+def load(path, fallback):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return fallback
 
 def accept_current():
-    hashes,errors=fetch_hashes()
-    if errors:
-        print("Cannot accept baseline while checks fail:",errors); return 1
-    SNAP.write_text(json.dumps(hashes,indent=2)+"\n",encoding="utf-8")
-    print("Accepted current snapshots."); return 0
-
-def main():
-    if "--accept-current" in sys.argv:return accept_current()
-    today=datetime.date.today().isoformat()
-    now=datetime.datetime.now().astimezone().isoformat(timespec="seconds")
-    old=load(STATUS,{"schemaVersion":1,"sources":[]})
-    baseline=load(SNAP,None) if SNAP.exists() else None
-    hashes,errors=fetch_hashes()
-
-    if baseline is None and not errors and len(hashes)==len(SOURCES):
-        SNAP.write_text(json.dumps(hashes,indent=2)+"\n",encoding="utf-8")
-        baseline=dict(hashes)
-
-    rows=[]; review=False
-    for s in SOURCES:
-        row=dict(s); sid=s["id"]
-        if sid in errors:
-            row.update(status="check_failed",checked=today,note=errors[sid]); review=True
-        elif baseline is None:
-            row.update(status="pending",checked=today,note="Waiting for a complete successful first baseline."); review=True
-        elif sid not in baseline:
-            row.update(status="review",checked=today,note="New source has no accepted baseline."); review=True
-        elif baseline[sid] != hashes[sid]:
-            row.update(status="review",checked=today,note="Official source changed since accepted baseline."); review=True
-        else:
-            row.update(status="up_to_date",checked=today)
-        rows.append(row)
-
-    old["lastCheckAttempt"]=now
-    if not errors: old["lastSuccessfulCheck"]=now
-    old["sources"]=rows
-    old["status"]="review_required" if review else "up_to_date"
-    STATUS.write_text(json.dumps(old,indent=2)+"\n",encoding="utf-8")
-    print("RESULT:",old["status"])
+    hashes, errors, used_urls = fetch_hashes()
+    if errors or len(hashes) != len(SOURCES):
+        print("Cannot accept baseline while checks fail:", errors)
+        return 1
+    SNAP.write_text(json.dumps(hashes, indent=2) + "\n", encoding="utf-8")
+    print("Accepted current snapshots.")
     return 0
 
-if __name__=="__main__": sys.exit(main())
+def main():
+    if "--accept-current" in sys.argv:
+        return accept_current()
+
+    today = datetime.date.today().isoformat()
+    now = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
+    old = load(STATUS, {"schemaVersion": 1, "sources": []})
+    baseline = load(SNAP, None) if SNAP.exists() else None
+    hashes, errors, used_urls = fetch_hashes()
+
+    # First baseline is created only after every monitored source succeeds.
+    if baseline is None and not errors and len(hashes) == len(SOURCES):
+        SNAP.write_text(json.dumps(hashes, indent=2) + "\n", encoding="utf-8")
+        baseline = dict(hashes)
+
+    rows, review = [], False
+    for s in SOURCES:
+        sid = s["id"]
+        row = {
+            "id": sid,
+            "label": s["label"],
+            "jurisdiction": s["jurisdiction"],
+            "url": used_urls.get(sid, s["urls"][0]),
+        }
+        if sid in errors:
+            row.update(status="check_failed", checked=today, note=errors[sid])
+            review = True
+        elif baseline is None:
+            row.update(status="pending", checked=today,
+                       note="Waiting for a complete successful first baseline.")
+            review = True
+        elif sid not in baseline:
+            row.update(status="review", checked=today,
+                       note="New source has no accepted baseline.")
+            review = True
+        elif baseline[sid] != hashes[sid]:
+            row.update(status="review", checked=today,
+                       note="Official source changed since accepted baseline.")
+            review = True
+        else:
+            row.update(status="up_to_date", checked=today)
+        rows.append(row)
+
+    old["lastCheckAttempt"] = now
+    if not errors and len(hashes) == len(SOURCES):
+        old["lastSuccessfulCheck"] = now
+    old["sources"] = rows
+    old["status"] = "review_required" if review else "up_to_date"
+    STATUS.write_text(json.dumps(old, indent=2) + "\n", encoding="utf-8")
+    print("RESULT:", old["status"])
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
