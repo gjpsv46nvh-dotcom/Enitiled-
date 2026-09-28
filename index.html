@@ -41,21 +41,50 @@
 </section>
 
 <section id="personal" class="page">
- <div class="section-head"><div class="eyebrow">PERSONAL & FAMILY</div><h2>Tell us about your household</h2><p>We'll use these details to create an indicative list of payments and concessions worth checking.</p></div>
- <div class="panel form-grid">
-   <label>Relationship status<select id="relationship"><option value="couple">Couple</option><option value="single">Single</option></select></label>
-   <label>Your age<input id="age" type="number" value="35" min="14" max="100"></label>
-   <label>Number of dependent children<input id="children" type="number" value="2" min="0" max="15"></label>
-   <label>Age of youngest child<input id="youngest" type="number" value="3" min="0" max="25"></label>
-   <label>Children aged 5 or younger<input id="under6" type="number" value="1" min="0" max="15"></label>
-   <label>Children in approved childcare<input id="childcare" type="number" value="1" min="0" max="15"></label>
-   <label>Housing<select id="housing"><option value="rent">Renting</option><option value="own">Own / mortgage</option><option value="other">Other</option></select></label>
-   <label>Rent per week ($)<input id="rent" type="number" value="550" min="0"></label>
-   <label>Homeowner for assets test?<select id="homeowner"><option value="no">No</option><option value="yes">Yes</option></select></label>
-   <label>Assessable assets ($)<input id="assets" type="number" value="0" min="0"></label>
-   <label>Situation<select id="situation"><option value="working">Working</option><option value="jobseeker">Looking for work</option><option value="student">Studying / apprentice</option><option value="carer">Caring for someone</option><option value="disability">Living with disability / health condition</option><option value="retired">Retired / Age Pension age</option></select></label>
+ <div class="section-head"><div class="eyebrow">CHECK MY ENTITLEMENTS</div><h2>Simple questions. Better answers.</h2><p>Tell us about your household. We’ll only ask follow-up questions when they’re relevant.</p></div>
+ <div class="progress"><span id="progressFill"></span></div><div class="progress-label" id="progressText">Step 1 of 4</div>
+
+ <div class="wizard-step active-step" data-step="1">
+  <div class="panel question-panel">
+   <h3>First, tell us about you</h3>
+   <div class="form-grid">
+    <label>Date of birth<input id="yourDob" type="date" value="1991-01-01"></label>
+    <label>Relationship status<select id="relationship"><option value="couple">I have a partner</option><option value="single">I’m single</option></select></label>
+    <label>What best describes you?<select id="situation"><option value="working">Working</option><option value="jobseeker">Looking for work</option><option value="student">Studying / apprentice</option><option value="carer">Caring for someone</option><option value="disability">Health condition / disability affects work</option><option value="retired">Retired</option></select></label>
+    <label>State or territory<select id="personState"><option>Tasmania</option><option>Victoria</option><option>New South Wales</option><option>Queensland</option><option>South Australia</option><option>Western Australia</option><option>Australian Capital Territory</option><option>Northern Territory</option></select></label>
+   </div>
+  </div><div class="actions"><button class="primary nextStep">Next →</button></div>
  </div>
- <div class="actions"><button class="primary" data-go="income">Continue to income →</button></div>
+
+ <div class="wizard-step" data-step="2">
+  <div class="panel question-panel" id="partnerPanel">
+   <h3 id="familyHeading">Your household</h3>
+   <div id="partnerFields" class="form-grid">
+    <label>Partner date of birth<input id="partnerDob" type="date" value="1991-01-01"></label>
+    <label>Partner situation<select id="partnerSituation"><option value="working">Working</option><option value="notworking">Not working</option><option value="student">Studying</option><option value="carer">Carer</option><option value="disability">Health condition / disability</option><option value="retired">Retired</option></select></label>
+   </div>
+   <div class="yesno"><span>Do you have dependent children?</span><div><button class="choice selected" data-children="yes">Yes</button><button class="choice" data-children="no">No</button></div></div>
+   <div id="childrenArea">
+    <div class="children-head"><div><h3>Your children</h3><p>Add each child so age-based rules can be checked properly.</p></div><button class="secondary" id="addChild" type="button">+ Add child</button></div>
+    <div id="childrenList" class="children-list"></div>
+   </div>
+  </div>
+  <div class="actions"><button class="secondary prevStep">← Back</button><button class="primary nextStep">Next →</button></div>
+ </div>
+
+ <div class="wizard-step" data-step="3">
+  <div class="panel question-panel"><h3>Home & circumstances</h3>
+   <div class="form-grid">
+    <label>Do you rent, own or live another way?<select id="housing"><option value="rent">I rent</option><option value="own">I own / have a mortgage</option><option value="other">Other living arrangement</option></select></label>
+    <label id="rentWrap">Weekly rent ($)<input id="rent" type="number" value="550" min="0"></label>
+    <label>Approx. assessable assets ($)<input id="assets" type="number" value="0" min="0"></label>
+    <label>Homeowner for Centrelink assets test?<select id="homeowner"><option value="no">No</option><option value="yes">Yes</option></select></label>
+   </div>
+   <div class="yesno"><span>Do you regularly care for someone with disability, illness or frailty?</span><select id="careSomeone"><option value="no">No</option><option value="yes">Yes</option></select></div>
+   <div class="yesno"><span>Does a health condition or disability significantly affect your ability to work?</span><select id="workDisability"><option value="no">No</option><option value="yes">Yes</option></select></div>
+  </div>
+  <div class="actions"><button class="secondary prevStep">← Back</button><button class="primary" data-go="income">Continue to income →</button></div>
+ </div>
 </section>
 
 <section id="income" class="page">
@@ -85,7 +114,7 @@
    <div class="slider-value" id="sliderValue">$119,000</div>
  </div>
  <div class="actions"><button class="primary" id="calculateBtn">Calculate my estimated entitlements →</button></div>
-<div class="notice"><b>V2 rules date:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
+<div class="notice"><b>V3 rules date:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
 </section>
 
 <section id="matches" class="page">
@@ -109,7 +138,7 @@
 </section>
 </main>
 
-<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V2 prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
+<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V3 prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
 <script src="app.js"></script>
 </body>
 </html>

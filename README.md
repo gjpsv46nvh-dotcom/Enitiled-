@@ -1,19 +1,19 @@
-# Finally Entitled — V2
+# Finally Entitled V3
 
-V2 adds a rules-dated entitlement estimation layer.
+V3 changes the product from a calculator collection into a simple guided entitlement finder.
 
-## New in V2
-- Standard Child Care Subsidy percentage estimate from household income
-- FTB Part A income threshold/taper guidance
-- Rent Assistance estimate for the single/no-child scenario
-- Parenting Payment current maximum rates, thresholds and asset-limit guidance
-- JobSeeker current maximum rates and selected income cut-off guidance
-- Income insight showing distance to key FTB Part A thresholds
-- More household inputs: assets, homeowner status, children 5 or younger
-- Rules basis dated 20 September 2026
+## V3
+- 3-step plain-English household questionnaire
+- Conditional partner and child questions
+- Add/remove children individually with DOB, childcare and secondary-school status
+- Housing, assets, caring and disability screening
+- Pay/income modelling retained
+- Results explicitly distinguish CALCULATED ESTIMATE vs MAY BE WORTH CHECKING
+- FTB Part A child-age maximum-rate guide using current rates
+- Standard CCS income percentage estimate
+- Discovery checks for Rent Assistance, Parenting Payment, JobSeeker, study, carer, disability and Age Pension
+- Small-business grants/support path
+- Official government links in results
+- Rules basis: September 2026
 
-## Important
-This is still a prototype, not a government eligibility determination. Complex programs deliberately show
-"potential match" where the questionnaire does not yet collect enough information for a defensible dollar estimate.
-
-Official source layer used for V2: Services Australia pages current at 20 September 2026.
+This remains a prototype. Production requires a maintained, date-versioned rules catalogue covering the full official payment/concession set and state/territory programs.
