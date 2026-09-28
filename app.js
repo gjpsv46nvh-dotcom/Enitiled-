@@ -53,10 +53,12 @@ $('calculateBtn').onclick=()=>{
  const assets=+$('assets').value||0, homeowner=$('homeowner').value, childCount=K.length;
  const depUnder16=K.some(k=>k.age!==null&&k.age<16);
  let r=[], x=[];
+ let annualFamilyValue=0, annualIncomeSupportCandidates=[];
 
  const ftba=feFTBA(K,household);
  if(ftba){
    const wording=household<=FE_RULES.ftbA.free?'published maximum-rate income band':'published income-test formula';
+   annualFamilyValue += Math.max(0,ftba.fortnight)*26;
    r.push(card('calculated','Family Tax Benefit Part A',`${money(ftba.fortnight)}/fortnight`,
     `Estimate from the ${wording}, child ages and 2026–27 standard rates. Excludes Rent Assistance, supplements, shared-care adjustments, maintenance income, immunisation/health-check reductions and newborn components.`,
     'https://www.servicesaustralia.gov.au/income-test-for-family-tax-benefit-part?context=22151'));
@@ -64,9 +66,9 @@ $('calculateBtn').onclick=()=>{
 
  const ftbb=feFTBB(K,rel,own,partner);
  if(ftbb){
-   if(ftbb.fortnight>0) r.push(card('calculated','Family Tax Benefit Part B',`${money(ftbb.fortnight)}/fortnight`,
+   if(ftbb.fortnight>0){ annualFamilyValue += Math.max(0,ftbb.fortnight)*26; r.push(card('calculated','Family Tax Benefit Part B',`${money(ftbb.fortnight)}/fortnight`,
       `Estimate using the youngest child’s age and the 2026–27 primary/secondary earner income test. It assumes no shared-care adjustment and no days receiving Parental Leave Pay.`,
-      'https://www.servicesaustralia.gov.au/income-test-for-family-tax-benefit-part-b?context=22151'));
+      'https://www.servicesaustralia.gov.au/income-test-for-family-tax-benefit-part-b?context=22151')); }
    else x.push(card('discovery','Family Tax Benefit Part B','Current profile does not pass the basic income/age screen',
       'Other circumstances such as grandparent care can use different rules, so the official assessment may still be relevant.',
       'https://www.servicesaustralia.gov.au/family-tax-benefit-part-b'));
@@ -87,6 +89,7 @@ $('calculateBtn').onclick=()=>{
    if(ageNow!==null && ageNow>=22 && ageNow<67 && assetPass){
      if(rel==='single' || $('partnerSituation').value==='working' || $('partnerSituation').value==='notworking'){
        const amt=feJobseeker(rel,depUnder16,own,partner);
+       if(amt>0) annualIncomeSupportCandidates.push(amt*26);
        r.push(card('calculated','JobSeeker Payment',`${money(amt)}/fortnight`,
          `Income-test estimate using your separate fortnightly income${rel==='couple'?' and a non-pension partner income test':''}. Working Credits, waiting periods, mutual obligations, Rent Assistance and other supplements are not included.`,
          'https://www.servicesaustralia.gov.au/income-test-for-jobseeker-payment?context=51411'));
@@ -101,6 +104,7 @@ $('calculateBtn').onclick=()=>{
    if(assetPass){
      if(rel==='single' || ['working','notworking'].includes($('partnerSituation').value)){
        const amt=feParenting(rel,K.length,own,partner);
+       if(amt>0) annualIncomeSupportCandidates.push(amt*26);
        r.push(card('calculated','Parenting Payment',`${money(amt)}/fortnight`,
          `Income-test estimate using the current maximum rate and separate personal/partner income rules. Residence, principal-carer rules, waiting periods, partner-payment interactions and supplements may change the actual amount.`,
          'https://www.servicesaustralia.gov.au/income-and-assets-tests-for-parenting-payment?context=22196'));
@@ -176,6 +180,13 @@ $('calculateBtn').onclick=()=>{
  SUPPORT_CATALOGUE.filter(z=>z.c==='State support'&&z.loc===sc).forEach(z=>x.push(card('discovery',`${stateNames[sc]} support & concessions`,'State check recommended',z.s,z.u)));
 
  if(!r.length) r.push(card('official','No major payment calculated yet','More circumstances may be needed','No common payment could be safely calculated from the current answers. Search Support still checks broader Commonwealth, state and territory programs.'));
+ const annualEstimatedValue=annualFamilyValue+(annualIncomeSupportCandidates.length?Math.max(...annualIncomeSupportCandidates):0);
+ const annualSummary=$('annualValueSummary');
+ if(annualEstimatedValue>0){
+   $('annualValueAmount').textContent=`${money(annualEstimatedValue)} per year`;
+   $('annualValueNote').textContent='Estimated from payments we can calculate from your answers. Conditional matches and “worth checking” items are not included. Payments that cannot be received together are not added together.';
+   annualSummary.style.display='block';
+ } else { annualSummary.style.display='none'; }
  $('results').innerHTML=r.join(''); $('extraResults').innerHTML=x.join(''); $('extraSection').style.display=x.length?'block':'none';
  $('matchSummary').textContent=`Using exact entered household income of ${money(household)} and ${K.length} child${K.length===1?'':'ren'} in your profile.`;
  $('incomeInsight').innerHTML=`<b>Accuracy mode:</b> the main check uses exact entered income, not the rounded scenario slider. Core rules validated to 20 September 2026.`;

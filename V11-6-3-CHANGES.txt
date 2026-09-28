@@ -1,0 +1,8 @@
+Finally Entitled v11.6.3
+
+Added an estimated annual value summary to eligibility results.
+- Shows “You may be missing $X per year” only when a reliable dollar estimate is available.
+- Includes calculated FTB A/B and at most one personal income-support estimate.
+- Does not add conditional, percentage-only, official-assessment, or “worth checking” items.
+- Avoids adding mutually exclusive personal income-support estimates together.
+- Existing privacy and automatic government-source checks retained.

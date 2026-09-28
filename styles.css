@@ -97,3 +97,11 @@ footer .footer-link{font-size:12px}
 .hero-actions .hero-start:hover{transform:translateY(-1px);box-shadow:0 10px 25px rgba(12,35,27,.14)}
 .hero-start-arrow{display:inline-flex;align-items:center;justify-content:center;flex:0 0 42px;width:42px;height:42px;border-radius:999px;background:#fff;color:var(--ink);font-size:25px;line-height:1;font-weight:900}
 @media(max-width:760px){.hero-actions .hero-start{min-height:78px;padding:18px 16px 18px 20px;font-size:18px}.hero-start-arrow{flex-basis:44px;width:44px;height:44px;font-size:26px}}
+
+/* v11.6.3 estimated annual value summary */
+.annual-value-summary{margin:20px 0 22px;padding:24px;border:1px solid #cfe0c7;border-radius:20px;background:linear-gradient(135deg,#f1f8e8,#ffffff);box-shadow:0 10px 30px rgba(25,45,35,.06)}
+.annual-value-kicker{font-size:11px;font-weight:900;letter-spacing:.08em;color:var(--green)}
+.annual-value-title{font-size:22px;font-weight:850;margin-top:7px;color:var(--ink)}
+.annual-value-amount{font-size:42px;line-height:1.05;font-weight:950;color:var(--green);margin:7px 0 10px}
+.annual-value-summary p{margin:0;color:var(--muted);line-height:1.45;max-width:720px}
+@media(max-width:760px){.annual-value-summary{padding:20px}.annual-value-amount{font-size:36px}}
