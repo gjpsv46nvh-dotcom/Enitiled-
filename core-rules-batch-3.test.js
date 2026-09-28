@@ -15,3 +15,18 @@ assert.equal(feCSHCScreen('single',105048,0).incomePass,false);
 assert.equal(feFTBA([{age:5,secondary:false}],129648).fortnight,0);
 assert(feFTBA([{age:5,secondary:false},{age:7,secondary:false},{age:9,secondary:false}],148000).fortnight>0);
 console.log('Batch 3 and FTB high-income tests: PASS');
+// v12 pension financial-screen regression tests: lower of income and assets tests.
+assert.equal(fePensionAssetEstimate('single','yes',333000),1237.70);
+assert.equal(fePensionAssetEstimate('single','yes',334000),1234.70);
+assert.equal(fePensionAssetEstimate('couple','yes',500000),931.50);
+assert.equal(fePensionAssetEstimate('single','yes',745751),0);
+assert.equal(fePensionAssetEstimate('single','no',600000),1237.70);
+let pf=fePensionFinancialEstimate('single','yes',400000,0,0);
+assert.equal(pf.fortnight,1036.70);
+assert.equal(pf.limitingTest,'assets');
+pf=fePensionFinancialEstimate('single','yes',333000,40000,0);
+assert(pf.fortnight < 1237.70);
+assert.equal(pf.limitingTest,'income');
+pf=fePensionFinancialEstimate('couple','yes',499000,0,0);
+assert.equal(pf.fortnight,933.00);
+console.log('v12 pension lower-of-tests regressions: PASS');

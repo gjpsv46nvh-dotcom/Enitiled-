@@ -1,0 +1,6 @@
+Finally Entitled v12 Launch Candidate
+- Pension financial estimates now calculate BOTH the standard income and assets tests and display the lower estimated rate.
+- Applied to Age Pension, DSP financial screening and Carer Payment financial screening.
+- Added regression tests at full-rate, part-rate and cut-off asset boundaries, plus income-vs-assets limiting-test cases.
+- Preserves privacy-first browser-only answers, grants/rebates journeys and automatic daily government-source workflow.
+- Grant catalogue wording remains conservative: live official catalogues are discovery sources; a grant is not presented as guaranteed eligibility unless its rules can be screened safely.

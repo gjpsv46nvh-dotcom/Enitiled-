@@ -139,26 +139,26 @@ $('calculateBtn').onclick=()=>{
  }
 
  if(sit==='carer'||$('careSomeone').value==='yes'){
-   const ca=feCarerAllowanceScreen(household), pa=fePensionAssetScreen(rel,homeowner,assets), cp=fePensionIncomeEstimate(rel,own,partner);
-   x.push(card('conditional','Carer Payment',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(cp)}/fortnight income-test screen`,
-     pa.band==='over'?'Your entered assessable assets appear above the standard pension asset cut-off. Hardship provisions, exemptions and Rent Assistance can affect the official result.':`Financial screen only. The income test suggests up to this amount before the asset test and other interactions. Services Australia must still assess the care receiver and care requirements.`,
+   const ca=feCarerAllowanceScreen(household), pa=fePensionAssetScreen(rel,homeowner,assets), cp=fePensionFinancialEstimate(rel,homeowner,assets,own,partner);
+   x.push(card('conditional','Carer Payment',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(cp.fortnight)}/fortnight financial screen`,
+     pa.band==='over'?'Your entered assessable assets appear above the standard pension asset cut-off. Hardship provisions, exemptions and Rent Assistance can affect the official result.':`Financial screen using both the standard pension income and assets tests; the lower estimated rate is shown. Services Australia must still assess the care receiver, care requirements, deeming, exemptions and other interactions.`,
      'https://www.servicesaustralia.gov.au/carer-payment'));
    x.push(card('conditional','Carer Allowance',ca.incomePass?`${money(ca.fortnight)}/fortnight standard rate`:'Income test appears not met',
      ca.incomePass?'Your entered household income is below the $250,000 family adjusted-taxable-income limit. There is no assets test, but the care and medical rules still need official assessment.':'Your entered household income is at or above the $250,000 family adjusted-taxable-income limit. Services Australia uses adjusted taxable income and specified deeming rules.',
      'https://www.servicesaustralia.gov.au/carer-allowance'));
  }
  if(sit==='disability'||$('workDisability').value==='yes'){
-   const pa=fePensionAssetScreen(rel,homeowner,assets), dsp=fePensionIncomeEstimate(rel,own,partner);
-   x.push(card('conditional','Disability Support Pension',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(dsp)}/fortnight financial screen`,
-     pa.band==='over'?'Your entered assets appear above the standard pension asset cut-off.':'Income/assets screening only. DSP also requires medical and non-medical qualification, including impairment and work-capacity assessment.',
+   const pa=fePensionAssetScreen(rel,homeowner,assets), dsp=fePensionFinancialEstimate(rel,homeowner,assets,own,partner);
+   x.push(card('conditional','Disability Support Pension',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(dsp.fortnight)}/fortnight financial screen`,
+     pa.band==='over'?'Your entered assets appear above the standard pension asset cut-off.':'Financial screen uses both the standard pension income and assets tests and shows the lower estimated rate. DSP also requires medical and non-medical qualification, including impairment and work-capacity assessment.',
      'https://www.servicesaustralia.gov.au/disability-support-pension'));
  }
  if(sit==='student') x.push(card('official','Student & apprentice support','More study details needed','Youth Allowance, Austudy and ABSTUDY use age, course, independence, parental/partner income and living-arrangement rules not collected in this short check. Search Support includes each pathway.','https://www.servicesaustralia.gov.au/students-and-trainees'));
  const userAge=age($('yourDob').value);
  if(userAge!==null&&userAge>=67){
-   const pa=fePensionAssetScreen(rel,homeowner,assets), ap=fePensionIncomeEstimate(rel,own,partner), cshc=feCSHCScreen(rel,household,K.length);
-   x.push(card('conditional','Age Pension',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(ap)}/fortnight income-test screen`,
-     pa.band==='over'?'Your entered assets appear above the standard pension asset cut-off.':'Income/assets screen only. Deeming, Work Bonus, residence, asset exemptions and other pension rules can change the official rate.',
+   const pa=fePensionAssetScreen(rel,homeowner,assets), ap=fePensionFinancialEstimate(rel,homeowner,assets,own,partner), cshc=feCSHCScreen(rel,household,K.length);
+   x.push(card('conditional','Age Pension',pa.band==='over'?'Assets appear above the standard pension cut-off':`${money(ap.fortnight)}/fortnight financial screen`,
+     pa.band==='over'?'Your entered assets appear above the standard pension asset cut-off.':'Financial screen uses both the standard pension income and assets tests and shows the lower estimated rate. Deeming, Work Bonus, residence, asset exemptions and other pension rules can change the official rate.',
      'https://www.servicesaustralia.gov.au/age-pension'));
    x.push(card('conditional','Commonwealth Seniors Health Card',cshc.incomePass?`Income screen appears met (limit ${money(cshc.limit)}/year)`:`Income screen appears over ${money(cshc.limit)}/year`,
      'This card is generally for people of Age Pension age who are not receiving an income-support payment. The test uses adjusted taxable income plus specified deemed income and has no assets test.',

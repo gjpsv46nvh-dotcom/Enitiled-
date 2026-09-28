@@ -114,6 +114,20 @@ function fePensionAssetScreen(rel,homeowner,assets){
   if(x<=p.assetCutoff[g][k]) return {band:'part',limit:p.assetCutoff[g][k]};
   return {band:'over',limit:p.assetCutoff[g][k]};
 }
+function fePensionAssetEstimate(rel,homeowner,assets,maxOverride){
+  const g=rel==='couple'?'couple':'single',k=homeowner==='yes'?'home':'nonhome',p=FE_EXT_RULES.pension,x=Math.max(0,Number(assets)||0);
+  const max=maxOverride || (rel==='couple'?p.coupleEachMax:p.singleMax), full=p.assetFull[g][k], cutoff=p.assetCutoff[g][k];
+  if(x>cutoff) return 0;
+  // Standard pension assets test: $3/fn per $1,000 above the threshold for singles;
+  // $1.50/fn for each member of a couple. Partial $1,000 increments count proportionally.
+  const reduction=Math.max(0,x-full)/1000*(rel==='couple'?1.5:3);
+  return feRound2(Math.max(0,max-reduction));
+}
+function fePensionFinancialEstimate(rel,homeowner,assets,ownAnnual,partnerAnnual,maxOverride){
+  const incomeRate=fePensionIncomeEstimate(rel,ownAnnual,partnerAnnual,maxOverride);
+  const assetRate=fePensionAssetEstimate(rel,homeowner,assets,maxOverride);
+  return {incomeRate,assetRate,fortnight:feRound2(Math.max(0,Math.min(incomeRate,assetRate))),limitingTest:assetRate<incomeRate?'assets':(incomeRate<assetRate?'income':'neither')};
+}
 function feCarerAllowanceScreen(householdAti){return {incomePass:Number(householdAti)<FE_EXT_RULES.carerAllowance.familyAtiLimit,fortnight:FE_EXT_RULES.carerAllowance.fortnight};}
 function feCSHCScreen(rel,householdAti,children=0){const b=rel==='couple'?FE_EXT_RULES.cshc.coupleAnnual:FE_EXT_RULES.cshc.singleAnnual,limit=b+Math.max(0,Number(children)||0)*FE_EXT_RULES.cshc.perChildAnnual;return {incomePass:Number(householdAti)<limit,limit};}
 function fePLPIncomeScreen(individualAti,familyAti){const r=FE_EXT_RULES.parentalLeave;return {individualPass:Number(individualAti)<=r.individualAti202526,familyPass:Number(familyAti)<=r.familyAti202526,pass:Number(individualAti)<=r.individualAti202526||Number(familyAti)<=r.familyAti202526};}
