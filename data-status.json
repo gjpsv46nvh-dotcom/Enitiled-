@@ -1,98 +1,95 @@
 {
   "schemaVersion": 1,
   "lastSuccessfulCheck": null,
-  "status": "pending_first_check",
+  "status": "review_required",
   "rulesLastChanged": "2026-09-20",
   "sources": [
     {
       "id": "services-australia-guide",
       "label": "Australian Government payments",
       "jurisdiction": "Commonwealth",
-      "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-20",
-      "url": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22"
+      "url": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22",
+      "status": "check_failed",
+      "checked": "2026-09-28",
+      "note": "The read operation timed out"
     },
     {
       "id": "energy-gov-au",
       "label": "Energy, solar & battery support",
       "jurisdiction": "Australia + states/territories",
-      "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://www.energy.gov.au/rebates"
+      "url": "https://www.energy.gov.au/rebates",
+      "status": "check_failed",
+      "checked": "2026-09-28",
+      "note": "The read operation timed out"
     },
     {
       "id": "tas-concessions",
       "label": "Tasmanian concessions",
       "jurisdiction": "Tasmania",
-      "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://www.concessions.tas.gov.au/"
+      "url": "https://www.concessions.tas.gov.au/",
+      "status": "check_failed",
+      "checked": "2026-09-28",
+      "note": "HTTP Error 403: Forbidden"
     },
     {
       "id": "nsw-cost-living",
       "label": "NSW rebates & cost-of-living support",
       "jurisdiction": "New South Wales",
+      "url": "https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub",
       "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub"
+      "checked": "2026-09-28"
     },
     {
       "id": "vic-concessions",
       "label": "Victorian concessions & benefits",
       "jurisdiction": "Victoria",
-      "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://services.dffh.vic.gov.au/concessions-and-benefits"
+      "url": "https://services.dffh.vic.gov.au/concessions-and-benefits",
+      "status": "check_failed",
+      "checked": "2026-09-28",
+      "note": "The read operation timed out"
     },
     {
       "id": "qld-concessions",
       "label": "Queensland concessions",
       "jurisdiction": "Queensland",
+      "url": "https://www.qld.gov.au/community/cost-of-living-support/concessions",
       "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://www.qld.gov.au/community/cost-of-living-support/concessions"
+      "checked": "2026-09-28"
     },
     {
       "id": "sa-concessions",
       "label": "South Australian concessions",
       "jurisdiction": "South Australia",
+      "url": "https://www.sa.gov.au/topics/care-and-support/concessions",
       "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://www.sa.gov.au/topics/care-and-support/concessions"
+      "checked": "2026-09-28"
     },
     {
       "id": "wa-concessions",
       "label": "Western Australian concessions",
       "jurisdiction": "Western Australia",
-      "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://www.wa.gov.au/service/community-services/community-support/concessions"
+      "url": "https://www.wa.gov.au/service/community-services/community-support/concessions",
+      "status": "check_failed",
+      "checked": "2026-09-28",
+      "note": "HTTP Error 404: Not Found"
     },
     {
       "id": "act-cost-living",
       "label": "ACT cost-of-living support",
       "jurisdiction": "ACT",
-      "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://www.act.gov.au/cost-of-living-support"
+      "url": "https://www.act.gov.au/cost-of-living-support",
+      "status": "check_failed",
+      "checked": "2026-09-28",
+      "note": "HTTP Error 403: Forbidden"
     },
     {
       "id": "nt-concessions",
       "label": "Northern Territory concessions",
       "jurisdiction": "Northern Territory",
-      "status": "pending",
-      "checked": null,
-      "rulesDate": "2026-09-28",
-      "url": "https://nt.gov.au/community/concessions-and-payments"
+      "url": "https://nt.gov.au/community/concessions-and-payments",
+      "status": "check_failed",
+      "checked": "2026-09-28",
+      "note": "HTTP Error 403: Forbidden"
     }
   ]
 }
