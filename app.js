@@ -41,7 +41,34 @@ $('calculateBtn').onclick=()=>{
  if(sit==='carer'||$('careSomeone').value==='yes')r.push(card('discovery','Carer support','Check multiple programs','Carer Payment, Carer Allowance and related supplements may be relevant. Care requirements and means tests vary.','https://www.servicesaustralia.gov.au/caring-for-someone'));
  if(sit==='disability'||$('workDisability').value==='yes')r.push(card('discovery','Disability support','Check multiple programs','Disability Support Pension, Mobility Allowance and other support may be relevant. Medical and non-medical eligibility requires an official assessment.','https://www.servicesaustralia.gov.au/living-with-disability'));
  if(age($('yourDob').value)>=67||sit==='retired')r.push(card('discovery','Age Pension & seniors support','Check eligibility','Age, residence, income and assets rules apply. Concession cards may also be relevant.','https://www.servicesaustralia.gov.au/age-pension'));
- if(!r.length)r.push(card('discovery','Government support search','No obvious major payment yet','Your profile does not currently trigger one of the major V3 categories. State, territory and concession programs can still be relevant.'));
+ if(!r.length)r.push(card('discovery','Government support search','No obvious major payment yet','Your profile does not currently trigger one of the major common-payment categories. State, territory and concession programs can still be relevant.'));
+ let x=[];
+ // Separate discovery catalogue: these are surfaced without pretending a full eligibility assessment has been completed.
+ if(K.length){
+   x.push(card('discovery','Family Tax Benefit Part B','Worth checking','FTB Part B supports some single-parent, grandparent-carer and one-main-income families. Age of the youngest child and the secondary earner’s income are important.','https://www.servicesaustralia.gov.au/family-tax-benefit-part-b'));
+   x.push(card('discovery','Health & concession cards','Worth checking','Depending on household income and the payments you receive, a Health Care Card, Low Income Health Care Card or other concession card may be relevant.','https://www.servicesaustralia.gov.au/concession-and-health-care-cards'));
+ }
+ if(K.some(k=>k.age!==null && k.age<1)){
+   x.push(card('discovery','New baby support','Worth checking','A recent birth can trigger checks for Parental Leave Pay and, in some circumstances, Newborn Upfront Payment and Newborn Supplement. These payments interact with other family assistance.','https://www.servicesaustralia.gov.au/having-baby'));
+ }
+ if(cc.length){
+   x.push(card('discovery','Additional Child Care Subsidy','Worth checking','Some families can receive extra childcare assistance in specific circumstances, including transition to work, temporary financial hardship, grandparent care or child wellbeing situations.','https://www.servicesaustralia.gov.au/additional-child-care-subsidy'));
+ }
+ if($('careSomeone').value==='yes'||sit==='carer'){
+   x.push(card('discovery','Carer Allowance & supplements','Worth checking','Carer Allowance can have different eligibility rules from Carer Payment, so it is worth checking separately along with related supplements.','https://www.servicesaustralia.gov.au/carer-allowance'));
+ }
+ if($('workDisability').value==='yes'||sit==='disability'){
+   x.push(card('discovery','Mobility & disability-related assistance','Worth checking','Depending on work, study and disability circumstances, support beyond DSP may be relevant.','https://www.servicesaustralia.gov.au/living-with-disability'));
+ }
+ if(sit==='student'){
+   x.push(card('discovery','Education supplements & help','Worth checking','Study support can include more than a base payment. Depending on circumstances, supplements, loans and relocation-related assistance may also be relevant.','https://www.servicesaustralia.gov.au/students-and-trainees'));
+ }
+ if(housing==='rent'){
+   x.push(card('discovery','State housing & cost-of-living help','Check your state','Your state or territory may offer concessions or housing-related assistance in addition to Commonwealth payments. V4 flags this for the state-program catalogue.','https://www.servicesaustralia.gov.au/concessions'));
+ }
+ x.push(card('discovery','State & territory concessions','Run local check',`Your profile is in ${$('personState').value}. Electricity, transport, rates, education and other concessions can be administered outside Centrelink, so these should be checked separately.`,null));
+ $('extraResults').innerHTML=x.join('');
+ $('extraSection').style.display=x.length?'block':'none';
  $('results').innerHTML=r.join('');$('matchSummary').textContent=`Based on a modelled household income of ${money(income)} and ${K.length} child${K.length===1?'':'ren'} in your profile.`;
  $('incomeInsight').innerHTML=`<b>Why this is useful:</b> calculated estimates are shown separately from programs that need more information or an official assessment. Rules basis: September 2026.`;
  go('matches')

@@ -1,19 +1,30 @@
-# Finally Entitled V3
+# Finally Entitled V4
 
-V3 changes the product from a calculator collection into a simple guided entitlement finder.
+V4 separates the result experience into two layers.
 
-## V3
-- 3-step plain-English household questionnaire
-- Conditional partner and child questions
-- Add/remove children individually with DOB, childcare and secondary-school status
-- Housing, assets, caring and disability screening
-- Pay/income modelling retained
-- Results explicitly distinguish CALCULATED ESTIMATE vs MAY BE WORTH CHECKING
-- FTB Part A child-age maximum-rate guide using current rates
-- Standard CCS income percentage estimate
-- Discovery checks for Rent Assistance, Parenting Payment, JobSeeker, study, carer, disability and Age Pension
-- Small-business grants/support path
-- Official government links in results
-- Rules basis: September 2026
+## Main matches
+The common/high-value support most relevant to the household profile, such as:
+- Family Tax Benefit Part A
+- Child Care Subsidy
+- Rent Assistance
+- Parenting Payment
+- JobSeeker
+- Student support
+- Carer support
+- Disability support
+- Age Pension
 
-This remains a prototype. Production requires a maintained, date-versioned rules catalogue covering the full official payment/concession set and state/territory programs.
+## "You may also be entitled to..."
+A separate discovery area for less-obvious support so it does not clutter the main results:
+- FTB Part B
+- Health and concession cards
+- New baby support
+- Additional Child Care Subsidy
+- Carer Allowance and supplements
+- Disability/mobility-related assistance
+- Education supplements/help
+- State/territory concessions and cost-of-living programs
+
+The UI remains intentionally simple. The long-term production engine should maintain a date-versioned official catalogue and only ask extra questions when a possible entitlement requires them.
+
+Rules basis: September 2026.
