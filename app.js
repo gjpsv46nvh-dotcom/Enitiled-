@@ -219,8 +219,8 @@ async function loadGovernmentDataStatus(){
     btn.querySelector('strong').textContent=good?'Monitored government sources up to date':'Government source review needed';
     const checked=new Date(d.lastSuccessfulCheck);
     date.textContent='Checked '+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-    $('statusSummary').textContent=good
-      ? `The monitored official sources were checked successfully. Calculation rules currently validated to ${new Date(d.rulesLastChanged+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}.`
+    const count=(d.sources||[]).length; $('statusSummary').textContent=good
+      ? `${count} monitored official sources were checked successfully. Calculation rules currently validated to ${new Date(d.rulesLastChanged+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}.`
       : 'One or more official sources changed or could not be validated. Existing calculation rules stay unchanged until reviewed.';
     $('sourceStatusList').innerHTML=(d.sources||[]).map(s=>`<div class="source-status-item"><span class="status-dot ${s.status==='up_to_date'?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction} · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}${s.rulesDate?` · rules/source dated ${new Date(s.rulesDate+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:''}</small></div></div>`).join('');
   }catch(e){
@@ -235,3 +235,35 @@ $('dataStatus').onclick=()=>{$('dataStatusPanel').hidden=false;$('dataStatus').s
 $('closeStatusPanel').onclick=()=>{$('dataStatusPanel').hidden=true;$('dataStatus').setAttribute('aria-expanded','false')};
 $('dataStatusPanel').onclick=e=>{if(e.target===$('dataStatusPanel'))$('closeStatusPanel').click()};
 loadGovernmentDataStatus();
+
+
+function showFormNotice(msg){
+ const n=$('formNotice'); n.textContent=msg; n.hidden=false;
+ n.scrollIntoView({behavior:'smooth',block:'center'});
+}
+function clearFormNotice(){ $('formNotice').hidden=true; $('formNotice').textContent=''; }
+function validateProfile(){
+ clearFormNotice();
+ if(!$('yourDob').value){showFormNotice('Please enter your date of birth so age-based support can be checked accurately.');return false;}
+ if(!$('personState').value){showFormNotice('Please select your state or territory so local concessions and rebates can be checked.');return false;}
+ if($('relationship').value==='partnered' && !$('partnerDob').value){showFormNotice("Please enter your partner's date of birth.");return false;}
+ const childDobs=[...document.querySelectorAll('.childDob')];
+ if(childDobs.some(x=>!x.value)){showFormNotice('Please add a date of birth for each child you have added, or remove an unused child row.');return false;}
+ return true;
+}
+
+document.addEventListener('click',e=>{
+ const b=e.target.closest('[data-go]');
+ if(!b) return;
+ const current=document.querySelector('.page.active');
+ if(current && current.id==='personal' && (b.dataset.go==='income'||b.dataset.go==='matches') && !validateProfile()){
+   e.preventDefault(); e.stopImmediatePropagation();
+ }
+},true);
+$('relationship').addEventListener('change',()=>{$('partnerDob').required=$('relationship').value==='partnered';});
+
+function syncIncomeSliderToInputs(){
+ const total=Math.max(0,Math.round(Number(($('householdTotal').textContent||'0').replace(/[^0-9.]/g,''))||0));
+ if(total<=Number($('incomeSlider').max)){ $('incomeSlider').value=total; $('sliderValue').textContent=money(total); }
+}
+['rate','hours','partner'].forEach(id=>$(id).addEventListener('change',()=>setTimeout(syncIncomeSliderToInputs,0)));

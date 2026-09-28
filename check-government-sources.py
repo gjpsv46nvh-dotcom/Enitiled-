@@ -9,11 +9,7 @@ import json, hashlib, urllib.request, datetime, pathlib, sys
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 STATUS=ROOT/"data-status.json"
 SNAP=ROOT/"source-snapshots.json"
-SOURCES=[
- {"id":"services-australia-guide","label":"Australian Government payments","jurisdiction":"Commonwealth","url":"https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22"},
- {"id":"energy-gov-au","label":"Energy, solar & battery support","jurisdiction":"Australia + states/territories","url":"https://www.energy.gov.au/rebates"},
- {"id":"tas-concessions","label":"Tasmanian concessions","jurisdiction":"Tasmania","url":"https://www.concessions.tas.gov.au/"}
-]
+SOURCES=[{'id': 'services-australia-guide', 'label': 'Australian Government payments', 'jurisdiction': 'Commonwealth', 'url': 'https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22'}, {'id': 'energy-gov-au', 'label': 'Energy, solar & battery support', 'jurisdiction': 'Australia + states/territories', 'url': 'https://www.energy.gov.au/rebates'}, {'id': 'tas-concessions', 'label': 'Tasmanian concessions', 'jurisdiction': 'Tasmania', 'url': 'https://www.concessions.tas.gov.au/'}, {'id': 'nsw-cost-living', 'label': 'NSW rebates & cost-of-living support', 'jurisdiction': 'New South Wales', 'url': 'https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub'}, {'id': 'vic-concessions', 'label': 'Victorian concessions & benefits', 'jurisdiction': 'Victoria', 'url': 'https://services.dffh.vic.gov.au/concessions-and-benefits'}, {'id': 'qld-concessions', 'label': 'Queensland concessions', 'jurisdiction': 'Queensland', 'url': 'https://www.qld.gov.au/community/cost-of-living-support/concessions'}, {'id': 'sa-concessions', 'label': 'South Australian concessions', 'jurisdiction': 'South Australia', 'url': 'https://www.sa.gov.au/topics/care-and-support/concessions'}, {'id': 'wa-concessions', 'label': 'Western Australian concessions', 'jurisdiction': 'Western Australia', 'url': 'https://www.wa.gov.au/service/community-services/community-support/concessions'}, {'id': 'act-cost-living', 'label': 'ACT cost-of-living support', 'jurisdiction': 'ACT', 'url': 'https://www.act.gov.au/cost-of-living-support'}, {'id': 'nt-concessions', 'label': 'Northern Territory concessions', 'jurisdiction': 'Northern Territory', 'url': 'https://nt.gov.au/community/concessions-and-payments'}]
 def fetch(url):
     req=urllib.request.Request(url,headers={"User-Agent":"FinallyEntitledDataCheck/1.0"})
     with urllib.request.urlopen(req,timeout=30) as r: return r.read()

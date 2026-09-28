@@ -103,3 +103,13 @@ Production next step: expand the monitored-source registry to every state/territ
 - Search detail closes when the query/filter changes, preventing stale entitlement information remaining below new results.
 - Green status now says `Monitored government sources up to date`, avoiding the false impression that every Australian government program is already monitored.
 - Changed rules wording to `Calculation rules currently validated to`.
+
+## V8.2 second user QA pass
+- Added required-field checks for date of birth, state/territory, partner DOB when partnered, and every child row.
+- Prevents age/state-based screening from quietly running on missing profile data.
+- Added a friendly inline validation notice rather than relying on browser error bubbles.
+- Expanded the automatic source-monitor registry from Commonwealth/energy/Tasmania to all 8 state and territory government support gateways.
+- Status panel now states how many official sources were checked.
+- Kept fail-safe behaviour: detected page changes are review flags, not automatic calculator-rule rewrites.
+- Improved income slider synchronisation after pay inputs change.
+- Confirmed current Services Australia guide is dated 20 September 2026 and energy.gov.au continues to aggregate federal/state/territory assistance.

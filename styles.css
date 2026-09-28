@@ -67,3 +67,6 @@ main{max-width:1180px;margin:auto;padding:0 22px 70px}.page{display:none}.page.a
 @media(max-width:760px){.data-status{margin-top:6px}.status-panel-card{margin:2vh auto;padding:20px}}
 
 .field-help{font-size:11px;color:var(--muted);margin:9px 0 0}
+
+.form-notice{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:1200;max-width:min(92vw,620px);padding:13px 16px;border-radius:13px;background:#fff5dd;border:1px solid #e5c46f;color:#5c4307;font-weight:750;box-shadow:0 8px 28px rgba(0,0,0,.14)}
+input:required:invalid:not(:focus),select:required:invalid:not(:focus){border-color:#d9b55a}
