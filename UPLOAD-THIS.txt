@@ -1,0 +1,7 @@
+FINALLY ENTITLED v11.2 — INDEPENDENT STATUS LOADER
+
+Upload all files in this folder to the ROOT of the GitHub repository.
+The generated data-status.json is intentionally NOT included, so this upload cannot overwrite the current status produced by the GitHub Action.
+
+New: status.js loads /data-status.json independently before app.js.
+If app.js has an unrelated runtime error, the government status badge can still update.
