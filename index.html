@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finally Entitled — Find what you may be entitled to</title>
+<meta name="description" content="Estimate Australian government payments, concessions and business support based on your circumstances and income.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#home"><span class="brandmark">FE</span><span>Finally Entitled</span></a>
+  <nav>
+    <button data-go="home">Home</button><button data-go="personal">Personal</button>
+    <button data-go="income">Pay & Income</button><button data-go="business">Business & Grants</button>
+    <button data-go="matches">My Matches</button>
+  </nav>
+</header>
+
+<main>
+<section id="home" class="page active">
+  <div class="hero">
+    <div class="eyebrow">AUSTRALIAN ENTITLEMENTS • PAYMENTS • GRANTS</div>
+    <h1>Find what you may be <span>entitled to.</span></h1>
+    <p class="lead">One place to estimate government payments, childcare support, rent assistance, concessions and business grants — and see how your income could change what you receive.</p>
+    <div class="hero-actions"><button class="primary" data-go="personal">Check my entitlements</button><button class="secondary" data-go="business">Find business grants</button></div>
+    <div class="trust">Estimates only • Australia-wide • Designed to link you back to official government sources</div>
+  </div>
+  <div class="grid cards">
+    <article><div class="icon">👨‍👩‍👧‍👦</div><h3>Families & Children</h3><p>Family payments, parental leave, childcare subsidies and more.</p></article>
+    <article><div class="icon">🏠</div><h3>Housing & Rent</h3><p>Check possible Rent Assistance and housing-related support.</p></article>
+    <article><div class="icon">💼</div><h3>Work, Study & Youth</h3><p>Explore income support for job seekers, students, apprentices and young people.</p></article>
+    <article><div class="icon">♿</div><h3>Disability & Caring</h3><p>Find disability, carer and related concession programs worth checking.</p></article>
+    <article><div class="icon">👴</div><h3>Seniors</h3><p>Explore Age Pension and senior concession possibilities.</p></article>
+    <article><div class="icon">🚀</div><h3>Business & Grants</h3><p>Match your business profile with grants, funding and government support.</p></article>
+  </div>
+  <div class="feature">
+    <div><div class="eyebrow">THE DIFFERENCE</div><h2>Don't just ask “Do I qualify?”</h2><p>See an estimated payment, the income rules that matter, and model what happens if your pay changes.</p></div>
+    <div class="mini-chart"><div><b>$115k</b><span>household income</span></div><div class="arrow">→</div><div><b>Matched</b><span>potential support</span></div></div>
+  </div>
+</section>
+
+<section id="personal" class="page">
+ <div class="section-head"><div class="eyebrow">PERSONAL & FAMILY</div><h2>Tell us about your household</h2><p>We'll use these details to create an indicative list of payments and concessions worth checking.</p></div>
+ <div class="panel form-grid">
+   <label>Relationship status<select id="relationship"><option value="couple">Couple</option><option value="single">Single</option></select></label>
+   <label>Your age<input id="age" type="number" value="35" min="14" max="100"></label>
+   <label>Number of dependent children<input id="children" type="number" value="2" min="0" max="15"></label>
+   <label>Age of youngest child<input id="youngest" type="number" value="3" min="0" max="25"></label>
+   <label>Children in approved childcare<input id="childcare" type="number" value="1" min="0" max="15"></label>
+   <label>Housing<select id="housing"><option value="rent">Renting</option><option value="own">Own / mortgage</option><option value="other">Other</option></select></label>
+   <label>Rent per week ($)<input id="rent" type="number" value="550" min="0"></label>
+   <label>Situation<select id="situation"><option value="working">Working</option><option value="jobseeker">Looking for work</option><option value="student">Studying / apprentice</option><option value="carer">Caring for someone</option><option value="disability">Living with disability / health condition</option><option value="retired">Retired / Age Pension age</option></select></label>
+ </div>
+ <div class="actions"><button class="primary" data-go="income">Continue to income →</button></div>
+</section>
+
+<section id="income" class="page">
+ <div class="section-head"><div class="eyebrow">PAY & INCOME MODELLER</div><h2>How much do you earn?</h2><p>Enter annual income directly, or estimate it from hourly pay. This lets us model how income can affect potential entitlements.</p></div>
+ <div class="two-col">
+  <div class="panel">
+   <h3>Your pay</h3>
+   <div class="form-grid compact">
+    <label>Hourly rate ($)<input id="rate" type="number" value="40" step=".01"></label>
+    <label>Hours per week<input id="hours" type="number" value="38" step=".5"></label>
+    <label>Overtime / allowances per year ($)<input id="extras" type="number" value="0"></label>
+    <label>Or override annual income ($)<input id="annualOverride" type="number" placeholder="Optional"></label>
+   </div>
+  </div>
+  <div class="panel">
+   <h3>Partner & household</h3>
+   <div class="form-grid compact">
+    <label>Partner annual income ($)<input id="partner" type="number" value="40000"></label>
+    <label>Other household income ($)<input id="otherIncome" type="number" value="0"></label>
+   </div>
+   <div class="income-total"><span>Estimated household income</span><strong id="householdTotal">$119,040</strong></div>
+  </div>
+ </div>
+ <div class="panel slider-panel">
+   <div><h3>What if our income changes?</h3><p>Move the slider to preview different household income levels.</p></div>
+   <input id="incomeSlider" type="range" min="0" max="300000" step="1000" value="119000">
+   <div class="slider-value" id="sliderValue">$119,000</div>
+ </div>
+ <div class="actions"><button class="primary" id="calculateBtn">Calculate my matches →</button></div>
+</section>
+
+<section id="matches" class="page">
+ <div class="section-head"><div class="eyebrow">YOUR ESTIMATED MATCHES</div><h2>Support worth checking</h2><p id="matchSummary">Based on the information you've entered.</p></div>
+ <div id="results" class="results"></div>
+ <div class="notice"><b>Important:</b> Finally Entitled provides estimates and screening guidance, not eligibility decisions. Government agencies make the final assessment. Rates, thresholds and rules can change.</div>
+</section>
+
+<section id="business" class="page">
+ <div class="section-head"><div class="eyebrow">BUSINESS & GRANTS</div><h2>Find support that fits your business.</h2><p>Tell us what you're building and we'll organise the types of government grants and programs worth checking.</p></div>
+ <div class="panel form-grid">
+  <label>State / territory<select id="state"><option>Tasmania</option><option>Victoria</option><option>New South Wales</option><option>Queensland</option><option>South Australia</option><option>Western Australia</option><option>Australian Capital Territory</option><option>Northern Territory</option></select></label>
+  <label>Business structure<select id="structure"><option>Sole trader</option><option>Company</option><option>Partnership</option><option>Trust</option><option>Not started yet</option></select></label>
+  <label>Employees<input id="employees" type="number" value="0" min="0"></label>
+  <label>Annual turnover ($)<input id="turnover" type="number" value="100000" min="0"></label>
+  <label>Industry<input id="industry" value="Construction" placeholder="e.g. Construction"></label>
+  <label>What do you need funding for?<select id="funding"><option>Equipment</option><option>Digital / website</option><option>Training</option><option>Hiring staff</option><option>Energy efficiency</option><option>Expansion</option><option>R&D / innovation</option><option>Export</option><option>Starting a business</option></select></label>
+ </div>
+ <div class="actions"><button class="primary" id="grantBtn">Find grant categories →</button></div>
+ <div id="grantResults" class="results"></div>
+</section>
+</main>
+
+<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V1 prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
+<script src="app.js"></script>
+</body>
+</html>
