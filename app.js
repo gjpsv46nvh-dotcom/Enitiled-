@@ -56,7 +56,7 @@ $('calculateBtn').onclick=()=>{
  if(sit==='student')r.push(card('discovery','Student & apprentice support','Check multiple programs','Youth Allowance, Austudy, ABSTUDY and related study support may be relevant depending on age, course, independence and living arrangements.','https://www.servicesaustralia.gov.au/students-and-trainees'));
  if(sit==='carer'||$('careSomeone').value==='yes')r.push(card('discovery','Carer support','Check multiple programs','Carer Payment, Carer Allowance and related supplements may be relevant. Care requirements and means tests vary.','https://www.servicesaustralia.gov.au/caring-for-someone'));
  if(sit==='disability'||$('workDisability').value==='yes')r.push(card('discovery','Disability support','Check multiple programs','Disability Support Pension, Mobility Allowance and other support may be relevant. Medical and non-medical eligibility requires an official assessment.','https://www.servicesaustralia.gov.au/living-with-disability'));
- if(age($('yourDob').value)>=67||sit==='retired')r.push(card('discovery','Age Pension & seniors support','Check eligibility','Age, residence, income and assets rules apply. Concession cards may also be relevant.','https://www.servicesaustralia.gov.au/age-pension'));
+ if(age($('yourDob').value)>=67||sit==='retired')r.push(card('discovery','Age Pension & seniors support','Check eligibility','Age Pension age, residence, income and assets rules apply. If you are below Age Pension age, other retirement or concession support may be more relevant.','https://www.servicesaustralia.gov.au/age-pension'));
  if(!r.length)r.push(card('discovery','Government support search','No obvious major payment yet','Your profile does not currently trigger one of the major common-payment categories. State, territory and concession programs can still be relevant.'));
  let x=[];
  // Separate discovery catalogue: these are surfaced without pretending a full eligibility assessment has been completed.
@@ -184,7 +184,7 @@ function renderSupport(){
    const cat=supportCategory==="all"||x.c===supportCategory;
    const place=st==="all"||!x.loc||x.loc==="ALL"||x.loc===st;
    const hay=norm(x.n+" "+x.c+" "+x.k+" "+x.s);
-   return cat && place && (!words.length||words.every(w=>hay.includes(w)));
+   return cat && place && (!words.length||words.some(w=>hay.includes(w)));
  });
  $('supportCount').textContent=`${rows.length} support option${rows.length===1?'':'s'} found`;
  $('supportResults').innerHTML=rows.length?rows.map((x,i)=>`<article class="support-item" data-support="${SUPPORT_CATALOGUE.indexOf(x)}"><span class="type">${x.c}${x.loc&&x.loc!=="ALL"?`<span class="state-pill">${x.loc}</span>`:""}</span><h3>${x.n}</h3><p>${x.s}</p><span class="read">Read simple guide →</span></article>`).join(''):`<div class="no-support"><h3>No exact match</h3><p>Try simpler words such as “rent”, “baby”, “study”, “carer” or “job”. The eligibility checker can also search based on your circumstances.</p></div>`;
@@ -196,7 +196,7 @@ function openSupport(i){
  $('supportDetail').scrollIntoView({behavior:'smooth',block:'start'});
 }
 $('supportQuery').addEventListener('input',renderSupport); $('supportState').addEventListener('change',renderSupport);
-document.querySelectorAll('[data-search]').forEach(b=>b.onclick=()=>{$('supportQuery').value=b.dataset.search;supportCategory='all';document.querySelectorAll('.cat').forEach(c=>c.classList.toggle('active',c.dataset.cat==='all'));renderSupport()});
+document.querySelectorAll('[data-search]').forEach(b=>b.onclick=()=>{if(b.dataset.search==='state support'){supportCategory='State support';$('supportQuery').value='';}else{$('supportQuery').value=b.dataset.search;supportCategory='all';}document.querySelectorAll('.cat').forEach(c=>c.classList.toggle('active',c.dataset.cat===supportCategory));renderSupport()});
 document.querySelectorAll('[data-cat]').forEach(b=>b.onclick=()=>{supportCategory=b.dataset.cat;document.querySelectorAll('.cat').forEach(c=>c.classList.toggle('active',c===b));renderSupport()});
 renderSupport();
 

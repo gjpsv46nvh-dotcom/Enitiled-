@@ -72,3 +72,13 @@ Important: program availability and amounts can change. Production should period
 - Commonwealth, state/territory and energy support now use the same search experience.
 
 Design rule: users choose their state once. Finally Entitled handles jurisdiction filtering behind the scenes.
+
+## V7.1 first-time-user QA
+- Simplified top navigation to Home, Check eligibility, Search support and Business support.
+- Made Search support a first-class homepage action.
+- Removed arbitrary pre-filled DOBs and partner income that could create misleading results.
+- Changed the main result CTA to “See what I may qualify for”.
+- Added a short trust line explaining this is a free pre-application check.
+- Made support search more forgiving for everyday multi-word searches.
+- Improved the state-support shortcut.
+- Retained income modelling inside the guided eligibility journey instead of advertising it as a separate product.

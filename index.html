@@ -11,9 +11,8 @@
 <header class="topbar">
   <a class="brand" href="#home" data-go="home"><span class="brandmark">FE</span><span>Finally Entitled</span></a>
   <nav>
-    <button data-go="home">Home</button><button data-go="personal">Personal</button><button data-go="support">Search Support</button>
-    <button data-go="income">Pay & Income</button><button data-go="business">Business & Grants</button>
-    <button data-go="matches">My Matches</button>
+    <button data-go="home">Home</button><button data-go="personal">Check eligibility</button>
+    <button data-go="support">Search support</button><button data-go="business">Business support</button>
   </nav>
 </header>
 
@@ -23,7 +22,8 @@
     <div class="eyebrow">AUSTRALIAN ENTITLEMENTS • PAYMENTS • GRANTS</div>
     <h1>Find what you may be <span>entitled to.</span></h1>
     <p class="lead">One place to estimate government payments, childcare support, rent assistance, concessions and business grants — and see how your income could change what you receive.</p>
-    <div class="hero-actions"><button class="primary" data-go="personal">Check my entitlements</button><button class="secondary" data-go="business">Find business grants</button></div>
+    <div class="hero-actions"><button class="primary" data-go="personal">Check what I may be entitled to</button><button class="secondary" data-go="support">Search support</button><button class="secondary" data-go="business">Business support</button></div>
+    <p class="hero-trust">Free pre-application check · Plain English · Takes only a few minutes</p>
     <div class="trust">Estimates only • Australia-wide • Designed to link you back to official government sources</div>
   </div>
   <div class="grid cards">
@@ -48,7 +48,7 @@
   <div class="panel question-panel">
    <h3>First, tell us about you</h3>
    <div class="form-grid">
-    <label>Date of birth<input id="yourDob" type="date" value="1991-01-01"></label>
+    <label>Date of birth<input id="yourDob" type="date"></label>
     <label>Relationship status<select id="relationship"><option value="couple">I have a partner</option><option value="single">I’m single</option></select></label>
     <label>What best describes you?<select id="situation"><option value="working">Working</option><option value="jobseeker">Looking for work</option><option value="student">Studying / apprentice</option><option value="carer">Caring for someone</option><option value="disability">Health condition / disability affects work</option><option value="retired">Retired</option></select></label>
     <label>State or territory<select id="personState"><option>Tasmania</option><option>Victoria</option><option>New South Wales</option><option>Queensland</option><option>South Australia</option><option>Western Australia</option><option>Australian Capital Territory</option><option>Northern Territory</option></select></label>
@@ -60,7 +60,7 @@
   <div class="panel question-panel" id="partnerPanel">
    <h3 id="familyHeading">Your household</h3>
    <div id="partnerFields" class="form-grid">
-    <label>Partner date of birth<input id="partnerDob" type="date" value="1991-01-01"></label>
+    <label>Partner date of birth<input id="partnerDob" type="date"></label>
     <label>Partner situation<select id="partnerSituation"><option value="working">Working</option><option value="notworking">Not working</option><option value="student">Studying</option><option value="carer">Carer</option><option value="disability">Health condition / disability</option><option value="retired">Retired</option></select></label>
    </div>
    <div class="yesno"><span>Do you have dependent children?</span><div><button class="choice selected" data-children="yes">Yes</button><button class="choice" data-children="no">No</button></div></div>
@@ -143,7 +143,7 @@
   <div class="panel">
    <h3>Partner & household</h3>
    <div class="form-grid compact">
-    <label>Partner annual income ($)<input id="partner" type="number" value="40000"></label>
+    <label>Partner annual income ($)<input id="partner" type="number" value="0" placeholder="Annual income"></label>
     <label>Other household income ($)<input id="otherIncome" type="number" value="0"></label>
    </div>
    <div class="income-total"><span>Estimated household income</span><strong id="householdTotal">$119,040</strong></div>
@@ -151,11 +151,11 @@
  </div>
  <div class="panel slider-panel">
    <div><h3>What if our income changes?</h3><p>Move the slider to preview different household income levels.</p></div>
-   <input id="incomeSlider" type="range" min="0" max="600000" step="1000" value="119000">
+   <input id="incomeSlider" type="range" min="0" max="600000" step="1000" value="0">
    <div class="slider-value" id="sliderValue">$119,000</div>
  </div>
- <div class="actions"><button class="primary" id="calculateBtn">Calculate my estimated entitlements →</button></div>
-<div class="notice"><b>V7 rules date:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
+ <div class="actions"><button class="primary" id="calculateBtn">See what I may qualify for →</button></div>
+<div class="notice"><b>V7.1 rules date:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
 </section>
 
 <section id="matches" class="page">
@@ -184,7 +184,7 @@
 </section>
 </main>
 
-<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V7 prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
+<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V7.1 user-tested prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
 <script src="app.js"></script>
 </body>
 </html>
