@@ -23,8 +23,8 @@
   <div class="hero">
     <div class="eyebrow">AUSTRALIAN ENTITLEMENTS • PAYMENTS • GRANTS</div>
     <h1>Find what you may be <span>entitled to.</span></h1>
-    <p class="lead">Answer a few simple questions. We’ll check payments, concessions, household rebates, grants and business support that may fit your circumstances.</p>
-    <div class="hero-actions"><button class="primary hero-start" data-go="personal"><span>Find everything I may be entitled to</span><span class="hero-start-arrow" aria-hidden="true">→</span></button></div>
+    <p class="lead">Answer a few simple questions to screen common payments and concessions. Browse official directories for household rebates and business grants that may fit your circumstances.</p>
+    <div class="hero-actions"><button class="primary hero-start" data-go="personal"><span>Check payments and concessions</span><span class="hero-start-arrow" aria-hidden="true">→</span></button></div>
     <div class="quick-help"><span>Or start with what’s happening in your life:</span><div class="quick-help-buttons"><button data-life="baby">👶 Having a baby</button><button data-life="job">💼 Work changed</button><button data-life="home">🏠 Home & bills</button><button data-life="carer">❤️ Caring for someone</button><button data-life="retire">👴 Retiring</button><button data-life="business">🚀 Business</button></div></div>
     <p class="hero-trust">Free pre-application check · Plain English · Takes only a few minutes</p>
     <div class="trust">Estimates only • Australia-wide • Designed to link you back to official government sources</div>
@@ -35,7 +35,7 @@
     <article><div class="icon">💼</div><h3>Work, Study & Youth</h3><p>Explore income support for job seekers, students, apprentices and young people.</p></article>
     <article><div class="icon">♿</div><h3>Disability & Caring</h3><p>Find disability, carer and related concession programs worth checking.</p></article>
     <article><div class="icon">👴</div><h3>Seniors</h3><p>Explore Age Pension and senior concession possibilities.</p></article>
-    <article><div class="icon">🚀</div><h3>Business & Grants</h3><p>Match your business profile with grants, funding and government support.</p></article>
+    <article><div class="icon">🚀</div><h3>Business & Grants</h3><p>Find official grant directories and check each program’s rules and opening dates.</p></article>
   </div>
   <div class="feature">
     <div><div class="eyebrow">THE DIFFERENCE</div><h2>Don't just ask “Do I qualify?”</h2><p>See an estimated payment, the income rules that matter, and model what happens if your pay changes.</p></div>
@@ -145,7 +145,7 @@
 </section>
 
 <section id="income" class="page">
- <div class="section-head"><div class="eyebrow">PAY & INCOME MODELLER</div><h2>How much do you earn?</h2><p>Enter annual income directly, or estimate it from hourly pay. This lets us model how income can affect potential entitlements.</p></div>
+ <div class="section-head"><div class="eyebrow">PAY & INCOME MODELLER</div><h2>How much do you earn?</h2><p>Enter annual income directly, or estimate it from hourly pay. Family payment screens assume these amounts equal your adjusted taxable income; salary alone may differ.</p></div>
  <div class="two-col">
   <div class="panel">
    <h3>Your pay</h3>
@@ -162,7 +162,7 @@
     <label>Partner annual income ($)<input id="partner" type="number" value="0" placeholder="Annual income"></label>
     <label>Other household income ($)<input id="otherIncome" type="number" value="0"></label>
    </div>
-   <div class="income-total"><span>Estimated household income</span><strong id="householdTotal">$0</strong></div><p class="field-help">Enter your actual income above. $0 is treated as a real income amount, not as “not answered”.</p>
+   <div class="income-total"><span>Estimated household income</span><strong id="householdTotal">$0</strong></div><p class="field-help">For FTB and CCS, enter each person's estimated adjusted taxable income, including relevant additions. $0 is treated as a real amount. Check the <a href="https://www.servicesaustralia.gov.au/how-we-use-adjusted-taxable-income?context=22151" target="_blank" rel="noopener">official definition</a> before relying on an estimate.</p>
   </div>
  </div>
  <div class="panel slider-panel">
@@ -190,7 +190,7 @@
  <div id="results" class="results"></div>
  <div class="next-help-panel" id="nextHelpPanel">
    <span class="eyebrow">KEEP CHECKING</span><h3>There may be more ways to save</h3>
-   <p>We can also check household grants, energy rebates and other government programs using your state.</p>
+   <p>Browse official household grant and rebate directories using your state and topic.</p>
    <div class="actions compact-actions"><button class="primary" id="continueHouseholdGrants">Check household grants & rebates →</button><button class="secondary" id="continueBusinessSupport" style="display:none">Check business grants & support →</button></div>
  </div>
  <div id="extraSection" class="extra-support">
@@ -223,7 +223,7 @@
 
 
 <section id="grants" class="page">
- <div class="section-head"><div class="eyebrow">HOUSEHOLD GRANTS & REBATES</div><h2>Find grants, rebates and upgrade support.</h2><p>Check national and state/territory programs for solar, batteries, energy upgrades and other household assistance. Current availability is verified against official government catalogues.</p></div>
+ <div class="section-head"><div class="eyebrow">HOUSEHOLD GRANTS & REBATES</div><h2>Find grants, rebates and upgrade support.</h2><p>See possible national programs and official state directories. This page does not verify each program’s current funding, property eligibility or application rules.</p></div>
  <div class="panel form-grid">
   <label>State / territory<select id="grantState"><option>Tasmania</option><option>Victoria</option><option>New South Wales</option><option>Queensland</option><option>South Australia</option><option>Western Australia</option><option>Australian Capital Territory</option><option>Northern Territory</option></select></label>
   <label>Housing<select id="grantHousing"><option>Home owner</option><option>Renter</option><option>Landlord</option><option>Apartment / strata</option><option>Social housing</option></select></label>
@@ -232,11 +232,11 @@
  </div>
  <div class="actions"><button class="primary" id="householdGrantBtn">Find household grants & rebates →</button></div>
  <div id="householdGrantResults" class="results"></div>
- <div class="notice"><b>Coverage:</b> Finally Entitled combines verified national programs with official Commonwealth and state/territory grant/rebate catalogues. Programs can open, close or exhaust funding; always use the official link before spending money or applying.</div>
+ <div class="notice"><b>Coverage:</b> These are leads and official search directories, not confirmed eligibility matches. Programs can open, close or exhaust funding; check the official program page before spending money or applying.</div>
 </section>
 
 <section id="business" class="page">
- <div class="section-head"><div class="eyebrow">BUSINESS & GRANTS</div><h2>Find support that fits your business.</h2><p>Tell us what you're building and we'll organise the types of government grants and programs worth checking.</p></div>
+ <div class="section-head"><div class="eyebrow">BUSINESS & GRANTS</div><h2>Find support that fits your business.</h2><p>Use official guided searches to find grants. The details below are not sent to those directories and do not establish eligibility for a particular grant.</p></div>
  <div class="panel form-grid">
   <label>State / territory<select id="state"><option>Tasmania</option><option>Victoria</option><option>New South Wales</option><option>Queensland</option><option>South Australia</option><option>Western Australia</option><option>Australian Capital Territory</option><option>Northern Territory</option></select></label>
   <label>Business structure<select id="structure"><option>Sole trader</option><option>Company</option><option>Partnership</option><option>Trust</option><option>Not started yet</option></select></label>
@@ -252,16 +252,16 @@
 <div id="formNotice" class="form-notice" hidden></div></main>
 
 <footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><button class="footer-link" type="button" data-go="privacy">Privacy</button><span>Finally Entitled • Not affiliated with Services Australia or the Australian Government.</span></footer>
-<script src="status.js?v=11.8"></script><script src="rules-2026-27.js"></script><script src="rules-batch-3-2026-27.js"></script><script src="app.js?v=11.8"></script>
+<script src="status.js?v=13.0"></script><script src="rules-2026-27.js"></script><script src="rules-batch-3-2026-27.js"></script><script src="app.js?v=13.0"></script>
 <div id="dataStatusPanel" class="status-panel" hidden>
 <div class="status-panel-card">
 <button id="closeStatusPanel" class="status-close" aria-label="Close">×</button>
 <span class="eyebrow">DATA STATUS</span>
 <h2>Government information status</h2>
-<p id="statusSummary">Finally Entitled checks its official government sources and tracks when rules last changed.</p>
+<p id="statusSummary">This panel checks source pages; it does not certify every rate, rule or grant.</p>
 <div id="sourceStatusList" class="source-status-list"></div>
 <div class="status-key">
-<div><span class="status-dot"></span><b>Up to date</b> — source checked successfully.</div>
+<div><span class="status-dot"></span><b>Page checked</b> — source page reached or manually reviewed; program eligibility and rules need separate checks.</div>
 <div><span class="status-dot review"></span><b>Review</b> — a source changed and needs validation before calculation rules change.</div>
 </div>
 <p class="fine">Finally Entitled is a pre-application guide. Government agencies make official eligibility decisions.</p>

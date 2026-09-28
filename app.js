@@ -41,7 +41,10 @@ function addChild(){
  <label>Date of birth<input class="childDob" type="date"></label>
  <label>In approved childcare?<select class="childCare"><option value="no">No</option><option value="yes">Yes</option></select></label>
  <label>In secondary school?<select class="secondary"><option value="no">No</option><option value="yes">Yes</option></select></label></div>`;
- d.querySelector('.remove-child').onclick=()=>d.remove();$('childrenList').appendChild(d)
+ d.querySelector('.remove-child').onclick=()=>d.remove();$('childrenList').appendChild(d);
+ // Adding a child is an affirmative answer to the preceding question.
+ childrenAnswered=true; hasChildren=true; $('childrenArea').style.display='block';
+ document.querySelectorAll('[data-children]').forEach(x=>x.classList.toggle('selected',x.dataset.children==='yes'));
 }
 $('addChild').onclick=addChild;
 
@@ -49,6 +52,7 @@ function age(d){if(!d)return null;let b=new Date(d+'T00:00:00'),t=new Date(),a=t
 function kids(){return [...document.querySelectorAll('.child-card')].map(c=>({dob:c.querySelector('.childDob').value,age:age(c.querySelector('.childDob').value),childcare:c.querySelector('.childCare').value==='yes',secondary:c.querySelector('.secondary').value==='yes'}))}
 function ownAnnualIncome(){const o=parseFloat($('annualOverride').value);return Number.isFinite(o)&&o>=0?o:(+$('rate').value||0)*(+$('hours').value||0)*52+(+$('extras').value||0)}
 function baseIncome(){return ownAnnualIncome()+($('relationship').value==='couple'?(+$('partner').value||0):0)+(+$('otherIncome').value||0)}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function refreshIncome(){const t=baseIncome();$('householdTotal').textContent=money(t);$('incomeSlider').value=Math.min(600000,Math.round(t/100)*100);$('sliderValue').textContent=money(+$('incomeSlider').value)}
 ['rate','hours','extras','annualOverride','partner','otherIncome'].forEach(id=>$(id).addEventListener('input',refreshIncome));$('incomeSlider').oninput=()=>$('sliderValue').textContent=money(+$('incomeSlider').value);
 
@@ -70,14 +74,14 @@ $('calculateBtn').onclick=()=>{
  if(ftba){
    const wording=household<=FE_RULES.ftbA.free?'published maximum-rate income band':'published income-test formula';
    annualFamilyValue += Math.max(0,ftba.fortnight)*26;
-   r.push(card('calculated','Family Tax Benefit Part A',`${money(ftba.fortnight)}/fortnight`,
-    `Estimate from the ${wording}, child ages and 2026–27 standard rates. Excludes Rent Assistance, supplements, shared-care adjustments, maintenance income, immunisation/health-check reductions and newborn components.`,
+   r.push(card('conditional','Family Tax Benefit Part A',`${money(ftba.fortnight)}/fortnight income screen`,
+    `Assumes the entered annual amounts equal your family's adjusted taxable income. Estimate from the ${wording}, child ages and 2026–27 standard rates. Excludes Rent Assistance, supplements, shared-care adjustments, maintenance income, immunisation/health-check reductions and newborn components.`,
     'https://www.servicesaustralia.gov.au/income-test-for-family-tax-benefit-part?context=22151'));
  }
 
  const ftbb=feFTBB(K,rel,own,partner);
  if(ftbb){
-   if(ftbb.fortnight>0){ annualFamilyValue += Math.max(0,ftbb.fortnight)*26; r.push(card('calculated','Family Tax Benefit Part B',`${money(ftbb.fortnight)}/fortnight`,
+   if(ftbb.fortnight>0){ annualFamilyValue += Math.max(0,ftbb.fortnight)*26; r.push(card('conditional','Family Tax Benefit Part B',`${money(ftbb.fortnight)}/fortnight income screen`,
       `Estimate using the youngest child’s age and the 2026–27 primary/secondary earner income test. It assumes no shared-care adjustment and no days receiving Parental Leave Pay.`,
       'https://www.servicesaustralia.gov.au/income-test-for-family-tax-benefit-part-b?context=22151')); }
    else x.push(card('discovery','Family Tax Benefit Part B','Current profile does not pass the basic income/age screen',
@@ -88,7 +92,7 @@ $('calculateBtn').onclick=()=>{
  const cc=K.filter(k=>k.childcare&&k.age!==null&&k.age<=13&&!k.secondary);
  if(cc.length){
    const pct=feCCS(household);
-   r.push(card('calculated','Child Care Subsidy',`${pct}% standard CCS percentage`,
+   r.push(card('conditional','Child Care Subsidy',`${pct}% standard CCS percentage`,
      `This is the published standard income-based percentage. The dollar subsidy still depends on the lower of the service fee or hourly cap, subsidised hours, withholding and any higher-rate child rules.`,
      'https://www.servicesaustralia.gov.au/your-income-can-affect-child-care-subsidy?context=41186'));
  }
@@ -177,9 +181,11 @@ $('calculateBtn').onclick=()=>{
  if((userAge!==null&&userAge>=67)||sit==='carer'||sit==='disability'||(rel==='single'&&ppAgeOK)) x.push(card('discovery','Pensioner Concession Card','May be issued automatically with a qualifying payment','Age Pension, Carer Payment, DSP and Parenting Payment single are among the payments that can automatically qualify a person for this card.','https://www.servicesaustralia.gov.au/pensioner-concession-card'));
 
  if(K.some(k=>k.age!==null&&k.age<1)){
-   const plp=fePLPIncomeScreen(own,household);
-   x.push(card('conditional','Parental Leave Pay',plp.pass?`${money(FE_EXT_RULES.parentalLeave.daily)}/day before tax · up to 130 family days for births from 1 Jul 2026`:'Income screen appears not met',
-     plp.pass?'Income screen only. The work test, birth/adoption date, residency and day-sharing rules still need to be checked.':'Your entered income is above both the individual and family income screens used for 2026–27 claims; official assessment uses the relevant prior financial year.',
+  const plp=fePLPIncomeScreen(own,household);
+   const newest=K.filter(k=>k.age!==null&&k.age<1).map(k=>k.dob).sort().pop();
+   const plpDays=newest>='2026-07-01'?130:newest>='2025-07-01'?120:110;
+   x.push(card('conditional','Parental Leave Pay',plp.pass?`${money(FE_EXT_RULES.parentalLeave.daily)}/day before tax · up to ${plpDays} family days based on birth date`:'Income screen appears not met',
+     plp.pass?'Income screen only. The work test, residency and day-sharing rules still need to be checked. For a pre-birth claim lodged before 1 July 2026, Services Australia adds the extra 10 days after proof of a birth from that date.':'Your entered income is above both the individual and family income screens used for 2026–27 claims; official assessment uses the relevant prior financial year.',
      'https://www.servicesaustralia.gov.au/parental-leave-pay'));
    x.push(card('official','Newborn Upfront Payment & Newborn Supplement',`${money(FE_EXT_RULES.newborn.upfront)} upfront; supplement may also apply`,
      'This can apply with FTB Part A when Parental Leave Pay is not being received for the same child. The supplement depends on whether this is the first eligible child and family circumstances.',
@@ -195,18 +201,18 @@ $('calculateBtn').onclick=()=>{
  const annualSummary=$('annualValueSummary');
  if(annualEstimatedValue>0){
    $('annualValueAmount').textContent=`${money(annualEstimatedValue)} per year`;
-   $('annualValueNote').textContent='Estimated from payments we can calculate from your answers. Conditional matches and “worth checking” items are not included. Payments that cannot be received together are not added together.';
+   $('annualValueNote').textContent='Income-screen illustration only. Family payment amounts assume your entries equal adjusted taxable income and the stated care rules apply. Other conditional grants and “worth checking” items are excluded. Payments that cannot be received together are not added together.';
    annualSummary.style.display='block';
  } else { annualSummary.style.display='none'; }
  $('results').innerHTML=r.join(''); $('extraResults').innerHTML=x.join(''); $('extraSection').style.display=x.length?'block':'none';
  $('matchSummary').textContent=`Using exact entered household income of ${money(household)} and ${K.length} child${K.length===1?'':'ren'} in your profile.`;
- $('incomeInsight').innerHTML=`<b>Accuracy mode:</b> the main check uses exact entered income, not the rounded scenario slider. Core rules validated to 20 September 2026.`;
+ $('incomeInsight').innerHTML=`<b>Income assumption:</b> Family payment screens treat the entered amounts as adjusted taxable income. Salary alone may differ. The main check uses exact entered amounts, not the scenario slider. Core rules validated to 20 September 2026.`;
  go('matches');
 };
 
 const STATE_CODE={'Tasmania':'Tas','Victoria':'Vic','New South Wales':'NSW','Queensland':'Qld','South Australia':'SA','Western Australia':'WA','Australian Capital Territory':'ACT','Northern Territory':'NT'};
 const STATE_GRANT_HUBS={
- Tas:['Tasmanian grants & programs','Official Tasmanian Government programs and grant information.','https://www.service.tas.gov.au/services/government-help-and-support/grants-funding-and-scholarships'],
+ Tas:['Tasmanian business grant finder','Search currently open Tasmanian business grants and funding opportunities.','https://www.business.tas.gov.au/grants-tasmania/business-grants'],
  Vic:['Victorian grants & programs','Official Victorian Government grants and programs.','https://www.vic.gov.au/grants-and-programs'],
  NSW:['NSW grants, rebates & savings','Official NSW Government grants, rebates and cost-of-living support.','https://www.nsw.gov.au/grants-and-funding'],
  Qld:['Queensland grants finder','Official Queensland Government grants and assistance.','https://www.qld.gov.au/community/grants-scholarships-awards'],
@@ -219,7 +225,7 @@ const HOUSEHOLD_GRANTS=[
  {n:'Cheaper Home Batteries Program',loc:'ALL',tags:'Battery Solar',d:'Around a 30% upfront discount for eligible small-scale batteries connected to new or existing solar. Available to households, businesses and community organisations.',u:'https://www.dcceew.gov.au/energy/programs/cheaper-home-batteries'},
  {n:'Small-scale Renewable Energy Scheme',loc:'ALL',tags:'Solar Energy efficiency',d:'Reduces the upfront cost of eligible rooftop solar and other small-scale renewable systems through small-scale technology certificates.',u:'https://www.energy.gov.au/solar/financial-benefits-solar/government-rebates-and-loans-solar'},
  {n:'Household Energy Upgrades Fund',loc:'ALL',tags:'Solar Battery Energy efficiency Appliances Renovation',d:'Discounted finance through participating lenders for eligible household energy upgrades including solar, batteries, efficient appliances and renovations.',u:'https://www.dcceew.gov.au/energy/programs/household-energy-upgrades-fund'},
- {n:'Government energy rebates & assistance finder',loc:'ALL',tags:'Solar Battery Energy efficiency Appliances Cost of living',d:'The Australian Government live directory of Commonwealth, state and territory energy rebates and assistance.',u:'https://www.energy.gov.au/rebates'}
+ {n:'Government energy rebates & assistance finder',loc:'ALL',tags:'Solar Battery Energy efficiency Appliances Cost of living',d:'Search the Australian Government directory by location and topic. Individual programs have separate eligibility and application rules.',u:'https://www.energy.gov.au/rebates',directory:true}
 ];
 function grantCard(name,badge,desc,url){return card('discovery',name,badge,desc,url)}
 
@@ -233,19 +239,20 @@ if($('continueBusinessSupport')) $('continueBusinessSupport').onclick=()=>{
 };
 $('householdGrantBtn').onclick=()=>{
  const state=STATE_CODE[$('grantState').value], topic=$('grantTopic').value, housing=$('grantHousing').value, concession=$('grantConcession').value;
- let out=HOUSEHOLD_GRANTS.filter(g=>g.loc==='ALL'||g.loc===state).filter(g=>topic==='all'||g.tags.toLowerCase().includes(topic.toLowerCase())).map(g=>grantCard(g.n,'Current official program',g.d,g.u));
- out.push(grantCard('Live Australian energy rebate finder','Live government catalogue',`Search current programs for ${$('grantState').value}, including location- and technology-specific rebates. Your profile: ${housing}${concession==='Yes'?', concession card holder':''}.`,'https://www.energy.gov.au/rebates'));
- const h=STATE_GRANT_HUBS[state]; if(h) out.push(grantCard(h[0],'State / territory catalogue',h[1],h[2]));
+ const propertyOwner=['Home owner','Landlord','Apartment / strata'].includes(housing);
+ let out=HOUSEHOLD_GRANTS.filter(g=>g.loc==='ALL'||g.loc===state)
+  .filter(g=>topic==='all'||g.tags.toLowerCase().includes(topic.toLowerCase()))
+  .filter(g=>propertyOwner||g.directory)
+  .map(g=>grantCard(g.n,g.directory?'Official search directory':'Program to check',g.d+(g.directory?` Select ${escapeHTML($('grantState').value)} and ${escapeHTML(topic==='all'?'your topic':topic)} on the official page.`:' Property, equipment, installer and funding rules require confirmation.'),g.u));
+ if(!propertyOwner) out.unshift('<p class="notice">Installation and upgrade programs are excluded for this housing choice because permission and property eligibility need checking. Ask the property owner or use the official directory for renter-specific help.</p>');
  $('householdGrantResults').innerHTML=out.join('');
 };
 $('grantBtn').onclick=()=>{
- const state=STATE_CODE[$('state').value],industry=$('industry').value||'your industry',funding=$('funding').value,emp=+$('employees').value,turn=+$('turnover').value,regional=$('regional').value;
+ const state=STATE_CODE[$('state').value],industry=escapeHTML($('industry').value||'your industry'),funding=$('funding').value,emp=Math.max(0,+$('employees').value||0),turn=Math.max(0,+$('turnover').value||0),regional=$('regional').value;
  let out=[];
- out.push(grantCard('Australian Government Grants and Programs Finder','600+ opportunities listed',`Use the official national finder for a live search matching ${industry}, ${emp} employees, ${money(turn)} turnover${funding!=='all'?`, and ${funding.toLowerCase()} support`:''}.`,'https://business.gov.au/grants-and-programs'));
+ out.push(grantCard('Australian Government Grants and Programs Finder','Official guided search',`Enter ${industry}, ${emp} employees, ${money(turn)} turnover${funding!=='all'?`, and ${escapeHTML(funding.toLowerCase())} support`:''} in the official finder. These details have not been submitted or matched to individual grants here. Check opening dates and full conditions there.`,'https://business.gov.au/grants-and-programs'));
  if(funding==='all'||/energy|solar/i.test(funding)) out.push(grantCard('Energy rebates & assistance for business','Live government catalogue','Search current Commonwealth, state and territory energy programs for businesses, including solar, batteries and efficiency support.','https://www.energy.gov.au/rebates'));
- if(funding==='all'||/R&D|innovation/i.test(funding)) out.push(grantCard('R&D and innovation support','Official program search','Check current Australian Government innovation, commercialisation and research support through the Grants and Programs Finder.','https://business.gov.au/grants-and-programs'));
- if(funding==='all'||/Export/i.test(funding)) out.push(grantCard('Export support','Official program search','Check current export grants, market-development and Austrade support that match your business.','https://business.gov.au/grants-and-programs'));
- const h=STATE_GRANT_HUBS[state]; if(h) out.push(grantCard(h[0],'State / territory catalogue',`${h[1]} Regional/rural: ${regional}.`,h[2]));
+ const h=STATE_GRANT_HUBS[state]; if(h) out.push(grantCard(h[0],'Official state directory',`${h[1]} Apply your ${regional==='Yes'?'regional/rural':'location'} and business filters on that site.`,h[2]));
  $('grantResults').innerHTML=out.join('');
 };
 
@@ -304,7 +311,7 @@ const SUPPORT_CATALOGUE = [
  {n:"Solar for Apartments Program",c:"Energy & solar",loc:"ACT",k:"act apartment solar strata grant loan",s:"Support for eligible ACT apartment complexes installing rooftop solar.",who:"Eligible apartment/owners-corporation projects meeting current program requirements.",amount:"Grant and zero-interest loan support may be available.",need:"Apartment project and owners-corporation details.",apply:"Check the current ACT Solar for Apartments round.",u:"https://www.energy.gov.au/rebates/act-solar-apartments-program"},
  {n:"South Australia Virtual Power Plant",c:"Energy & solar",loc:"SA",k:"sa south australia vpp solar battery virtual power plant concession",s:"A solar-and-battery virtual power plant offer for eligible South Australian households.",who:"Eligibility and offers depend on the SA VPP program and household circumstances.",amount:"Savings depend on energy use and the applicable electricity plan rather than a fixed universal rebate.",need:"Property, electricity and system eligibility.",apply:"Check the SA VPP program and compare the applicable energy offer.",u:"https://www.energymining.sa.gov.au/consumers/solar-and-batteries/south-australias-virtual-power-plant"},
  {n:"Solar for Multi Dwellings Grant Scheme",c:"Energy & solar",loc:"NT",k:"nt northern territory apartment multi dwelling solar grant",s:"Northern Territory support for solar infrastructure in eligible multi-dwelling properties.",who:"Eligible multi-dwelling projects meeting the current grant conditions.",amount:"Funding can cover up to 50% of eligible total solar installation costs under current program settings.",need:"Property/project eligibility and quotes.",apply:"Check the current NT grant process and availability.",u:"https://www.energy.gov.au/rebates/solar-multi-dwellings-grant-scheme"},
- {n:"Annual electricity concession",c:"Energy & solar",loc:"Tas",k:"tas tasmania electricity concession power bill energy discount pension health care card",s:"A daily electricity-bill discount for eligible Tasmanian concession customers.",who:"Eligible Tasmanian electricity customers holding qualifying concession status.",amount:"A daily concession is applied to eligible electricity accounts; the rate can change.",need:"Eligible concession status and electricity account details.",apply:"Apply through the relevant Tasmanian concession/electricity process.",u:"https://www.energy.gov.au/rebates/annual-electricity-concession-tas"},
+ {n:"Annual electricity concession",c:"Energy & solar",loc:"Tas",k:"tas tasmania electricity concession power bill energy discount pension health care card",s:"A daily electricity-bill discount for eligible Tasmanian concession customers.",who:"Eligible Tasmanian electricity customers holding qualifying concession status.",amount:"A daily concession is applied to eligible electricity accounts; the rate can change.",need:"Eligible concession status and electricity account details.",apply:"Apply through the relevant Tasmanian concession/electricity process.",u:"https://www.energy.gov.au/rebates/annual-electricity-concession"},
  {n:"Your Energy Support",c:"Energy & solar",loc:"Tas",k:"tas tasmania energy support power bill hardship electricity efficiency",s:"Support for eligible Tasmanian customers to better manage energy use and bills.",who:"Eligible Tasmanian energy customers under the program criteria.",amount:"Support is tailored rather than a single universal cash payment.",need:"Electricity account and household circumstances.",apply:"Check the Your Energy Support program.",u:"https://www.energy.gov.au/rebates/your-energy-support"},
  {n:"Life support energy concessions",c:"Energy & solar",loc:"ALL",k:"life support medical equipment electricity concession power oxygen dialysis",s:"State and territory assistance can help eligible households with electricity costs for approved life-support or medical equipment.",who:"Eligibility varies by jurisdiction, concession status, equipment and medical certification.",amount:"Rebate/concession amounts vary by state or territory.",need:"Medical certification, eligible equipment and electricity-account details.",apply:"Search your state in Finally Entitled or the government energy rebate directory.",u:"https://www.energy.gov.au/rebates"},
  {n:"Government energy rebates & assistance finder",c:"Energy & solar",loc:"ALL",k:"energy rebate electricity gas solar battery hot water insulation appliance concession power bill all rebates",s:"Australian Government directory covering current federal, state, territory and participating local energy rebates and assistance.",who:"Programs range from broad household support to concession-card, location, property and technology-specific schemes.",amount:"Varies by program.",need:"Your state, household/business type and the kind of energy support you need.",apply:"Use the official energy.gov.au rebate finder for current program availability.",u:"https://www.energy.gov.au/rebates"},
@@ -337,16 +344,16 @@ function renderSupport(){
    const cat=supportCategory==="all"||x.c===supportCategory;
    const place=st==="all"||!x.loc||x.loc==="ALL"||x.loc===st;
    const hay=norm(x.n+" "+x.c+" "+x.k+" "+x.s);
-   return cat && place && (!words.length||words.some(w=>hay.includes(w)));
+   return cat && place && (!words.length||words.every(w=>hay.includes(w)));
  }).sort((a,b)=>{
    if(!words.length) return 0;
    const score=x=>{const hay=norm(x.n+" "+x.c+" "+x.k+" "+x.s), name=norm(x.n); return (name.includes(q)?20:0)+words.filter(w=>name.includes(w)).length*5+words.filter(w=>hay.includes(w)).length;};
    return score(b)-score(a);
  });
  $('supportCount').textContent=`${rows.length} support option${rows.length===1?'':'s'} found`; $('supportDetail').innerHTML='';
- if(!rows.length){$('supportResults').innerHTML='<div class="empty-state"><b>No matching support found.</b><span>Try a simpler term such as rent, childcare, power bill, solar, study or carer.</span></div>';return;}
- $('supportResults').innerHTML=rows.length?rows.map((x,i)=>`<article class="support-item" data-support="${SUPPORT_CATALOGUE.indexOf(x)}"><span class="type">${x.c}${x.loc&&x.loc!=="ALL"?`<span class="state-pill">${x.loc}</span>`:""}</span><h3>${x.n}</h3><p>${x.s}</p><span class="read">Read simple guide →</span></article>`).join(''):`<div class="no-support"><h3>No exact match</h3><p>Try simpler words such as “rent”, “baby”, “study”, “carer” or “job”. The eligibility checker can also search based on your circumstances.</p></div>`;
- document.querySelectorAll('[data-support]').forEach(el=>el.onclick=()=>openSupport(+el.dataset.support));
+ if(!rows.length){$('supportResults').innerHTML=q==='energy bill relief fund'?'<div class="empty-state"><b>Energy Bill Relief Fund ended 31 December 2025.</b><span>Search the official energy rebate directory for current state and territory assistance.</span><a href="https://www.energy.gov.au/rebates" target="_blank" rel="noopener">Current government rebates →</a></div>':'<div class="empty-state"><b>No matching support found.</b><span>Try a simpler term such as rent, childcare, power bill, solar, study or carer.</span></div>';return;}
+ $('supportResults').innerHTML=rows.length?rows.map((x,i)=>`<article class="support-item" role="button" tabindex="0" aria-label="Read guide: ${escapeHTML(x.n)}" data-support="${SUPPORT_CATALOGUE.indexOf(x)}"><span class="type">${x.c}${x.loc&&x.loc!=="ALL"?`<span class="state-pill">${x.loc}</span>`:""}</span><h3>${x.n}</h3><p>${x.s}</p><span class="read">Read simple guide →</span></article>`).join(''):`<div class="no-support"><h3>No exact match</h3><p>Try simpler words such as “rent”, “baby”, “study”, “carer” or “job”. The eligibility checker can also search based on your circumstances.</p></div>`;
+ document.querySelectorAll('[data-support]').forEach(el=>{el.onclick=()=>openSupport(+el.dataset.support);el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();el.click();}}});
 }
 function openSupport(i){
  const x=SUPPORT_CATALOGUE[i];
@@ -375,7 +382,9 @@ function validateProfile(){
  if(!childrenAnswered){showFormNotice('Please tell us whether you have children.');return false;}
  if($('relationship').value==='couple' && !$('partnerDob').value){showFormNotice("Please enter your partner's date of birth.");return false;}
  const childDobs=hasChildren?[...document.querySelectorAll('.childDob')]:[];
+ if(hasChildren&&!childDobs.length){showFormNotice('Add at least one child, or choose No.');return false;}
  if(childDobs.some(x=>!x.value)){showFormNotice('Please add a date of birth for each child you have added, or remove an unused child row.');return false;}
+ if(childDobs.some(x=>new Date(x.value+'T00:00:00')>new Date())){showFormNotice('A child date of birth cannot be in the future.');return false;}
  return true;
 }
 
