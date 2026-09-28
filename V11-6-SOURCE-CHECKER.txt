@@ -1,0 +1,9 @@
+FINALLY ENTITLED v11.6 — SOURCE CHECKER IMPROVEMENT
+
+- Baselines are now established per source, rather than waiting for all 10 government websites to succeed in one run.
+- Sources that GitHub can fetch automatically stay green while unchanged.
+- Government sites that block GitHub automation can use a recent manual verification against the official government page.
+- Manual verification expires after 14 days. It cannot leave a source green forever.
+- Any detected content change remains amber/review-required until reviewed.
+- Entitlement calculation rules are never silently changed by the source checker.
+- source-verifications.json records the official-source verification date and URL.

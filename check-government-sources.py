@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Finally Entitled official-source freshness checker v1.4.
+"""Finally Entitled official-source freshness checker v1.5.
 
 Checks official government sources only. Each jurisdiction can have multiple
 official URLs; if a primary page blocks automated access, the checker tries a
@@ -20,6 +20,8 @@ import urllib.request
 ROOT = pathlib.Path(__file__).resolve().parent
 STATUS = ROOT / "data-status.json"
 SNAP = ROOT / "source-snapshots.json"
+VERIFIED = ROOT / "source-verifications.json"
+MANUAL_VERIFICATION_DAYS = 14
 
 SOURCES = [
     {
@@ -182,51 +184,71 @@ def accept_current():
     print("Accepted current snapshots.")
     return 0
 
+def parse_date(value):
+    try:
+        return datetime.date.fromisoformat(str(value)[:10])
+    except Exception:
+        return None
+
+def manual_is_current(entry, today_date):
+    d = parse_date((entry or {}).get("verifiedAt"))
+    return bool(d and 0 <= (today_date - d).days <= MANUAL_VERIFICATION_DAYS)
+
 def main():
     if "--accept-current" in sys.argv:
         return accept_current()
 
-    today = datetime.date.today().isoformat()
+    today_date = datetime.date.today()
+    today = today_date.isoformat()
     now = datetime.datetime.now().astimezone().isoformat(timespec="seconds")
     old = load(STATUS, {"schemaVersion": 1, "sources": []})
-    baseline = load(SNAP, None) if SNAP.exists() else None
+    baseline = load(SNAP, {}) if SNAP.exists() else {}
+    verified = load(VERIFIED, {}) if VERIFIED.exists() else {}
     hashes, errors, used_urls = fetch_hashes()
 
-    # First baseline is created only after every monitored source succeeds.
-    if baseline is None and not errors and len(hashes) == len(SOURCES):
-        SNAP.write_text(json.dumps(hashes, indent=2) + "\n", encoding="utf-8")
-        baseline = dict(hashes)
+    # Establish baselines independently. One anti-bot government site must not
+    # prevent every other successfully fetched source from becoming green.
+    baseline_changed = False
+    for sid, h in hashes.items():
+        if sid not in baseline:
+            baseline[sid] = h
+            baseline_changed = True
+    if baseline_changed:
+        SNAP.write_text(json.dumps(baseline, indent=2) + "\n", encoding="utf-8")
 
     rows, review = [], False
     for s in SOURCES:
         sid = s["id"]
+        manual = verified.get(sid, {})
         row = {
             "id": sid,
             "label": s["label"],
             "jurisdiction": s["jurisdiction"],
-            "url": used_urls.get(sid, s["urls"][0]),
+            "url": used_urls.get(sid, manual.get("url", s["urls"][0])),
         }
-        if sid in errors:
-            row.update(status="check_failed", checked=today, note=errors[sid])
-            review = True
-        elif baseline is None:
-            row.update(status="pending", checked=today,
-                       note="Waiting for a complete successful first baseline.")
-            review = True
-        elif sid not in baseline:
-            row.update(status="review", checked=today,
-                       note="New source has no accepted baseline.")
-            review = True
-        elif baseline[sid] != hashes[sid]:
-            row.update(status="review", checked=today,
-                       note="Official source changed since accepted baseline.")
-            review = True
+
+        if sid in hashes:
+            if baseline.get(sid) == hashes[sid]:
+                row.update(status="up_to_date", checked=today, method="automated")
+            else:
+                row.update(status="review", checked=today, method="automated",
+                           note="Official source changed since accepted baseline.")
+                review = True
+        elif manual_is_current(manual, today_date):
+            # Some official sites reject GitHub-hosted automated requests. A
+            # recent human verification against the official source is valid,
+            # but expires automatically so green can never persist forever.
+            row.update(status="up_to_date", checked=manual["verifiedAt"],
+                       method="manual_official_verification",
+                       note="Official source manually verified; automated access is currently blocked.")
         else:
-            row.update(status="up_to_date", checked=today)
+            row.update(status="check_failed", checked=today, method="automated",
+                       note=errors.get(sid, "Official source could not be verified."))
+            review = True
         rows.append(row)
 
     old["lastCheckAttempt"] = now
-    if not errors and len(hashes) == len(SOURCES):
+    if not review:
         old["lastSuccessfulCheck"] = now
     old["sources"] = rows
     old["status"] = "review_required" if review else "up_to_date"

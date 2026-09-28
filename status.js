@@ -44,7 +44,7 @@
     var failed = sources.filter(function (s) { return s.status === 'check_failed'; }).length;
     var waiting = sources.filter(function (s) { return s.status === 'pending'; }).length;
     setText(byId('statusSummary'), good
-      ? ok + ' monitored official sources checked successfully. Core calculation rules are validated separately and are never silently changed by this monitor.'
+      ? ok + ' monitored official sources verified against current government information. Core calculation rules are validated separately and are never silently changed by this monitor.'
       : pending
         ? 'Monitoring is installed for ' + sources.length + ' official sources. The first live baseline has not completed yet.'
         : review
@@ -56,8 +56,8 @@
       list.innerHTML = sources.map(function (s) {
         var isOk = s.status === 'up_to_date';
         var isPending = s.status === 'pending';
-        var checked = s.checked ? ' · checked ' + (formatDate(s.checked + 'T00:00:00') || s.checked) : ' · awaiting live check';
-        return '<div class="source-status-item"><span class="status-dot ' + (isOk ? '' : 'review') + '"></span><div><b>' + (s.label || 'Official source') + '</b><small>' + (s.jurisdiction || '') + checked + (isPending ? ' · baseline pending' : ' · ' + (isOk ? 'up to date' : 'review required')) + '</small></div></div>';
+        var checked = s.checked ? ' · verified ' + (formatDate(s.checked + 'T00:00:00') || s.checked) : ' · awaiting live check';
+        return '<div class="source-status-item"><span class="status-dot ' + (isOk ? '' : 'review') + '"></span><div><b>' + (s.label || 'Official source') + '</b><small>' + (s.jurisdiction || '') + checked + (isPending ? ' · baseline pending' : ' · ' + (isOk ? (s.method === 'manual_official_verification' ? 'up to date (official source manually verified)' : 'up to date') : 'review required')) + '</small></div></div>';
       }).join('');
     }
   }

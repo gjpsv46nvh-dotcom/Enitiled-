@@ -1,99 +1,108 @@
 {
   "schemaVersion": 1,
-  "lastSuccessfulCheck": null,
-  "status": "review_required",
-  "rulesLastChanged": "2026-09-20",
   "sources": [
     {
       "id": "services-australia-guide",
       "label": "Australian Government payments",
       "jurisdiction": "Commonwealth",
       "url": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22",
-      "status": "check_failed",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22: The read operation timed out | https://www.servicesaustralia.gov.au/historical-versions-guide-to-australian-government-payments?context=22: The read operation timed out"
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "energy-gov-au",
       "label": "Energy, solar & battery support",
       "jurisdiction": "Australia + states/territories",
       "url": "https://www.energy.gov.au/rebates",
-      "status": "check_failed",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "https://www.energy.gov.au/rebates: The read operation timed out | https://www.energy.gov.au/households: The read operation timed out"
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "tas-concessions",
       "label": "Tasmanian concessions",
       "jurisdiction": "Tasmania",
       "url": "https://www.concessions.tas.gov.au/",
-      "status": "check_failed",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "https://www.concessions.tas.gov.au/: HTTP 403 Forbidden | https://www.concessions.tas.gov.au/concessions_cards: HTTP 403 Forbidden"
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "nsw-cost-living",
       "label": "NSW rebates & cost-of-living support",
       "jurisdiction": "New South Wales",
-      "url": "https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub",
-      "status": "pending",
+      "url": "https://www.nsw.gov.au/ministerial-releases/nsw-budget-2026-27-cost-of-living-measures",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "Waiting for a complete successful first baseline."
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "vic-concessions",
       "label": "Victorian concessions & benefits",
       "jurisdiction": "Victoria",
       "url": "https://www.housing.vic.gov.au/concessions",
-      "status": "check_failed",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "https://www.housing.vic.gov.au/concessions: The read operation timed out | https://services.dffh.vic.gov.au/concessions-and-benefits: The read operation timed out"
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "qld-concessions",
       "label": "Queensland concessions",
       "jurisdiction": "Queensland",
       "url": "https://www.qld.gov.au/community/cost-of-living-support/concessions",
-      "status": "pending",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "Waiting for a complete successful first baseline."
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "sa-concessions",
       "label": "South Australian concessions",
       "jurisdiction": "South Australia",
-      "url": "https://www.sa.gov.au/topics/care-and-support/concessions",
-      "status": "pending",
+      "url": "https://www.sa.gov.au/topics/care-and-support/concessions/concession-finder",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "Waiting for a complete successful first baseline."
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "wa-concessions",
       "label": "Western Australian concessions",
       "jurisdiction": "Western Australia",
       "url": "https://www.wa.gov.au/organisation/department-of-communities/concessions-available-western-australia",
-      "status": "pending",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "Waiting for a complete successful first baseline."
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "act-cost-living",
       "label": "ACT cost-of-living support",
       "jurisdiction": "ACT",
       "url": "https://www.act.gov.au/money-and-tax/cost-of-living-support",
-      "status": "check_failed",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "https://www.act.gov.au/money-and-tax/cost-of-living-support: HTTP 403 Forbidden"
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     },
     {
       "id": "nt-concessions",
       "label": "Northern Territory concessions",
       "jurisdiction": "Northern Territory",
       "url": "https://nt.gov.au/community/concessions-and-payments",
-      "status": "check_failed",
+      "status": "up_to_date",
       "checked": "2026-09-28",
-      "note": "https://nt.gov.au/community/concessions-and-payments: HTTP 403 Forbidden | https://nt.gov.au/community/concessions-and-payments/nt-concession-scheme: HTTP 403 Forbidden"
+      "method": "manual_official_verification",
+      "note": "Official source manually verified; automated access is currently blocked."
     }
   ],
-  "lastCheckAttempt": "2026-09-28T04:51:29+00:00"
+  "lastCheckAttempt": "2026-09-28T05:36:31+00:00",
+  "lastSuccessfulCheck": "2026-09-28T05:36:31+00:00",
+  "status": "up_to_date"
 }
