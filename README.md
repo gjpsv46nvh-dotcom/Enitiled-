@@ -62,3 +62,13 @@ Production note: state/territory and council catalogues should be maintained as 
 - The main eligibility questionnaire remains unchanged and simple.
 
 Important: program availability and amounts can change. Production should periodically refresh the energy catalogue from official federal/state sources rather than hard-code assumptions indefinitely.
+
+## V7 State & Territory layer
+- Added a dedicated State support category for all 8 jurisdictions.
+- The household's selected state now automatically filters Search Support.
+- Eligibility results automatically add a simple state-specific support/concessions check.
+- State layer covers the gateway to utilities, water/rates, transport/registration, health/ambulance, education and other cost-of-living concessions without adding more questions.
+- Energy & solar remains a detailed sub-layer alongside general state support.
+- Commonwealth, state/territory and energy support now use the same search experience.
+
+Design rule: users choose their state once. Finally Entitled handles jurisdiction filtering behind the scenes.
