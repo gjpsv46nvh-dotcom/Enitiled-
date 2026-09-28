@@ -113,3 +113,13 @@ Production next step: expand the monitored-source registry to every state/territ
 - Kept fail-safe behaviour: detected page changes are review flags, not automatic calculator-rule rewrites.
 - Improved income slider synchronisation after pay inputs change.
 - Confirmed current Services Australia guide is dated 20 September 2026 and energy.gov.au continues to aggregate federal/state/territory assistance.
+
+## V8.3 full regression re-check
+- Fixed partner DOB validation: the actual relationship value is `couple`, not `partnered`.
+- Fixed a hidden-child regression that could block users with no children.
+- Removed automatic creation of a child row on startup.
+- Switching from children `Yes` to `No` now clears stale child rows.
+- Requires an explicit Yes/No answer to the children question before eligibility screening.
+- Added a useful no-results message to Search Support.
+- Government-data status now starts neutral (`Checking…`) and only turns green after `data-status.json` successfully loads.
+- Revalidated current official baseline: Services Australia payment guide is the 20 September 2026 edition; national battery support remains available across all states and territories; Tasmania's current concessions guide includes housing, electricity, transport, education, health, licences, vehicles, property/water and other support.

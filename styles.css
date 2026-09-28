@@ -70,3 +70,8 @@ main{max-width:1180px;margin:auto;padding:0 22px 70px}.page{display:none}.page.a
 
 .form-notice{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:1200;max-width:min(92vw,620px);padding:13px 16px;border-radius:13px;background:#fff5dd;border:1px solid #e5c46f;color:#5c4307;font-weight:750;box-shadow:0 8px 28px rgba(0,0,0,.14)}
 input:required:invalid:not(:focus),select:required:invalid:not(:focus){border-color:#d9b55a}
+
+.data-status.checking{background:#f4f5f4;border-color:#d9dedb;color:#526057}
+.data-status.checking .status-dot{background:#87928b;box-shadow:0 0 0 3px rgba(90,105,96,.10)}
+.empty-state{display:flex;flex-direction:column;gap:4px;padding:18px;border:1px dashed var(--line);border-radius:14px;color:var(--muted)}
+.empty-state b{color:var(--text)}

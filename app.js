@@ -19,7 +19,13 @@ function syncRelationship(){
  refreshIncome();
 }
 $('relationship').onchange=syncRelationship;
-document.querySelectorAll('[data-children]').forEach(b=>b.onclick=()=>{hasChildren=b.dataset.children==='yes';document.querySelectorAll('[data-children]').forEach(x=>x.classList.toggle('selected',x===b));$('childrenArea').style.display=hasChildren?'block':'none';if(hasChildren&&!document.querySelector('.child-card')) addChild()});
+document.querySelectorAll('[data-children]').forEach(b=>b.onclick=()=>{
+ childrenAnswered=true; hasChildren=b.dataset.children==='yes';
+ document.querySelectorAll('[data-children]').forEach(x=>x.classList.toggle('selected',x===b));
+ $('childrenArea').style.display=hasChildren?'block':'none';
+ if(hasChildren&&!document.querySelector('.child-card')) addChild();
+ if(!hasChildren) $('childrenList').innerHTML='';
+});
 function addChild(){
  childSeq++; const d=document.createElement('div');d.className='child-card';d.innerHTML=`<div class="child-top"><h4>Child ${childSeq}</h4><button type="button" class="remove-child">Remove</button></div><div class="child-grid">
  <label>Date of birth<input class="childDob" type="date"></label>
@@ -27,7 +33,7 @@ function addChild(){
  <label>In secondary school?<select class="secondary"><option value="no">No</option><option value="yes">Yes</option></select></label></div>`;
  d.querySelector('.remove-child').onclick=()=>d.remove();$('childrenList').appendChild(d)
 }
-$('addChild').onclick=addChild; addChild();
+$('addChild').onclick=addChild;
 
 function age(d){if(!d)return null;let b=new Date(d+'T00:00:00'),t=new Date(),a=t.getFullYear()-b.getFullYear();if(t<new Date(t.getFullYear(),b.getMonth(),b.getDate()))a--;return a}
 function kids(){return [...document.querySelectorAll('.child-card')].map(c=>({age:age(c.querySelector('.childDob').value),childcare:c.querySelector('.childCare').value==='yes',secondary:c.querySelector('.secondary').value==='yes'}))}
@@ -191,6 +197,7 @@ function renderSupport(){
    return score(b)-score(a);
  });
  $('supportCount').textContent=`${rows.length} support option${rows.length===1?'':'s'} found`; $('supportDetail').innerHTML='';
+ if(!rows.length){$('supportResults').innerHTML='<div class="empty-state"><b>No matching support found.</b><span>Try a simpler term such as rent, childcare, power bill, solar, study or carer.</span></div>';return;}
  $('supportResults').innerHTML=rows.length?rows.map((x,i)=>`<article class="support-item" data-support="${SUPPORT_CATALOGUE.indexOf(x)}"><span class="type">${x.c}${x.loc&&x.loc!=="ALL"?`<span class="state-pill">${x.loc}</span>`:""}</span><h3>${x.n}</h3><p>${x.s}</p><span class="read">Read simple guide →</span></article>`).join(''):`<div class="no-support"><h3>No exact match</h3><p>Try simpler words such as “rent”, “baby”, “study”, “carer” or “job”. The eligibility checker can also search based on your circumstances.</p></div>`;
  document.querySelectorAll('[data-support]').forEach(el=>el.onclick=()=>openSupport(+el.dataset.support));
 }
@@ -214,7 +221,7 @@ async function loadGovernmentDataStatus(){
     if(!res.ok) throw new Error('status fetch failed');
     const d=await res.json();
     const btn=$('dataStatus'), date=$('dataStatusDate');
-    const good=d.status==='up_to_date';
+    const good=d.status==='up_to_date'; btn.classList.remove('checking');
     btn.classList.toggle('good',good); btn.classList.toggle('review',!good);
     btn.querySelector('strong').textContent=good?'Monitored government sources up to date':'Government source review needed';
     const checked=new Date(d.lastSuccessfulCheck);
@@ -225,7 +232,7 @@ async function loadGovernmentDataStatus(){
     $('sourceStatusList').innerHTML=(d.sources||[]).map(s=>`<div class="source-status-item"><span class="status-dot ${s.status==='up_to_date'?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction} · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}${s.rulesDate?` · rules/source dated ${new Date(s.rulesDate+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:''}</small></div></div>`).join('');
   }catch(e){
     const btn=$('dataStatus');
-    btn.classList.remove('good'); btn.classList.add('review');
+    btn.classList.remove('good','checking'); btn.classList.add('review');
     btn.querySelector('strong').textContent='Government data check unavailable';
     $('dataStatusDate').textContent='Tap for details';
     $('statusSummary').textContent='The latest automated source check could not be confirmed. Existing calculation rules have not been changed.';
@@ -246,8 +253,9 @@ function validateProfile(){
  clearFormNotice();
  if(!$('yourDob').value){showFormNotice('Please enter your date of birth so age-based support can be checked accurately.');return false;}
  if(!$('personState').value){showFormNotice('Please select your state or territory so local concessions and rebates can be checked.');return false;}
- if($('relationship').value==='partnered' && !$('partnerDob').value){showFormNotice("Please enter your partner's date of birth.");return false;}
- const childDobs=[...document.querySelectorAll('.childDob')];
+ if(!childrenAnswered){showFormNotice('Please tell us whether you have children.');return false;}
+ if($('relationship').value==='couple' && !$('partnerDob').value){showFormNotice("Please enter your partner's date of birth.");return false;}
+ const childDobs=hasChildren?[...document.querySelectorAll('.childDob')]:[];
  if(childDobs.some(x=>!x.value)){showFormNotice('Please add a date of birth for each child you have added, or remove an unused child row.');return false;}
  return true;
 }
@@ -260,7 +268,7 @@ document.addEventListener('click',e=>{
    e.preventDefault(); e.stopImmediatePropagation();
  }
 },true);
-$('relationship').addEventListener('change',()=>{$('partnerDob').required=$('relationship').value==='partnered';});
+$('relationship').addEventListener('change',()=>{$('partnerDob').required=$('relationship').value==='couple';});
 
 function syncIncomeSliderToInputs(){
  const total=Math.max(0,Math.round(Number(($('householdTotal').textContent||'0').replace(/[^0-9.]/g,''))||0));
