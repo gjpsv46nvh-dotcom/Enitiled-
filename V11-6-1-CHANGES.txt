@@ -1,0 +1,7 @@
+FINALLY ENTITLED v11.6.1 — AUTOMATIC DAILY GOVERNMENT CHECKS
+
+- GitHub Actions government-source checker runs automatically once per day.
+- Schedule: 18:00 UTC (approximately 4:00am AEST / 5:00am AEDT in Tasmania).
+- Manual Run workflow remains available.
+- The checker continues to update data-status.json and commits status changes to main.
+- Vercel can then redeploy from the GitHub commit as normal.
