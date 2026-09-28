@@ -1,21 +1,19 @@
-# Finally Entitled — V1 Prototype
+# Finally Entitled — V2
 
-A responsive front-end prototype for an Australian entitlement and grants matching service.
+V2 adds a rules-dated entitlement estimation layer.
 
-## Run
-Open `index.html` in a browser, or serve this folder with any static web server.
-
-## Included
-- Brand/homepage with explanatory heading
-- Personal/family household questionnaire
-- Pay & household income modeller
-- Income scenario slider
-- Indicative entitlement category matching
-- Business & grants questionnaire
-- Responsive mobile layout
+## New in V2
+- Standard Child Care Subsidy percentage estimate from household income
+- FTB Part A income threshold/taper guidance
+- Rent Assistance estimate for the single/no-child scenario
+- Parenting Payment current maximum rates, thresholds and asset-limit guidance
+- JobSeeker current maximum rates and selected income cut-off guidance
+- Income insight showing distance to key FTB Part A thresholds
+- More household inputs: assets, homeowner status, children 5 or younger
+- Rules basis dated 20 September 2026
 
 ## Important
-The V1 calculation cards deliberately do NOT hard-code payment dollar rates or claim eligibility.
-Production should use a maintained, date-versioned rules/data layer sourced from official Australian Government sources.
+This is still a prototype, not a government eligibility determination. Complex programs deliberately show
+"potential match" where the questionnaire does not yet collect enough information for a defensible dollar estimate.
 
-The app is not affiliated with Services Australia or the Australian Government.
+Official source layer used for V2: Services Australia pages current at 20 September 2026.

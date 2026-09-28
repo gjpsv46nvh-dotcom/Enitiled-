@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Finally Entitled — Find what you may be entitled to</title>
+<title>Finally Entitled — Payments, subsidies, concessions & grants</title>
 <meta name="description" content="Estimate Australian government payments, concessions and business support based on your circumstances and income.">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -47,9 +47,12 @@
    <label>Your age<input id="age" type="number" value="35" min="14" max="100"></label>
    <label>Number of dependent children<input id="children" type="number" value="2" min="0" max="15"></label>
    <label>Age of youngest child<input id="youngest" type="number" value="3" min="0" max="25"></label>
+   <label>Children aged 5 or younger<input id="under6" type="number" value="1" min="0" max="15"></label>
    <label>Children in approved childcare<input id="childcare" type="number" value="1" min="0" max="15"></label>
    <label>Housing<select id="housing"><option value="rent">Renting</option><option value="own">Own / mortgage</option><option value="other">Other</option></select></label>
    <label>Rent per week ($)<input id="rent" type="number" value="550" min="0"></label>
+   <label>Homeowner for assets test?<select id="homeowner"><option value="no">No</option><option value="yes">Yes</option></select></label>
+   <label>Assessable assets ($)<input id="assets" type="number" value="0" min="0"></label>
    <label>Situation<select id="situation"><option value="working">Working</option><option value="jobseeker">Looking for work</option><option value="student">Studying / apprentice</option><option value="carer">Caring for someone</option><option value="disability">Living with disability / health condition</option><option value="retired">Retired / Age Pension age</option></select></label>
  </div>
  <div class="actions"><button class="primary" data-go="income">Continue to income →</button></div>
@@ -81,11 +84,12 @@
    <input id="incomeSlider" type="range" min="0" max="300000" step="1000" value="119000">
    <div class="slider-value" id="sliderValue">$119,000</div>
  </div>
- <div class="actions"><button class="primary" id="calculateBtn">Calculate my matches →</button></div>
+ <div class="actions"><button class="primary" id="calculateBtn">Calculate my estimated entitlements →</button></div>
+<div class="notice"><b>V2 rules date:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
 </section>
 
 <section id="matches" class="page">
- <div class="section-head"><div class="eyebrow">YOUR ESTIMATED MATCHES</div><h2>Support worth checking</h2><p id="matchSummary">Based on the information you've entered.</p></div>
+ <div class="section-head"><div class="eyebrow">YOUR ESTIMATED MATCHES</div><h2>Support worth checking</h2><p id="matchSummary">Based on the information you've entered.</p><div id="incomeInsight" class="insight"></div></div>
  <div id="results" class="results"></div>
  <div class="notice"><b>Important:</b> Finally Entitled provides estimates and screening guidance, not eligibility decisions. Government agencies make the final assessment. Rates, thresholds and rules can change.</div>
 </section>
@@ -105,7 +109,7 @@
 </section>
 </main>
 
-<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V1 prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
+<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V2 prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
 <script src="app.js"></script>
 </body>
 </html>
