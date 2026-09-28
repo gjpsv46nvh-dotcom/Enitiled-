@@ -149,3 +149,12 @@ Accuracy improvements:
 
 Run tests with:
 `node tests/core-rules.test.js`
+
+## V9.1 production deployment
+- Combines the V9 accuracy engine with the V8.4 persistent-review updater.
+- Removes prototype/version wording from the public interface.
+- Government status is neutral until a real live source check succeeds.
+- Status JSON is fetched cache-free to avoid stale Vercel/browser status.
+- A failed status fetch cannot show green.
+- Government page changes remain review-required until deliberately accepted.
+- See `DEPLOY.md` for the GitHub/Vercel deployment sequence.

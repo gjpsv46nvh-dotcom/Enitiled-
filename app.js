@@ -268,26 +268,36 @@ refreshIncome();syncRelationship();syncHousing();showStep(1);syncSupportStateFro
 // Government data freshness status.
 // Production automation updates data-status.json only after official-source checks complete.
 async function loadGovernmentDataStatus(){
+  const btn=$('dataStatus'), date=$('dataStatusDate');
   try{
-    const res=await fetch('data-status.json',{cache:'no-store'});
-    if(!res.ok) throw new Error('status fetch failed');
+    const res=await fetch('./data-status.json?ts='+Date.now(),{cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
     const d=await res.json();
-    const btn=$('dataStatus'), date=$('dataStatusDate');
-    const good=d.status==='up_to_date'; btn.classList.remove('checking');
-    btn.classList.toggle('good',good); btn.classList.toggle('review',!good);
-    btn.querySelector('strong').textContent=good?'Monitored government sources up to date':'Government source review needed';
-    const checked=new Date(d.lastSuccessfulCheck);
-    date.textContent='Checked '+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
-    const count=(d.sources||[]).length; $('statusSummary').textContent=good
-      ? `${count} monitored official sources were checked successfully. Calculation rules currently validated to ${new Date(d.rulesLastChanged+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'})}.`
-      : 'One or more official sources changed or could not be validated. Existing calculation rules stay unchanged until reviewed.';
-    $('sourceStatusList').innerHTML=(d.sources||[]).map(s=>`<div class="source-status-item"><span class="status-dot ${s.status==='up_to_date'?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction} · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}${s.rulesDate?` · rules/source dated ${new Date(s.rulesDate+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:''}</small></div></div>`).join('');
-  }catch(e){
-    const btn=$('dataStatus');
+    btn.classList.remove('good','review','checking');
+    const good=d.status==='up_to_date';
+    const pending=d.status==='pending_first_check';
+    btn.classList.add(good?'good':pending?'checking':'review');
+    btn.querySelector('strong').textContent=good?'Government sources checked':pending?'Government source status pending':'Government source review needed';
+    if(d.lastSuccessfulCheck){
+      const checked=new Date(d.lastSuccessfulCheck);
+      date.textContent='Checked '+checked.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+    }else date.textContent=pending?'Run the first live check':'Latest check needs attention';
+    const sources=d.sources||[], ok=sources.filter(s=>s.status==='up_to_date').length;
+    $('statusSummary').textContent=good
+      ? `${ok} monitored official sources checked successfully. Core calculation rules are validated separately and are never silently changed by this monitor.`
+      : pending
+        ? `Monitoring is installed for ${sources.length} official sources. Run the GitHub government-data workflow once to establish the live baseline.`
+        : `At least one monitored source changed or could not be checked. Existing calculation rules remain unchanged until reviewed.`;
+    $('sourceStatusList').innerHTML=sources.map(s=>{
+      const isOk=s.status==='up_to_date', isPending=s.status==='pending';
+      const checked=s.checked?` · checked ${new Date(s.checked+'T00:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})}`:' · awaiting live check';
+      return `<div class="source-status-item"><span class="status-dot ${isOk?'':'review'}"></span><div><b>${s.label}</b><small>${s.jurisdiction}${checked}${isPending?'':` · ${isOk?'up to date':'review required'}`}</small></div></div>`;
+    }).join('');
+  }catch(err){
     btn.classList.remove('good','checking'); btn.classList.add('review');
-    btn.querySelector('strong').textContent='Government data check unavailable';
-    $('dataStatusDate').textContent='Tap for details';
-    $('statusSummary').textContent='The latest automated source check could not be confirmed. Existing calculation rules have not been changed.';
+    btn.querySelector('strong').textContent='Government source check unavailable';
+    date.textContent='Site still works — source status could not be loaded';
+    $('statusSummary').textContent='The latest automated source status could not be confirmed. Entitlement calculation rules have not been changed.';
   }
 }
 $('dataStatus').onclick=()=>{$('dataStatusPanel').hidden=false;$('dataStatus').setAttribute('aria-expanded','true')};
