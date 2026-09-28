@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Finally Entitled — Payments, subsidies, concessions & grants</title>
 <meta name="description" content="Estimate Australian government payments, concessions and business support based on your circumstances and income.">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -41,7 +43,7 @@
 </section>
 
 <section id="personal" class="page">
- <div class="section-head"><div class="eyebrow">CHECK MY ENTITLEMENTS</div><h2>Simple questions. Better answers.</h2><p>Tell us about your household. We’ll only ask follow-up questions when they’re relevant.</p></div>
+ <div class="section-head"><div class="eyebrow">CHECK MY ENTITLEMENTS</div><h2>Simple questions. Better answers.</h2><p>Tell us about your household. We’ll only ask follow-up questions when they’re relevant.</p><div class="privacy-callout"><b>🔒 Your answers stay on your device</b><span>Your household and financial answers are calculated in this browser. Finally Entitled does not send or store these checker answers on its servers.</span><button class="privacy-link" type="button" data-go="privacy">How we protect your privacy →</button></div></div>
  <div class="progress"><span id="progressFill"></span></div><div class="progress-label" id="progressText">Step 1 of 3</div>
 
  <div class="wizard-step active-step" data-step="1">
@@ -185,6 +187,27 @@
  <div class="notice"><b>Important:</b> Finally Entitled provides estimates and screening guidance, not eligibility decisions. Government agencies make the final assessment. Rates, thresholds and rules can change.</div>
 </section>
 
+
+<section id="privacy" class="page">
+ <div class="section-head"><div class="eyebrow">PRIVACY</div><h2>Your checker answers stay on your device.</h2><p>Finally Entitled is designed to minimise the personal information it handles.</p></div>
+ <div class="panel privacy-page">
+  <h3>What happens to the information you enter?</h3>
+  <p>The household and financial details you enter into the eligibility checker are processed by JavaScript in your web browser. They are not submitted to Finally Entitled, stored in a Finally Entitled database, or used to create a profile about you.</p>
+  <h3>What we don't ask for</h3>
+  <p>The checker does not need your name, street address, email address, phone number, Centrelink Customer Reference Number (CRN) or Tax File Number (TFN).</p>
+  <h3>Saving your answers</h3>
+  <p>The current checker does not use cookies, local storage or session storage to save your household answers. Refreshing or closing the page clears the answers you entered.</p>
+  <h3>Government links</h3>
+  <p>If you choose an official government information link, you leave Finally Entitled and the destination website's own privacy practices apply. Finally Entitled does not send your checker answers with those links.</p>
+  <h3>Website hosting</h3>
+  <p>Like most websites, the hosting and network services used to deliver the site may process technical request information such as an IP address, browser/device information, timestamps and security logs. This is separate from the household and financial answers entered into the checker.</p>
+  <h3>Analytics and advertising</h3>
+  <p>This build does not include third-party analytics, advertising trackers or social-media tracking scripts. The site also restricts browser network connections to its own origin, helping prevent checker data from being sent to third-party services by page scripts.</p>
+  <div class="notice"><b>Important:</b> Do not enter CRNs, TFNs, passwords or other account credentials anywhere in Finally Entitled. Official claims are completed with the relevant government agency.</div>
+ </div>
+ <div class="actions"><button class="primary" data-go="personal">Start private eligibility check →</button><button class="secondary" data-go="home">Back home</button></div>
+</section>
+
 <section id="business" class="page">
  <div class="section-head"><div class="eyebrow">BUSINESS & GRANTS</div><h2>Find support that fits your business.</h2><p>Tell us what you're building and we'll organise the types of government grants and programs worth checking.</p></div>
  <div class="panel form-grid">
@@ -200,8 +223,8 @@
 </section>
 <div id="formNotice" class="form-notice" hidden></div></main>
 
-<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>Finally Entitled • Not affiliated with Services Australia or the Australian Government.</span></footer>
-<script src="status.js?v=11.3"></script><script src="rules-2026-27.js"></script><script src="rules-batch-3-2026-27.js"></script><script src="app.js?v=11.3"></script>
+<footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><button class="footer-link" type="button" data-go="privacy">Privacy</button><span>Finally Entitled • Not affiliated with Services Australia or the Australian Government.</span></footer>
+<script src="status.js?v=11.4"></script><script src="rules-2026-27.js"></script><script src="rules-batch-3-2026-27.js"></script><script src="app.js?v=11.4"></script>
 <div id="dataStatusPanel" class="status-panel" hidden>
 <div class="status-panel-card">
 <button id="closeStatusPanel" class="status-close" aria-label="Close">×</button>

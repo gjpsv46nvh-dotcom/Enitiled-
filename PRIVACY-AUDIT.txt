@@ -1,0 +1,13 @@
+FINALLY ENTITLED v11.4 — PRIVACY AUDIT
+
+Audited browser-facing files for outbound data mechanisms.
+- No form submission endpoint.
+- No XMLHttpRequest, sendBeacon or WebSocket use.
+- No cookies, localStorage or sessionStorage used for checker answers.
+- No third-party analytics, advertising or social tracking scripts.
+- The only scripted fetch is status.js requesting /data-status.json from the same site.
+- Official government URLs are user-clicked links; checker answers are not appended to them.
+- Content Security Policy restricts scripted network connections to the site's own origin.
+- Referrer policy is set to no-referrer.
+
+Hosting/network providers can still process ordinary technical request data needed to deliver and secure the website (for example IP address, device/browser information and request logs). This is separate from the household/financial answers entered in the checker.

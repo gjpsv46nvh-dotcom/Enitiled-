@@ -83,3 +83,11 @@ input:required:invalid:not(:focus),select:required:invalid:not(:focus){border-co
 
 /* v11.3: review status uses amber consistently in the header. */
 .data-status.review .status-dot{background:#d99a18;box-shadow:0 0 0 3px rgba(217,154,24,.12)}
+
+
+/* v11.4 privacy-first checker */
+.privacy-callout{display:flex;flex-direction:column;gap:6px;margin-top:18px;padding:15px 17px;border:1px solid #c9dfd3;border-radius:14px;background:#f1f8f3;color:var(--ink)}
+.privacy-callout span{font-size:13px;line-height:1.45;color:var(--muted)}
+.privacy-link,.footer-link{border:0;background:transparent;padding:0;color:var(--green);font:inherit;font-weight:850;text-align:left;cursor:pointer}
+.privacy-page{max-width:820px}.privacy-page h3{margin:26px 0 7px}.privacy-page h3:first-child{margin-top:0}.privacy-page p{margin:0;color:var(--muted);line-height:1.6}
+footer .footer-link{font-size:12px}
