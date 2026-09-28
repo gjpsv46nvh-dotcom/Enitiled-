@@ -1,13 +1,16 @@
-# Finally Entitled — structured rules update
+Finally Entitled — structured rules batch 2
 
-Upload these files to the repository root, replacing files with the same names:
+Upload these TWO files to the ROOT of the Entitled- GitHub repository, replacing the existing files:
+1. rules-2026-27.js
+2. core-rules.test.js
 
-- `rules-2026-27.js`
-- `core-rules.test.js`
-- `structured-rules-status.json` (new)
+Then run Actions > Check government data > Run workflow.
 
-The existing GitHub workflow already conditionally runs `node core-rules.test.js`.
+This batch adds source-backed structured rules for:
+- FTB Part B
+- Parenting Payment
+- JobSeeker
+- selected Rent Assistance (single and single sharer)
+while retaining FTB Part A and standard CCS rules.
 
-Important: this update deliberately separates calculator-rule verification from webpage availability. A 403/timeout never becomes a false green verification.
-
-The rules file currently locks down the official 2026–27 core FTB Part A values and standard CCS income percentage rules. More payments should be added only after their official rules are verified and encoded with tests.
+Important: unsupported circumstances deliberately return no calculated estimate rather than guessing.
