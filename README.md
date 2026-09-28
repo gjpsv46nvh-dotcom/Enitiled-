@@ -123,3 +123,12 @@ Production next step: expand the monitored-source registry to every state/territ
 - Added a useful no-results message to Search Support.
 - Government-data status now starts neutral (`Checking…`) and only turns green after `data-status.json` successfully loads.
 - Revalidated current official baseline: Services Australia payment guide is the 20 September 2026 edition; national battery support remains available across all states and territories; Tasmania's current concessions guide includes housing, electricity, transport, education, health, licences, vehicles, property/water and other support.
+
+## V8.4 operational hardening
+- Removed Tasmania, renting and $550/week rent as silent user defaults.
+- Relationship, state and housing now require an explicit user choice.
+- Children Yes/No no longer visually defaults to Yes.
+- The government status starts neutral after deployment; it cannot show green before the first live workflow succeeds.
+- Fixed a critical updater issue: changed government pages no longer become the accepted baseline automatically on the next run.
+- Added an explicit reviewed-baseline command (`--accept-current`) and `OPERATIONS.md`.
+- Added GitHub Actions concurrency and pull/rebase protection for scheduled commits.
