@@ -1,0 +1,10 @@
+Finally Entitled v11.7
+
+- Added dedicated Household Grants & Rebates finder.
+- Added national solar, battery and household energy upgrade programs.
+- Added links into official state/territory grant catalogues.
+- Expanded Business Grants finder with business profile matching and national/state catalogue coverage.
+- Added business.gov.au grants catalogue to the automatic daily official-source checker.
+- Existing entitlement calculations, privacy protections and daily checking remain in place.
+
+Important: program catalogues change continuously. Finally Entitled uses official live catalogues for broad coverage rather than claiming a frozen hard-coded list is exhaustive.

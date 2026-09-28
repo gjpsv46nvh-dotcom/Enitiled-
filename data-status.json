@@ -12,6 +12,16 @@
       "note": "Official source manually verified; automated access is currently blocked."
     },
     {
+      "id": "business-gov-au-grants",
+      "label": "Australian business grants & programs",
+      "jurisdiction": "Commonwealth + states/territories",
+      "url": "https://business.gov.au/grants-and-support",
+      "status": "up_to_date",
+      "checked": "2026-09-28",
+      "method": "manual_official_verification",
+      "note": "Official Australian Government business grants catalogue verified."
+    },
+    {
       "id": "energy-gov-au",
       "label": "Energy, solar & battery support",
       "jurisdiction": "Australia + states/territories",

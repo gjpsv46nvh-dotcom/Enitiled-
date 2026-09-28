@@ -193,7 +193,41 @@ $('calculateBtn').onclick=()=>{
  go('matches');
 };
 
-$('grantBtn').onclick=()=>{const state=$('state').value,industry=$('industry').value||'your industry',funding=$('funding').value,emp=+$('employees').value,turn=+$('turnover').value;$('grantResults').innerHTML=card('discovery',`${funding} grants & programs`,'Live programs change',`Profile match: ${state}, ${industry}, ${emp} employees, ${money(turn)} turnover. Current grant rounds should be verified against official government sources.`,'https://business.gov.au/grants-and-programs')+card('discovery','Business advice & support','Also worth checking','Government-funded business advisers, training and support can be useful even where a cash grant is not available.','https://business.gov.au/expertise-and-advice')};
+const STATE_CODE={'Tasmania':'Tas','Victoria':'Vic','New South Wales':'NSW','Queensland':'Qld','South Australia':'SA','Western Australia':'WA','Australian Capital Territory':'ACT','Northern Territory':'NT'};
+const STATE_GRANT_HUBS={
+ Tas:['Tasmanian grants & programs','Official Tasmanian Government programs and grant information.','https://www.service.tas.gov.au/services/government-help-and-support/grants-funding-and-scholarships'],
+ Vic:['Victorian grants & programs','Official Victorian Government grants and programs.','https://www.vic.gov.au/grants-and-programs'],
+ NSW:['NSW grants, rebates & savings','Official NSW Government grants, rebates and cost-of-living support.','https://www.nsw.gov.au/grants-and-funding'],
+ Qld:['Queensland grants finder','Official Queensland Government grants and assistance.','https://www.qld.gov.au/community/grants-scholarships-awards'],
+ SA:['South Australian grants','Official South Australian Government grants and assistance.','https://www.sa.gov.au/topics/care-and-support/grants'],
+ WA:['Western Australian grants','Official WA Government grants and funding information.','https://www.wa.gov.au/service/community-services/grants-and-subsidies'],
+ ACT:['ACT grants','Official ACT Government grant programs.','https://www.act.gov.au/community/grants'],
+ NT:['Northern Territory grants','Official NT Government grants and funding.','https://nt.gov.au/community/grants-and-volunteers/grants']
+};
+const HOUSEHOLD_GRANTS=[
+ {n:'Cheaper Home Batteries Program',loc:'ALL',tags:'Battery Solar',d:'Around a 30% upfront discount for eligible small-scale batteries connected to new or existing solar. Available to households, businesses and community organisations.',u:'https://www.dcceew.gov.au/energy/programs/cheaper-home-batteries'},
+ {n:'Small-scale Renewable Energy Scheme',loc:'ALL',tags:'Solar Energy efficiency',d:'Reduces the upfront cost of eligible rooftop solar and other small-scale renewable systems through small-scale technology certificates.',u:'https://www.energy.gov.au/solar/financial-benefits-solar/government-rebates-and-loans-solar'},
+ {n:'Household Energy Upgrades Fund',loc:'ALL',tags:'Solar Battery Energy efficiency Appliances Renovation',d:'Discounted finance through participating lenders for eligible household energy upgrades including solar, batteries, efficient appliances and renovations.',u:'https://www.dcceew.gov.au/energy/programs/household-energy-upgrades-fund'},
+ {n:'Government energy rebates & assistance finder',loc:'ALL',tags:'Solar Battery Energy efficiency Appliances Cost of living',d:'The Australian Government live directory of Commonwealth, state and territory energy rebates and assistance.',u:'https://www.energy.gov.au/rebates'}
+];
+function grantCard(name,badge,desc,url){return card('discovery',name,badge,desc,url)}
+$('householdGrantBtn').onclick=()=>{
+ const state=STATE_CODE[$('grantState').value], topic=$('grantTopic').value, housing=$('grantHousing').value, concession=$('grantConcession').value;
+ let out=HOUSEHOLD_GRANTS.filter(g=>g.loc==='ALL'||g.loc===state).filter(g=>topic==='all'||g.tags.toLowerCase().includes(topic.toLowerCase())).map(g=>grantCard(g.n,'Current official program',g.d,g.u));
+ out.push(grantCard('Live Australian energy rebate finder','Live government catalogue',`Search current programs for ${$('grantState').value}, including location- and technology-specific rebates. Your profile: ${housing}${concession==='Yes'?', concession card holder':''}.`,'https://www.energy.gov.au/rebates'));
+ const h=STATE_GRANT_HUBS[state]; if(h) out.push(grantCard(h[0],'State / territory catalogue',h[1],h[2]));
+ $('householdGrantResults').innerHTML=out.join('');
+};
+$('grantBtn').onclick=()=>{
+ const state=STATE_CODE[$('state').value],industry=$('industry').value||'your industry',funding=$('funding').value,emp=+$('employees').value,turn=+$('turnover').value,regional=$('regional').value;
+ let out=[];
+ out.push(grantCard('Australian Government Grants and Programs Finder','600+ opportunities listed',`Use the official national finder for a live search matching ${industry}, ${emp} employees, ${money(turn)} turnover${funding!=='all'?`, and ${funding.toLowerCase()} support`:''}.`,'https://business.gov.au/grants-and-programs'));
+ if(funding==='all'||/energy|solar/i.test(funding)) out.push(grantCard('Energy rebates & assistance for business','Live government catalogue','Search current Commonwealth, state and territory energy programs for businesses, including solar, batteries and efficiency support.','https://www.energy.gov.au/rebates'));
+ if(funding==='all'||/R&D|innovation/i.test(funding)) out.push(grantCard('R&D and innovation support','Official program search','Check current Australian Government innovation, commercialisation and research support through the Grants and Programs Finder.','https://business.gov.au/grants-and-programs'));
+ if(funding==='all'||/Export/i.test(funding)) out.push(grantCard('Export support','Official program search','Check current export grants, market-development and Austrade support that match your business.','https://business.gov.au/grants-and-programs'));
+ const h=STATE_GRANT_HUBS[state]; if(h) out.push(grantCard(h[0],'State / territory catalogue',`${h[1]} Regional/rural: ${regional}.`,h[2]));
+ $('grantResults').innerHTML=out.join('');
+};
 
 const SUPPORT_CATALOGUE = [
  {n:"Family Tax Benefit",c:"Families",k:"family children kids child ftb tax benefit raising kids",s:"Help with the cost of raising children.",who:"Families caring for dependent children. Income, child age, care percentage and other family circumstances affect eligibility and rate.",amount:"Rates vary by child age, family income and circumstances.",need:"Family income estimate, child details and care arrangements.",apply:"Usually claimed through Centrelink/myGov.",u:"https://www.servicesaustralia.gov.au/family-tax-benefit"},

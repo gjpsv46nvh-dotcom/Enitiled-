@@ -25,6 +25,15 @@ MANUAL_VERIFICATION_DAYS = 14
 
 SOURCES = [
     {
+        "id": "business-gov-au-grants",
+        "label": "Australian business grants & programs",
+        "jurisdiction": "Commonwealth + states/territories",
+        "urls": [
+            "https://business.gov.au/grants-and-programs",
+            "https://business.gov.au/grants-and-support",
+        ],
+    },
+    {
         "id": "services-australia-guide",
         "label": "Australian Government payments",
         "jurisdiction": "Commonwealth",
