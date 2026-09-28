@@ -51,9 +51,16 @@
    <h3>First, tell us about you</h3>
    <div class="form-grid">
     <label>Date of birth<input id="yourDob" type="date" required></label>
-    <label>Relationship status<select id="relationship"><option value="couple">I have a partner</option><option value="single">I’m single</option></select></label>
+    <label>Relationship status<select id="relationship" required>
+<option value="" selected disabled>Select one</option>
+<option value="couple">I have a partner</option><option value="single">I’m single</option>
+</select></label>
     <label>What best describes you?<select id="situation"><option value="working">Working</option><option value="jobseeker">Looking for work</option><option value="student">Studying / apprentice</option><option value="carer">Caring for someone</option><option value="disability">Health condition / disability affects work</option><option value="retired">Retired</option></select></label>
-    <label>State or territory<select id="personState" required><option>Tasmania</option><option>Victoria</option><option>New South Wales</option><option>Queensland</option><option>South Australia</option><option>Western Australia</option><option>Australian Capital Territory</option><option>Northern Territory</option></select></label>
+    <label>State or territory<select id="personState" required>
+<option value="" selected disabled>Select your state or territory</option>
+<option>Tasmania</option><option>Victoria</option><option>New South Wales</option><option>Queensland</option>
+<option>South Australia</option><option>Western Australia</option><option>Australian Capital Territory</option><option>Northern Territory</option>
+</select></label>
    </div>
   </div><div class="actions"><button class="primary nextStep">Next →</button></div>
  </div>
@@ -65,8 +72,8 @@
     <label>Partner date of birth<input id="partnerDob" type="date"></label>
     <label>Partner situation<select id="partnerSituation"><option value="working">Working</option><option value="notworking">Not working</option><option value="student">Studying</option><option value="carer">Carer</option><option value="disability">Health condition / disability</option><option value="retired">Retired</option></select></label>
    </div>
-   <div class="yesno"><span>Do you have dependent children?</span><div><button class="choice selected" data-children="yes">Yes</button><button class="choice" data-children="no">No</button></div></div>
-   <div id="childrenArea">
+   <div class="yesno"><span>Do you have dependent children?</span><div><button class="choice" data-children="yes">Yes</button><button class="choice" data-children="no">No</button></div></div>
+   <div id="childrenArea" style="display:none">
     <div class="children-head"><div><h3>Your children</h3><p>Add each child so age-based rules can be checked properly.</p></div><button class="secondary" id="addChild" type="button">+ Add child</button></div>
     <div id="childrenList" class="children-list"></div>
    </div>
@@ -77,10 +84,15 @@
  <div class="wizard-step" data-step="3">
   <div class="panel question-panel"><h3>Home & circumstances</h3>
    <div class="form-grid">
-    <label>Do you rent, own or live another way?<select id="housing"><option value="rent">I rent</option><option value="own">I own / have a mortgage</option><option value="other">Other living arrangement</option></select></label>
-    <label id="rentWrap">Weekly rent ($)<input id="rent" type="number" value="550" min="0"></label>
+    <label>Do you rent, own or live another way?<select id="housing" required>
+<option value="" selected disabled>Select one</option>
+<option value="rent">I rent</option><option value="own">I own / have a mortgage</option><option value="other">Other living arrangement</option>
+</select></label>
+    <label id="rentWrap" style="display:none">Weekly rent ($)<input id="rent" type="number" placeholder="Weekly rent" min="0"></label>
     <label>Approx. assessable assets ($)<input id="assets" type="number" value="0" min="0"></label>
-    <label>Homeowner for Centrelink assets test?<select id="homeowner"><option value="no">No</option><option value="yes">Yes</option></select></label>
+    <label>Homeowner for Centrelink assets test?<select id="homeowner" required>
+<option value="" selected disabled>Select one</option><option value="no">No</option><option value="yes">Yes</option>
+</select></label>
    </div>
    <div class="yesno"><span>Do you regularly care for someone with disability, illness or frailty?</span><select id="careSomeone"><option value="no">No</option><option value="yes">Yes</option></select></div>
    <div class="yesno"><span>Does a health condition or disability significantly affect your ability to work?</span><select id="workDisability"><option value="no">No</option><option value="yes">Yes</option></select></div>
@@ -139,7 +151,7 @@
     <label>Hourly rate ($)<input id="rate" type="number" placeholder="e.g. 40" step=".01" min="0"></label>
     <label>Hours per week<input id="hours" type="number" placeholder="e.g. 38" step=".5" min="0"></label>
     <label>Overtime / allowances per year ($)<input id="extras" type="number" value="0"></label>
-    <label>Or override annual income ($)<input id="annualOverride" type="number" placeholder="Optional"></label>
+    <label>Your annual income ($) — overrides hourly estimate<input id="annualOverride" type="number" placeholder="Optional"></label>
    </div>
   </div>
   <div class="panel">
@@ -152,17 +164,21 @@
   </div>
  </div>
  <div class="panel slider-panel">
-   <div><h3>What if our income changes?</h3><p>Move the slider to preview different household income levels.</p></div>
-   <input id="incomeSlider" type="range" min="0" max="600000" step="1000" value="0">
+   <div><h3>What if our income changes?</h3><p>Optional scenario tool. Moving this does not replace the exact income used for your main eligibility check.</p></div>
+   <input id="incomeSlider" type="range" min="0" max="600000" step="100" value="0">
    <div class="slider-value" id="sliderValue">$0</div>
  </div>
  <div class="actions"><button class="primary" id="calculateBtn">See what I may qualify for →</button></div>
-<div class="notice"><b>Calculation rules currently validated to:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
+<div class="notice"><b>Core calculation rules validated to:</b> 20 September 2026. Calculations are indicative and deliberately conservative where the full government assessment needs information this prototype does not yet collect.</div>
 </section>
 
 <section id="matches" class="page">
  <div class="section-head"><div class="eyebrow">YOUR ESTIMATED MATCHES</div><h2>Support worth checking</h2><p id="matchSummary">Based on the information you've entered.</p><div id="incomeInsight" class="insight"></div></div>
- <div class="result-section-title"><div><span class="eyebrow">COMMON SUPPORT</span><h3>Your main matches</h3><p>The payments and support most relevant to your situation.</p></div></div>
+ <div class="accuracy-legend">
+ <span><b>Calculated estimate</b> — enough inputs for the published rule</span>
+ <span><b>Conditional estimate</b> — rate shown if the stated condition applies</span>
+ <span><b>Official assessment needed</b> — important rules need information not collected here</span>
+</div><div class="result-section-title"><div><span class="eyebrow">COMMON SUPPORT</span><h3>Your main matches</h3><p>The payments and support most relevant to your situation.</p></div></div>
  <div id="results" class="results"></div>
  <div id="extraSection" class="extra-support">
    <div class="result-section-title"><div><span class="eyebrow">DON'T MISS THESE</span><h3>You may also be entitled to…</h3><p>Less obvious payments, supplements, concession cards and programs that may be worth checking.</p></div></div>
@@ -187,7 +203,7 @@
 <div id="formNotice" class="form-notice" hidden></div></main>
 
 <footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><span>V8.1 user-QA prototype • Not affiliated with Services Australia or the Australian Government.</span></footer>
-<script src="app.js"></script>
+<script src="rules-2026-27.js"></script><script src="app.js"></script>
 <div id="dataStatusPanel" class="status-panel" hidden>
 <div class="status-panel-card">
 <button id="closeStatusPanel" class="status-close" aria-label="Close">×</button>

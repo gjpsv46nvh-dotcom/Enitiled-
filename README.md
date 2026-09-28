@@ -132,3 +132,20 @@ Production next step: expand the monitored-source registry to every state/territ
 - Fixed a critical updater issue: changed government pages no longer become the accepted baseline automatically on the next run.
 - Added an explicit reviewed-baseline command (`--accept-current`) and `OPERATIONS.md`.
 - Added GitHub Actions concurrency and pull/rebase protection for scheduled commits.
+
+## V9 accuracy engine
+This version moves major 2026–27 thresholds/rates into `rules-2026-27.js` and adds executable regression tests in `tests/core-rules.test.js`.
+
+Accuracy improvements:
+- Main eligibility calculation now uses exact entered income, not the rounded scenario slider.
+- FTB Part A uses the published Method 1/Method 2 structure for standard rates, while explicitly excluding maintenance/shared-care/supplement/newborn interactions not collected by the UI.
+- FTB Part B uses youngest-child, primary-earner and secondary-earner tests.
+- CCS standard percentage uses the 2026–27 income bands.
+- Rent Assistance calculates the applicable family or income-support rate only as a conditional estimate because an eligible underlying payment is required.
+- JobSeeker and Parenting Payment use separate personal/partner fortnightly income tests and standard assets limits.
+- Carer Allowance screens the $250,000 combined ATI threshold but leaves care qualification to official assessment.
+- Low Income Health Care Card displays the correct claim threshold but does not falsely decide eligibility from annual income because the official test uses the prior 8 weeks.
+- DSP, Age Pension, student support and complex carer qualification remain `Official assessment needed` until the questionnaire collects enough information.
+
+Run tests with:
+`node tests/core-rules.test.js`

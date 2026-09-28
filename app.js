@@ -2,7 +2,7 @@ const $=id=>document.getElementById(id), money=n=>new Intl.NumberFormat('en-AU',
 function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active');scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=(e)=>{e.preventDefault();go(b.dataset.go)});
 
-let step=1, hasChildren=true, childSeq=0;
+let step=1, hasChildren=false, childrenAnswered=false, childSeq=0;
 function showStep(n){step=n;document.querySelectorAll('.wizard-step').forEach(s=>s.classList.toggle('active-step',+s.dataset.step===n));$('progressFill').style.width=(n/3*100)+'%';$('progressText').textContent=`Step ${n} of 3`}
 document.querySelectorAll('.nextStep').forEach(b=>b.onclick=()=>showStep(Math.min(3,step+1)));
 document.querySelectorAll('.prevStep').forEach(b=>b.onclick=()=>showStep(Math.max(1,step-1)));
@@ -37,67 +37,119 @@ $('addChild').onclick=addChild;
 
 function age(d){if(!d)return null;let b=new Date(d+'T00:00:00'),t=new Date(),a=t.getFullYear()-b.getFullYear();if(t<new Date(t.getFullYear(),b.getMonth(),b.getDate()))a--;return a}
 function kids(){return [...document.querySelectorAll('.child-card')].map(c=>({age:age(c.querySelector('.childDob').value),childcare:c.querySelector('.childCare').value==='yes',secondary:c.querySelector('.secondary').value==='yes'}))}
-function baseIncome(){const o=parseFloat($('annualOverride').value);const own=Number.isFinite(o)&&o>0?o:(+$('rate').value||0)*(+$('hours').value||0)*52+(+$('extras').value||0);return own+($('relationship').value==='couple'?(+$('partner').value||0):0)+(+$('otherIncome').value||0)}
-function refreshIncome(){const t=baseIncome();$('householdTotal').textContent=money(t);$('incomeSlider').value=Math.min(600000,Math.round(t/1000)*1000);$('sliderValue').textContent=money(+$('incomeSlider').value)}
+function ownAnnualIncome(){const o=parseFloat($('annualOverride').value);return Number.isFinite(o)&&o>=0?o:(+$('rate').value||0)*(+$('hours').value||0)*52+(+$('extras').value||0)}
+function baseIncome(){return ownAnnualIncome()+($('relationship').value==='couple'?(+$('partner').value||0):0)+(+$('otherIncome').value||0)}
+function refreshIncome(){const t=baseIncome();$('householdTotal').textContent=money(t);$('incomeSlider').value=Math.min(600000,Math.round(t/100)*100);$('sliderValue').textContent=money(+$('incomeSlider').value)}
 ['rate','hours','extras','annualOverride','partner','otherIncome'].forEach(id=>$(id).addEventListener('input',refreshIncome));$('incomeSlider').oninput=()=>$('sliderValue').textContent=money(+$('incomeSlider').value);
 
-function ccsRate(i){if(i<=88520)return 90;if(i>=538520)return 0;return Math.max(0,90-Math.floor((i-88520)/5000))}
-function card(type,name,estimate,why,url){return `<article class="result ${type}"><span class="tag">${type==='calculated'?'CALCULATED ESTIMATE':'MAY BE WORTH CHECKING'}</span><h3>${name}</h3><div class="estimate">${estimate}</div><p>${why}</p>${url?`<a class="source-link" target="_blank" rel="noopener" href="${url}">Official government information →</a>`:''}</article>`}
+function card(type,name,estimate,why,url){
+ const labels={calculated:'CALCULATED ESTIMATE',conditional:'CONDITIONAL ESTIMATE',official:'OFFICIAL ASSESSMENT NEEDED',discovery:'MAY BE WORTH CHECKING'};
+ return `<article class="result ${type}"><span class="tag">${labels[type]||labels.discovery}</span><h3>${name}</h3><div class="estimate">${estimate}</div><p>${why}</p>${url?`<a class="source-link" target="_blank" rel="noopener" href="${url}">Official government information →</a>`:''}</article>`
+}
 $('calculateBtn').onclick=()=>{
- const income=+$('incomeSlider').value,K=hasChildren?kids():[],rel=$('relationship').value,housing=$('housing').value,sit=$('situation').value;
- let r=[],eligibleKids=K.filter(k=>k.age!==null && (k.age<=15 || (k.age<=19&&k.secondary))),cc=K.filter(k=>k.childcare&&k.age!==null&&k.age<=13&&!k.secondary);
- if(eligibleKids.length){
-  let max=eligibleKids.reduce((s,k)=>s+(k.age<=12?235.48:306.46),0);
-  if(income<=69131){
-    r.push(card('calculated','Family Tax Benefit Part A',`Up to ${money(max)}/fortnight`,'Your modelled income is within the current maximum-rate income-test band. This is still a guide: care percentage, maintenance income and other eligibility rules can change the actual amount.','https://www.servicesaustralia.gov.au/family-tax-benefit-part-payment-rates?context=22151'));
-  } else {
-    let desc=income<=123078?'Your income is in the current 20c-per-$1 taper range. The exact amount depends on child ages, base-rate floors, care percentage, maintenance income and other FTB rules.':'Your income is above the second current FTB Part A threshold. A further income test may apply, and the exact result depends on your children and other FTB rules.';
-    r.push(card('discovery','Family Tax Benefit Part A','Income-tested — calculate next',desc,'https://www.servicesaustralia.gov.au/income-test-for-family-tax-benefit-part?context=22151'));
-  }
+ if(!validateProfile()) return;
+ const household=baseIncome(), own=ownAnnualIncome(), partner=$('relationship').value==='couple'?(+$('partner').value||0):0;
+ const K=hasChildren?kids():[], rel=$('relationship').value, housing=$('housing').value, sit=$('situation').value;
+ const assets=+$('assets').value||0, homeowner=$('homeowner').value, childCount=K.length;
+ const depUnder16=K.some(k=>k.age!==null&&k.age<16);
+ let r=[], x=[];
+
+ const ftba=feFTBA(K,household);
+ if(ftba){
+   const wording=household<=FE_RULES.ftbA.free?'published maximum-rate income band':'published income-test formula';
+   r.push(card('calculated','Family Tax Benefit Part A',`${money(ftba.fortnight)}/fortnight`,
+    `Estimate from the ${wording}, child ages and 2026–27 standard rates. Excludes Rent Assistance, supplements, shared-care adjustments, maintenance income, immunisation/health-check reductions and newborn components.`,
+    'https://www.servicesaustralia.gov.au/income-test-for-family-tax-benefit-part?context=22151'));
  }
- if(cc.length){let pct=ccsRate(income);r.push(card('calculated','Child Care Subsidy',`${pct}% standard CCS rate`,`Income-based standard CCS percentage estimate. Actual subsidy also depends on approved care, hourly fee/cap, subsidised hours and other rules. Higher CCS can apply to some families with more than one eligible child aged 5 or younger.`,'https://www.servicesaustralia.gov.au/your-income-can-affect-child-care-subsidy?context=41186'))}
- if(housing==='rent')r.push(card('discovery','Rent Assistance','Check eligibility','Rent Assistance may be added to certain qualifying payments. Your underlying payment, rent and family circumstances determine eligibility and rate.','https://www.servicesaustralia.gov.au/rent-assistance'));
- if(K.length && ((rel==='single'&&Math.min(...K.map(k=>k.age))<14)||(rel==='couple'&&Math.min(...K.map(k=>k.age))<6)))r.push(card('discovery','Parenting Payment','Check eligibility','Your family profile triggers a Parenting Payment check. Individual fortnightly income, partner income and assets are needed for the full rate calculation.','https://www.servicesaustralia.gov.au/parenting-payment'));
- if(sit==='jobseeker')r.push(card('discovery','JobSeeker Payment','Check eligibility','Your work situation triggers a JobSeeker check. Income, assets and other eligibility conditions apply.','https://www.servicesaustralia.gov.au/jobseeker-payment'));
- if(sit==='student')r.push(card('discovery','Student & apprentice support','Check multiple programs','Youth Allowance, Austudy, ABSTUDY and related study support may be relevant depending on age, course, independence and living arrangements.','https://www.servicesaustralia.gov.au/students-and-trainees'));
- if(sit==='carer'||$('careSomeone').value==='yes')r.push(card('discovery','Carer support','Check multiple programs','Carer Payment, Carer Allowance and related supplements may be relevant. Care requirements and means tests vary.','https://www.servicesaustralia.gov.au/caring-for-someone'));
- if(sit==='disability'||$('workDisability').value==='yes')r.push(card('discovery','Disability support','Check multiple programs','Disability Support Pension, Mobility Allowance and other support may be relevant. Medical and non-medical eligibility requires an official assessment.','https://www.servicesaustralia.gov.au/living-with-disability'));
- if(age($('yourDob').value)>=67||sit==='retired')r.push(card('discovery','Age Pension & seniors support','Check eligibility','Age Pension age, residence, income and assets rules apply. If you are below Age Pension age, other retirement or concession support may be more relevant.','https://www.servicesaustralia.gov.au/age-pension'));
- if(!r.length)r.push(card('discovery','Government support search','No obvious major payment yet','Your profile does not currently trigger one of the major common-payment categories. State, territory and concession programs can still be relevant.'));
- let x=[];
- // Separate discovery catalogue: these are surfaced without pretending a full eligibility assessment has been completed.
- if(K.length){
-   x.push(card('discovery','Family Tax Benefit Part B','Worth checking','FTB Part B supports some single-parent, grandparent-carer and one-main-income families. Age of the youngest child and the secondary earner’s income are important.','https://www.servicesaustralia.gov.au/family-tax-benefit-part-b'));
-   x.push(card('discovery','Health & concession cards','Worth checking','Depending on household income and the payments you receive, a Health Care Card, Low Income Health Care Card or other concession card may be relevant.','https://www.servicesaustralia.gov.au/concession-and-health-care-cards'));
+
+ const ftbb=feFTBB(K,rel,own,partner);
+ if(ftbb){
+   if(ftbb.fortnight>0) r.push(card('calculated','Family Tax Benefit Part B',`${money(ftbb.fortnight)}/fortnight`,
+      `Estimate using the youngest child’s age and the 2026–27 primary/secondary earner income test. It assumes no shared-care adjustment and no days receiving Parental Leave Pay.`,
+      'https://www.servicesaustralia.gov.au/income-test-for-family-tax-benefit-part-b?context=22151'));
+   else x.push(card('discovery','Family Tax Benefit Part B','Current profile does not pass the basic income/age screen',
+      'Other circumstances such as grandparent care can use different rules, so the official assessment may still be relevant.',
+      'https://www.servicesaustralia.gov.au/family-tax-benefit-part-b'));
  }
- if(K.some(k=>k.age!==null && k.age<1)){
-   x.push(card('discovery','New baby support','Worth checking','A recent birth can trigger checks for Parental Leave Pay and, in some circumstances, Newborn Upfront Payment and Newborn Supplement. These payments interact with other family assistance.','https://www.servicesaustralia.gov.au/having-baby'));
- }
+
+ const cc=K.filter(k=>k.childcare&&k.age!==null&&k.age<=13&&!k.secondary);
  if(cc.length){
-   x.push(card('discovery','Additional Child Care Subsidy','Worth checking','Some families can receive extra childcare assistance in specific circumstances, including transition to work, temporary financial hardship, grandparent care or child wellbeing situations.','https://www.servicesaustralia.gov.au/additional-child-care-subsidy'));
+   const pct=feCCS(household);
+   r.push(card('calculated','Child Care Subsidy',`${pct}% standard CCS percentage`,
+     `This is the published standard income-based percentage. The dollar subsidy still depends on the lower of the service fee or hourly cap, subsidised hours, withholding and any higher-rate child rules.`,
+     'https://www.servicesaustralia.gov.au/your-income-can-affect-child-care-subsidy?context=41186'));
  }
- if($('careSomeone').value==='yes'||sit==='carer'){
-   x.push(card('discovery','Carer Allowance & supplements','Worth checking','Carer Allowance can have different eligibility rules from Carer Payment, so it is worth checking separately along with related supplements.','https://www.servicesaustralia.gov.au/carer-allowance'));
+
+ const assetPass=homeowner?feAssetPass(rel,homeowner,assets):null;
+
+ if(sit==='jobseeker'){
+   const ageNow=age($('yourDob').value);
+   if(ageNow!==null && ageNow>=22 && ageNow<67 && assetPass){
+     if(rel==='single' || $('partnerSituation').value==='working' || $('partnerSituation').value==='notworking'){
+       const amt=feJobseeker(rel,depUnder16,own,partner);
+       r.push(card('calculated','JobSeeker Payment',`${money(amt)}/fortnight`,
+         `Income-test estimate using your separate fortnightly income${rel==='couple'?' and a non-pension partner income test':''}. Working Credits, waiting periods, mutual obligations, Rent Assistance and other supplements are not included.`,
+         'https://www.servicesaustralia.gov.au/income-test-for-jobseeker-payment?context=51411'));
+     } else r.push(card('official','JobSeeker Payment','Official assessment needed','Your partner may receive a pension or another payment, which changes the income test.','https://www.servicesaustralia.gov.au/jobseeker-payment'));
+   } else if(assetPass===false) r.push(card('official','JobSeeker Payment','Assets appear above the standard limit','The published standard assets test appears not to be met. Services Australia should confirm assessable assets and exemptions.','https://www.servicesaustralia.gov.au/income-and-assets-tests-for-jobseeker-payment?context=51411'));
+   else r.push(card('official','JobSeeker Payment','Official assessment needed','Age, residence and other qualification rules must also be met.','https://www.servicesaustralia.gov.au/jobseeker-payment'));
  }
- if($('workDisability').value==='yes'||sit==='disability'){
-   x.push(card('discovery','Mobility & disability-related assistance','Worth checking','Depending on work, study and disability circumstances, support beyond DSP may be relevant.','https://www.servicesaustralia.gov.au/living-with-disability'));
+
+ const youngest=K.length?Math.min(...K.map(k=>k.age).filter(v=>v!==null)):null;
+ const ppAgeOK=youngest!==null&&((rel==='single'&&youngest<14)||(rel==='couple'&&youngest<6));
+ if(ppAgeOK){
+   if(assetPass){
+     if(rel==='single' || ['working','notworking'].includes($('partnerSituation').value)){
+       const amt=feParenting(rel,K.length,own,partner);
+       r.push(card('calculated','Parenting Payment',`${money(amt)}/fortnight`,
+         `Income-test estimate using the current maximum rate and separate personal/partner income rules. Residence, principal-carer rules, waiting periods, partner-payment interactions and supplements may change the actual amount.`,
+         'https://www.servicesaustralia.gov.au/income-and-assets-tests-for-parenting-payment?context=22196'));
+     } else r.push(card('official','Parenting Payment','Official assessment needed','A partner receiving a pension, Youth Allowance or Austudy can change the income test.','https://www.servicesaustralia.gov.au/parenting-payment'));
+   } else r.push(card('official','Parenting Payment','Assets appear above the standard limit','The standard assets test appears not to be met; assessable-asset exemptions still need official confirmation.','https://www.servicesaustralia.gov.au/income-and-assets-tests-for-parenting-payment?context=22196'));
  }
- if(sit==='student'){
-   x.push(card('discovery','Education supplements & help','Worth checking','Study support can include more than a base payment. Depending on circumstances, supplements, loans and relocation-related assistance may also be relevant.','https://www.servicesaustralia.gov.au/students-and-trainees'));
- }
+
  if(housing==='rent'){
-   x.push(card('discovery','State housing & cost-of-living help','Check your state','Your state or territory may offer concessions or housing-related assistance in addition to Commonwealth payments. V4 flags this for the state-program catalogue.','https://www.servicesaustralia.gov.au/concessions'));
+   const weekly=+$('rent').value||0;
+   if(K.length && ftba && ftba.fortnight>ftba.baseFortnight){
+     const key=`${rel==='couple'?'couple':'single'}${K.length>=3?'3':'12'}`, ra=feRent(key,weekly);
+     r.push(card('conditional','Rent Assistance',`${money(ra.fortnight)}/fortnight`,
+       `Rate estimate using your rent and family size. This applies only if you receive FTB Part A at more than the base rate and meet the accommodation rules.`,
+       'https://www.servicesaustralia.gov.au/how-much-rent-assistance-you-can-get?context=22206'));
+   } else if(['jobseeker','carer','disability','retired'].includes(sit)){
+     const key=rel==='couple'?'couple':'single',ra=feRent(key,weekly);
+     r.push(card('conditional','Rent Assistance',`${money(ra.fortnight)}/fortnight`,
+       'Rate estimate if you receive an eligible income-support payment and meet the accommodation rules. Special sharer and under-25 rules are not modelled.',
+       'https://www.servicesaustralia.gov.au/who-can-get-rent-assistance?context=22206'));
+   } else r.push(card('official','Rent Assistance','Qualifying payment needed','Rent alone does not qualify someone. Rent Assistance is paid with specified eligible payments.','https://www.servicesaustralia.gov.au/who-can-get-rent-assistance?context=22206'));
  }
- x.push(card('discovery','State & territory concessions','Run local check',`Your profile is in ${$('personState').value}. Electricity, transport, rates, education and other concessions can be administered outside Centrelink, so these should be checked separately.`,null));
- const sc=profileStateCode();
- const stateNames={Tas:'Tasmania',Vic:'Victoria',NSW:'New South Wales',Qld:'Queensland',SA:'South Australia',WA:'Western Australia',ACT:'ACT',NT:'Northern Territory'};
- const stateRows=SUPPORT_CATALOGUE.filter(z=>z.c==='State support'&&z.loc===sc);
- stateRows.forEach(z=>x.push(card('discovery',`${stateNames[sc]} support & concessions`,'State check recommended',z.s,z.u)));
- $('extraResults').innerHTML=x.join('');
- $('extraSection').style.display=x.length?'block':'none';
- $('results').innerHTML=r.join('');$('matchSummary').textContent=`Based on a modelled household income of ${money(income)} and ${K.length} child${K.length===1?'':'ren'} in your profile.`;
- $('incomeInsight').innerHTML=`<b>Why this is useful:</b> calculated estimates are shown separately from programs that need more information or an official assessment. Rules basis: September 2026.`;
- go('matches')
+
+ if(sit==='carer'||$('careSomeone').value==='yes'){
+   x.push(card('official','Carer Payment','Official care assessment needed','The pension income/assets tests can be screened, but Services Australia must assess the care receiver and care requirements.','https://www.servicesaustralia.gov.au/carer-payment'));
+   x.push(card('conditional','Carer Allowance',household<250000?'Income test appears met':'Income test appears not met','Carer Allowance has no assets test; combined adjusted taxable income must be under $250,000. Care requirements still need official assessment.','https://www.servicesaustralia.gov.au/who-can-get-carer-allowance?context=21811'));
+ }
+ if(sit==='disability'||$('workDisability').value==='yes') x.push(card('official','Disability Support Pension','Medical and non-medical assessment needed','Income/assets screening alone cannot establish DSP eligibility.','https://www.servicesaustralia.gov.au/disability-support-pension'));
+ if(sit==='student') x.push(card('official','Student & apprentice support','More study details needed','Youth Allowance, Austudy and ABSTUDY use age, course, independence, parental/partner income and living-arrangement rules not yet fully collected.','https://www.servicesaustralia.gov.au/students-and-trainees'));
+ if(age($('yourDob').value)>=67||sit==='retired') x.push(card('official','Age Pension & seniors support','Full pension assessment needed','The standard income and asset thresholds are monitored, but Work Bonus, deeming, residence and pension-rate details require additional inputs.','https://www.servicesaustralia.gov.au/age-pension'));
+
+ // Low Income Health Care Card: annual income is not enough for a definitive result because the test uses the prior 8 weeks.
+ let weekly=household/52, lihLimit;
+ if(rel==='single') lihLimit=K.length?1410+(Math.max(0,K.length-1)*34):826;
+ else lihLimit=K.length?1444+(Math.max(0,K.length-1)*34):1410;
+ x.push(card('conditional','Low Income Health Care Card',`Claim threshold: under ${money(lihLimit)}/week`,
+   `Your annualised household income is about ${money(weekly)}/week, but the actual claim test uses gross income from the 8 weeks before claiming and includes specified income types.`,
+   'https://www.servicesaustralia.gov.au/income-test-for-low-income-health-care-card?context=21986'));
+
+ if(K.some(k=>k.age!==null&&k.age<1)) x.push(card('official','New baby support','Check PPL and newborn-payment interaction','Parental Leave Pay and Newborn Upfront Payment/Newborn Supplement interact, so birth, work-test and PPL details are required.','https://www.servicesaustralia.gov.au/having-baby'));
+ if(cc.length) x.push(card('official','Additional Child Care Subsidy','Circumstance-specific assessment','Higher assistance can apply for child wellbeing, grandparent care, hardship or transition to work.','https://www.servicesaustralia.gov.au/additional-child-care-subsidy'));
+
+ const sc=profileStateCode(), stateNames={Tas:'Tasmania',Vic:'Victoria',NSW:'New South Wales',Qld:'Queensland',SA:'South Australia',WA:'Western Australia',ACT:'ACT',NT:'Northern Territory'};
+ SUPPORT_CATALOGUE.filter(z=>z.c==='State support'&&z.loc===sc).forEach(z=>x.push(card('discovery',`${stateNames[sc]} support & concessions`,'State check recommended',z.s,z.u)));
+
+ if(!r.length) r.push(card('official','No major payment calculated yet','More circumstances may be needed','No common payment could be safely calculated from the current answers. Search Support still checks broader Commonwealth, state and territory programs.'));
+ $('results').innerHTML=r.join(''); $('extraResults').innerHTML=x.join(''); $('extraSection').style.display=x.length?'block':'none';
+ $('matchSummary').textContent=`Using exact entered household income of ${money(household)} and ${K.length} child${K.length===1?'':'ren'} in your profile.`;
+ $('incomeInsight').innerHTML=`<b>Accuracy mode:</b> the main check uses exact entered income, not the rounded scenario slider. Core rules validated to 20 September 2026.`;
+ go('matches');
 };
 
 $('grantBtn').onclick=()=>{const state=$('state').value,industry=$('industry').value||'your industry',funding=$('funding').value,emp=+$('employees').value,turn=+$('turnover').value;$('grantResults').innerHTML=card('discovery',`${funding} grants & programs`,'Live programs change',`Profile match: ${state}, ${industry}, ${emp} employees, ${money(turn)} turnover. Current grant rounds should be verified against official government sources.`,'https://business.gov.au/grants-and-programs')+card('discovery','Business advice & support','Also worth checking','Government-funded business advisers, training and support can be useful even where a cash grant is not available.','https://business.gov.au/expertise-and-advice')};
