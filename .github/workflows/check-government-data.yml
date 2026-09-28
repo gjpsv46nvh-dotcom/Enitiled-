@@ -1,0 +1,54 @@
+name: Check government data
+
+'on':
+  workflow_dispatch:
+  schedule:
+    - cron: '20 20 * * *'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: government-data-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out website
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Test entitlement rules
+        run: node core-rules.test.js
+
+      - name: Check official government sources
+        continue-on-error: true
+        run: python check-government-sources.py
+
+      - name: Commit latest source status
+        run: |
+          git config user.name "Finally Entitled Data Bot"
+          git config user.email "actions@users.noreply.github.com"
+
+          git add data-status.json
+
+          if [ -f source-snapshots.json ]; then
+            git add source-snapshots.json
+          fi
+
+          if git diff --cached --quiet; then
+            echo "No status changes to commit"
+          else
+            git commit -m "Update government data status"
+            git pull --rebase
+            git push
+          fi
