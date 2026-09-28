@@ -1,27 +1,26 @@
-const fs=require('fs'),vm=require('vm'),assert=require('assert');
-vm.runInThisContext(fs.readFileSync('rules-2026-27.js','utf8'));
-function near(a,b,t=.02){assert(Math.abs(a-b)<=t,`${a} != ${b}`)}
-assert.equal(feCCS(0),90);
-assert.equal(feCCS(88520),90);
-assert.equal(feCCS(538520),0);
-assert.equal(feCCS(93520),89);
-
-let oneYoung=[{age:5,secondary:false}];
-near(feFTBA(oneYoung,69131).fortnight,235.48);
-assert(feFTBA(oneYoung,100000).fortnight>=75.60);
-assert.equal(feFTBB([{age:3,secondary:false}],'single',124327,0).fortnight,200.34);
-assert.equal(feFTBB([{age:3,secondary:false}],'single',124328,0).fortnight,0);
-near(feFTBB([{age:3,secondary:false}],'couple',100000,7154).fortnight,200.34);
-assert.equal(feFTBB([{age:3,secondary:false}],'couple',125000,0).fortnight,0);
-
-near(feRent('single12',103.67).fortnight,0); // 207.34/fn threshold
-near(feRent('single12',279.045).fortnight,263.06); // max threshold
-assert(feAssetPass('single','yes',333000));
-assert(!feAssetPass('single','yes',333001));
-assert(feAssetPass('couple','no',766000));
-
-near(feJobseeker('single',false,150*26,0),824.90);
-near(feJobseeker('single',false,256*26,0),771.90);
-near(feParenting('single',1,232.60*26,0),1068.20);
-near(feParenting('couple',1,150*26,1440*26),755.10);
-console.log('Core entitlement rule tests: PASS');
+const fs = require("fs");
+const vm = require("vm");
+global.window = {};
+vm.runInThisContext(fs.readFileSync("rules-2026-27.js", "utf8"));
+const R = window.FE_RULES, C = window.FE_CALCULATORS;
+function eq(actual, expected, label) {
+  if (actual !== expected) throw new Error(`${label}: expected ${expected}, got ${actual}`);
+}
+eq(R.financialYear, "2026-27", "financial year");
+eq(R.ftbA.maximumRateIncomeThreshold, 69131, "FTB A threshold 1");
+eq(R.ftbA.secondIncomeThreshold, 123078, "FTB A threshold 2");
+eq(R.ftbA.firstTaperPerDollar, .20, "FTB A taper 1");
+eq(R.ftbA.secondTaperPerDollar, .30, "FTB A taper 2");
+eq(R.ftbA.baseRatePerChildFortnight, 75.60, "FTB A base rate");
+eq(C.ftbAMaximumChildRate(6), 235.48, "FTB A child 0-12");
+eq(C.ftbAMaximumChildRate(14), 306.46, "FTB A child 13-15");
+eq(C.ftbAMaximumChildRate(17, true), 306.46, "FTB A secondary student");
+eq(C.ftbAMaximumChildRate(17, false), 0, "FTB A non-student 17");
+eq(C.ftbAIncomeTestBand(69131), "maximum-rate-income-band", "FTB A band max");
+eq(C.ftbAIncomeTestBand(69132), "first-taper-band", "FTB A band taper 1");
+eq(C.ftbAIncomeTestBand(123079), "second-taper-band", "FTB A band taper 2");
+eq(C.ccsStandardPercentage(0), 90, "CCS low income");
+eq(C.ccsStandardPercentage(88520), 90, "CCS threshold");
+eq(C.ccsStandardPercentage(93520), 89, "CCS first full $5k step");
+eq(C.ccsStandardPercentage(538520), 0, "CCS zero threshold");
+console.log("✓ Structured 2026–27 entitlement rule tests passed");

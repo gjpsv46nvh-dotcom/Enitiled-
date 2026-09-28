@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "model": "hybrid",
+  "message": "Official sources are monitored for changes. Structured calculator rules are separately source-backed and tested before publication.",
+  "calculatorRules": {
+    "financialYear": "2026-27",
+    "verifiedOn": "2026-09-28",
+    "testCommand": "node core-rules.test.js",
+    "status": "tested",
+    "covered": [
+      "FTB Part A core rates/income bands",
+      "standard CCS income percentage"
+    ]
+  },
+  "sourceMonitoring": {
+    "statusMeaning": {
+      "up_to_date": "Source fetched successfully and matched the accepted baseline.",
+      "review": "Source changed and needs review before rule changes are published.",
+      "check_failed": "Automated source access failed; this is not treated as verification."
+    }
+  }
+}
