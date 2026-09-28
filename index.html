@@ -23,13 +23,12 @@
   <div class="hero">
     <div class="eyebrow">AUSTRALIAN ENTITLEMENTS • PAYMENTS • GRANTS</div>
     <h1>Find what you may be <span>entitled to.</span></h1>
-    <p class="lead">One place to estimate government payments, childcare support, rent assistance, concessions and business grants — and see how your income could change what you receive.</p>
-    <div class="hero-actions"><button class="primary hero-start" data-go="personal"><span>Find everything I may be entitled to</span><span class="hero-start-arrow" aria-hidden="true">→</span></button><button class="secondary" data-go="support">Search support</button><button class="secondary" data-go="grants">Household grants & rebates</button><button class="secondary" data-go="business">Business grants</button></div>
-    <p class="hero-trust">Payments • Concessions • Household rebates • Grants • Business support</p>
+    <p class="lead">Answer a few simple questions. We’ll check payments, concessions, household rebates, grants and business support that may fit your circumstances.</p>
+    <div class="hero-actions"><button class="primary hero-start" data-go="personal"><span>Find everything I may be entitled to</span><span class="hero-start-arrow" aria-hidden="true">→</span></button></div>
+    <div class="quick-help"><span>Or start with what’s happening in your life:</span><div class="quick-help-buttons"><button data-life="baby">👶 Having a baby</button><button data-life="job">💼 Work changed</button><button data-life="home">🏠 Home & bills</button><button data-life="carer">❤️ Caring for someone</button><button data-life="retire">👴 Retiring</button><button data-life="business">🚀 Business</button></div></div>
+    <p class="hero-trust">Free pre-application check · Plain English · Takes only a few minutes</p>
     <div class="trust">Estimates only • Australia-wide • Designed to link you back to official government sources</div>
   </div>
-  <div class="panel all-support-callout"><div><div class="eyebrow">ONE CHECK • MORE SUPPORT</div><h2>Start with your situation, not a government program.</h2><p>Answer the household checker first, then use the same results area to continue into rebates, grants and business support that apply to you.</p></div><button class="primary hero-start" data-go="personal"><span>Find everything for me</span><span class="hero-start-arrow" aria-hidden="true">→</span></button></div>
-  <div class="life-events"><div class="eyebrow">WHAT'S HAPPENING IN YOUR LIFE?</div><h2>Quick starting points</h2><div class="life-grid"><button data-go="personal">👶 Having or raising children</button><button data-go="personal">💼 Lost work / income changed</button><button data-go="grants">🏠 Improving my home</button><button data-go="business">🚀 Starting or growing a business</button><button data-go="personal">❤️ Caring for someone</button><button data-go="personal">👴 Retiring / getting older</button></div></div>
   <div class="grid cards">
     <article><div class="icon">👨‍👩‍👧‍👦</div><h3>Families & Children</h3><p>Family payments, parental leave, childcare subsidies and more.</p></article>
     <article><div class="icon">🏠</div><h3>Housing & Rent</h3><p>Check possible Rent Assistance and housing-related support.</p></article>
@@ -58,6 +57,7 @@
 <option value="couple">I have a partner</option><option value="single">I’m single</option>
 </select></label>
     <label>What best describes you?<select id="situation"><option value="working">Working</option><option value="homeparent">Stay-at-home parent / caring for children</option><option value="jobseeker">Looking for work</option><option value="student">Studying / apprentice</option><option value="carer">Caring for someone</option><option value="disability">Health condition / disability affects work</option><option value="retired">Retired</option></select></label>
+    <label>Do you run a business or plan to start one?<select id="hasBusiness"><option value="no">No</option><option value="yes">Yes</option></select></label>
     <label>State or territory<select id="personState" required>
 <option value="" selected disabled>Select your state or territory</option>
 <option>Tasmania</option><option>Victoria</option><option>New South Wales</option><option>Queensland</option>
@@ -188,12 +188,16 @@
  <span><b>Official assessment needed</b> — important rules need information not collected here</span>
 </div><div class="result-section-title"><div><span class="eyebrow">COMMON SUPPORT</span><h3>Your main matches</h3><p>The payments and support most relevant to your situation.</p></div></div>
  <div id="results" class="results"></div>
+ <div class="next-help-panel" id="nextHelpPanel">
+   <span class="eyebrow">KEEP CHECKING</span><h3>There may be more ways to save</h3>
+   <p>We can also check household grants, energy rebates and other government programs using your state.</p>
+   <div class="actions compact-actions"><button class="primary" id="continueHouseholdGrants">Check household grants & rebates →</button><button class="secondary" id="continueBusinessSupport" style="display:none">Check business grants & support →</button></div>
+ </div>
  <div id="extraSection" class="extra-support">
    <div class="result-section-title"><div><span class="eyebrow">DON'T MISS THESE</span><h3>You may also be entitled to…</h3><p>Less obvious payments, supplements, concession cards and programs that may be worth checking.</p></div></div>
    <div id="extraResults" class="results"></div>
  </div>
  <div class="notice"><b>Important:</b> Finally Entitled provides estimates and screening guidance, not eligibility decisions. Government agencies make the final assessment. Rates, thresholds and rules can change.</div>
- <div class="next-support"><div class="eyebrow">KEEP CHECKING</div><h3>There may be more than payments.</h3><p>Continue into household rebates and grants, or business support if it applies to you.</p><div class="actions"><button class="primary" data-go="grants">Check household grants & rebates →</button><button class="secondary" data-go="business">Check business grants & support →</button></div></div>
 </section>
 
 
@@ -248,7 +252,7 @@
 <div id="formNotice" class="form-notice" hidden></div></main>
 
 <footer><b>Finally Entitled</b><span>Find what you may be entitled to.</span><button class="footer-link" type="button" data-go="privacy">Privacy</button><span>Finally Entitled • Not affiliated with Services Australia or the Australian Government.</span></footer>
-<script src="status.js?v=11.7"></script><script src="rules-2026-27.js"></script><script src="rules-batch-3-2026-27.js"></script><script src="app.js?v=11.7"></script>
+<script src="status.js?v=11.8"></script><script src="rules-2026-27.js"></script><script src="rules-batch-3-2026-27.js"></script><script src="app.js?v=11.8"></script>
 <div id="dataStatusPanel" class="status-panel" hidden>
 <div class="status-panel-card">
 <button id="closeStatusPanel" class="status-close" aria-label="Close">×</button>

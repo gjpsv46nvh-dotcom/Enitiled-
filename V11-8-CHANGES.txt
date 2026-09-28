@@ -1,7 +1,8 @@
-Finally Entitled v11.8
-- Main CTA renamed “Find everything I may be entitled to”.
-- Added unified support explainer spanning payments, concessions, household rebates, grants and business support.
-- Added life-event quick starts.
-- Added continuation from payment results into household and business support.
-- Preserved privacy-first checker and automatic government-source workflow.
-- No household/income answers are saved.
+Finally Entitled v11.8 — Simple Everything Journey
+
+- One main homepage action: Find everything I may be entitled to.
+- Added simple life-event shortcuts without adding separate complex journeys.
+- Added business/start-up question to the household checker.
+- Results now continue naturally into household grants/rebates, prefilled with the selected state.
+- Business users also get a direct next step into business grants/support, with state reused.
+- Existing privacy-first browser calculations and automatic government-source checks retained.

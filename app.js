@@ -2,6 +2,16 @@ const $=id=>document.getElementById(id), money=n=>new Intl.NumberFormat('en-AU',
 function go(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));$(id).classList.add('active');scrollTo({top:0,behavior:'smooth'})}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=(e)=>{e.preventDefault();go(b.dataset.go)});
 
+document.querySelectorAll('[data-life]').forEach(b=>b.onclick=()=>{
+ const life=b.dataset.life;
+ if(life==='business'){ go('business'); return; }
+ go('personal');
+ const map={baby:'homeparent',job:'jobseeker',carer:'carer',retire:'retired'};
+ if(map[life] && $('situation')) $('situation').value=map[life];
+ if(life==='home' && $('housing')) $('housing').focus();
+});
+
+
 let step=1, hasChildren=false, childrenAnswered=false, childSeq=0;
 function showStep(n){step=n;document.querySelectorAll('.wizard-step').forEach(s=>s.classList.toggle('active-step',+s.dataset.step===n));$('progressFill').style.width=(n/3*100)+'%';$('progressText').textContent=`Step ${n} of 3`}
 document.querySelectorAll('.nextStep').forEach(b=>b.onclick=()=>showStep(Math.min(3,step+1)));
@@ -48,6 +58,7 @@ function card(type,name,estimate,why,url){
 }
 $('calculateBtn').onclick=()=>{
  if(!validateProfile()) return;
+ if($('continueBusinessSupport')) $('continueBusinessSupport').style.display=$('hasBusiness')?.value==='yes'?'inline-flex':'none';
  const household=baseIncome(), own=ownAnnualIncome(), partner=$('relationship').value==='couple'?(+$('partner').value||0):0;
  const K=hasChildren?kids():[], rel=$('relationship').value, housing=$('housing').value, sit=$('situation').value;
  const assets=+$('assets').value||0, homeowner=$('homeowner').value, childCount=K.length;
@@ -211,6 +222,15 @@ const HOUSEHOLD_GRANTS=[
  {n:'Government energy rebates & assistance finder',loc:'ALL',tags:'Solar Battery Energy efficiency Appliances Cost of living',d:'The Australian Government live directory of Commonwealth, state and territory energy rebates and assistance.',u:'https://www.energy.gov.au/rebates'}
 ];
 function grantCard(name,badge,desc,url){return card('discovery',name,badge,desc,url)}
+
+function syncGrantStateFromProfile(){
+ const state=$('personState')?.value;
+ if(state && $('grantState')) $('grantState').value=state;
+}
+if($('continueHouseholdGrants')) $('continueHouseholdGrants').onclick=()=>{syncGrantStateFromProfile();go('grants');};
+if($('continueBusinessSupport')) $('continueBusinessSupport').onclick=()=>{
+ const state=$('personState')?.value; if(state && $('state')) $('state').value=state; go('business');
+};
 $('householdGrantBtn').onclick=()=>{
  const state=STATE_CODE[$('grantState').value], topic=$('grantTopic').value, housing=$('grantHousing').value, concession=$('grantConcession').value;
  let out=HOUSEHOLD_GRANTS.filter(g=>g.loc==='ALL'||g.loc===state).filter(g=>topic==='all'||g.tags.toLowerCase().includes(topic.toLowerCase())).map(g=>grantCard(g.n,'Current official program',g.d,g.u));
