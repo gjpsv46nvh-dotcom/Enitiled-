@@ -7,7 +7,7 @@
       "jurisdiction": "Commonwealth + states/territories",
       "url": "https://business.gov.au/grants-and-programs",
       "status": "review",
-      "checked": "2026-10-04",
+      "checked": "2026-10-06",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -47,7 +47,7 @@
       "jurisdiction": "New South Wales",
       "url": "https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub",
       "status": "review",
-      "checked": "2026-10-04",
+      "checked": "2026-10-06",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -67,7 +67,7 @@
       "jurisdiction": "Queensland",
       "url": "https://www.qld.gov.au/community/cost-of-living-support/concessions",
       "status": "review",
-      "checked": "2026-10-04",
+      "checked": "2026-10-06",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -77,7 +77,7 @@
       "jurisdiction": "South Australia",
       "url": "https://www.sa.gov.au/topics/care-and-support/concessions",
       "status": "review",
-      "checked": "2026-10-04",
+      "checked": "2026-10-06",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -87,7 +87,7 @@
       "jurisdiction": "Western Australia",
       "url": "https://www.wa.gov.au/organisation/department-of-communities/concessions-available-western-australia",
       "status": "review",
-      "checked": "2026-10-04",
+      "checked": "2026-10-06",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -112,7 +112,7 @@
       "note": "Official source manually verified; automated access is currently blocked."
     }
   ],
-  "lastCheckAttempt": "2026-10-04T21:29:42+00:00",
+  "lastCheckAttempt": "2026-10-06T20:31:57+00:00",
   "lastSuccessfulCheck": "2026-09-28T20:28:15+00:00",
   "status": "review_required"
 }
