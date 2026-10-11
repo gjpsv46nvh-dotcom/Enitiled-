@@ -86,10 +86,10 @@
       "label": "Western Australian concessions",
       "jurisdiction": "Western Australia",
       "url": "https://www.wa.gov.au/organisation/department-of-communities/concessions-available-western-australia",
-      "status": "up_to_date",
-      "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "status": "review",
+      "checked": "2026-10-11",
+      "method": "automated",
+      "note": "Official source changed since accepted baseline."
     },
     {
       "id": "act-cost-living",
@@ -112,7 +112,7 @@
       "note": "Official source manually verified; automated access is currently blocked."
     }
   ],
-  "lastCheckAttempt": "2026-10-11T20:29:45+00:00",
+  "lastCheckAttempt": "2026-10-11T20:31:55+00:00",
   "lastSuccessfulCheck": "2026-09-28T20:28:15+00:00",
   "status": "review_required"
 }
