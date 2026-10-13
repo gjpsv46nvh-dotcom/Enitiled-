@@ -7,7 +7,7 @@
       "jurisdiction": "Commonwealth + states/territories",
       "url": "https://business.gov.au/grants-and-programs",
       "status": "review",
-      "checked": "2026-10-12",
+      "checked": "2026-10-13",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -16,30 +16,30 @@
       "label": "Australian Government payments",
       "jurisdiction": "Commonwealth",
       "url": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22",
-      "status": "up_to_date",
-      "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "status": "check_failed",
+      "checked": "2026-10-13",
+      "method": "automated",
+      "note": "https://www.servicesaustralia.gov.au/guide-to-australian-government-payments?context=22: The read operation timed out | https://www.servicesaustralia.gov.au/historical-versions-guide-to-australian-government-payments?context=22: The read operation timed out"
     },
     {
       "id": "energy-gov-au",
       "label": "Energy, solar & battery support",
       "jurisdiction": "Australia + states/territories",
       "url": "https://www.energy.gov.au/rebates",
-      "status": "up_to_date",
-      "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "status": "check_failed",
+      "checked": "2026-10-13",
+      "method": "automated",
+      "note": "https://www.energy.gov.au/rebates: The read operation timed out | https://www.energy.gov.au/households: The read operation timed out"
     },
     {
       "id": "tas-concessions",
       "label": "Tasmanian concessions",
       "jurisdiction": "Tasmania",
       "url": "https://www.concessions.tas.gov.au/",
-      "status": "up_to_date",
-      "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "status": "check_failed",
+      "checked": "2026-10-13",
+      "method": "automated",
+      "note": "https://www.concessions.tas.gov.au/: HTTP 403 Forbidden | https://www.concessions.tas.gov.au/concessions_cards: HTTP 403 Forbidden"
     },
     {
       "id": "nsw-cost-living",
@@ -47,7 +47,7 @@
       "jurisdiction": "New South Wales",
       "url": "https://www.nsw.gov.au/money-and-taxes/cost-of-living-hub",
       "status": "review",
-      "checked": "2026-10-12",
+      "checked": "2026-10-13",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -56,10 +56,10 @@
       "label": "Victorian concessions & benefits",
       "jurisdiction": "Victoria",
       "url": "https://www.housing.vic.gov.au/concessions",
-      "status": "up_to_date",
-      "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "status": "check_failed",
+      "checked": "2026-10-13",
+      "method": "automated",
+      "note": "https://www.housing.vic.gov.au/concessions: The read operation timed out | https://services.dffh.vic.gov.au/concessions-and-benefits: The read operation timed out"
     },
     {
       "id": "qld-concessions",
@@ -67,7 +67,7 @@
       "jurisdiction": "Queensland",
       "url": "https://www.qld.gov.au/community/cost-of-living-support/concessions",
       "status": "review",
-      "checked": "2026-10-12",
+      "checked": "2026-10-13",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -77,7 +77,7 @@
       "jurisdiction": "South Australia",
       "url": "https://www.sa.gov.au/topics/care-and-support/concessions",
       "status": "review",
-      "checked": "2026-10-12",
+      "checked": "2026-10-13",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -87,7 +87,7 @@
       "jurisdiction": "Western Australia",
       "url": "https://www.wa.gov.au/organisation/department-of-communities/concessions-available-western-australia",
       "status": "review",
-      "checked": "2026-10-12",
+      "checked": "2026-10-13",
       "method": "automated",
       "note": "Official source changed since accepted baseline."
     },
@@ -96,23 +96,23 @@
       "label": "ACT cost-of-living support",
       "jurisdiction": "ACT",
       "url": "https://www.act.gov.au/money-and-tax/cost-of-living-support",
-      "status": "up_to_date",
-      "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "status": "check_failed",
+      "checked": "2026-10-13",
+      "method": "automated",
+      "note": "https://www.act.gov.au/money-and-tax/cost-of-living-support: HTTP 403 Forbidden"
     },
     {
       "id": "nt-concessions",
       "label": "Northern Territory concessions",
       "jurisdiction": "Northern Territory",
       "url": "https://nt.gov.au/community/concessions-and-payments",
-      "status": "up_to_date",
-      "checked": "2026-09-28",
-      "method": "manual_official_verification",
-      "note": "Official source manually verified; automated access is currently blocked."
+      "status": "check_failed",
+      "checked": "2026-10-13",
+      "method": "automated",
+      "note": "https://nt.gov.au/community/concessions-and-payments: HTTP 403 Forbidden | https://nt.gov.au/community/concessions-and-payments/nt-concession-scheme: HTTP 403 Forbidden"
     }
   ],
-  "lastCheckAttempt": "2026-10-12T20:36:07+00:00",
+  "lastCheckAttempt": "2026-10-13T20:47:18+00:00",
   "lastSuccessfulCheck": "2026-09-28T20:28:15+00:00",
   "status": "review_required"
 }
