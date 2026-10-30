@@ -5,11 +5,11 @@
       "id": "business-gov-au-grants",
       "label": "Australian business grants & programs",
       "jurisdiction": "Commonwealth + states/territories",
-      "url": "https://business.gov.au/grants-and-programs",
-      "status": "review",
+      "url": "https://business.gov.au/grants-and-support",
+      "status": "check_failed",
       "checked": "2026-10-30",
       "method": "automated",
-      "note": "Official source changed since accepted baseline."
+      "note": "https://business.gov.au/grants-and-programs: HTTP 403 Forbidden | https://business.gov.au/grants-and-support: HTTP 403 Forbidden"
     },
     {
       "id": "services-australia-guide",
@@ -112,7 +112,7 @@
       "note": "https://nt.gov.au/community/concessions-and-payments: HTTP 403 Forbidden | https://nt.gov.au/community/concessions-and-payments/nt-concession-scheme: HTTP 403 Forbidden"
     }
   ],
-  "lastCheckAttempt": "2026-10-30T23:48:07+00:00",
+  "lastCheckAttempt": "2026-10-30T23:51:24+00:00",
   "lastSuccessfulCheck": "2026-09-28T20:28:15+00:00",
   "status": "review_required"
 }
