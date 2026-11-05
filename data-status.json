@@ -75,11 +75,11 @@
       "id": "sa-concessions",
       "label": "South Australian concessions",
       "jurisdiction": "South Australia",
-      "url": "https://www.sa.gov.au/topics/care-and-support/concessions",
-      "status": "review",
+      "url": "https://www.sa.gov.au/topics/care-and-support/concessions/concession-finder",
+      "status": "check_failed",
       "checked": "2026-11-05",
       "method": "automated",
-      "note": "Official source changed since accepted baseline."
+      "note": "https://www.sa.gov.au/topics/care-and-support/concessions: HTTP 403 Forbidden"
     },
     {
       "id": "wa-concessions",
@@ -112,7 +112,7 @@
       "note": "https://nt.gov.au/community/concessions-and-payments: HTTP 403 Forbidden | https://nt.gov.au/community/concessions-and-payments/nt-concession-scheme: HTTP 403 Forbidden"
     }
   ],
-  "lastCheckAttempt": "2026-11-05T00:54:27+00:00",
+  "lastCheckAttempt": "2026-11-05T00:55:55+00:00",
   "lastSuccessfulCheck": "2026-09-28T20:28:15+00:00",
   "status": "review_required"
 }
